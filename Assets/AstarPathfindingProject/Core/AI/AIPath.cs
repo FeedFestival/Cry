@@ -256,7 +256,7 @@ public class AIPath : MonoBehaviour {
 		//add it here
 
         canMove = false;
-        Debug.Log(0);
+//        Debug.Log(0);
         tr.gameObject.GetComponent<BHV_BasicAnimations>().PlayAnimation(0);
 
 
@@ -342,7 +342,7 @@ public class AIPath : MonoBehaviour {
 
             SetAngleAndHeight();    // CUSTOM
             controller.Move(dir * Time.deltaTime);
-            Debug.Log(1);
+//            Debug.Log(1);
             tr.gameObject.GetComponent<BHV_BasicAnimations>().PlayAnimation(1);
 
 		} else if (rigid != null) {
