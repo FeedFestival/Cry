@@ -1,0 +1,898 @@
+fileFormatVersion: 2
+guid: e6aa4ebb23fa22d48a2a04becda93270
+timeCreated: 1426267759
+licenseType: Free
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: Arm_Lower_L
+    100002: Arm_Lower_R
+    100004: Arm_Upper_L
+    100006: Arm_Upper_R
+    100008: Armature
+    100010: Belly
+    100012: Chest
+    100014: F_Palm_L
+    100016: F_Palm_R
+    100018: F_Pmid1_L
+    100020: F_Pmid1_R
+    100022: F_Pmid2_L
+    100024: F_Pmid2_R
+    100026: F_Pointer1_L
+    100028: F_Pointer1_R
+    100030: F_Pointer2_L
+    100032: F_Pointer2_R
+    100034: F_Thumb_L
+    100036: F_Thumb_R
+    100038: Foot_Controller_L
+    100040: Foot_Controller_R
+    100042: Foot_L
+    100044: Foot_R
+    100046: Hand_L
+    100048: Hand_R
+    100050: Head
+    100052: HumanFit
+    100054: //RootNode
+    100056: Leg_Lower_L
+    100058: Leg_Lower_R
+    100060: Leg_Upper_L
+    100062: Leg_Upper_R
+    100064: Mid
+    100066: Neck
+    100068: Root
+    100070: Shoulder_L
+    100072: Shoulder_R
+    100074: Toes_L
+    100076: Toes_R
+    100078: Waist
+    400000: Arm_Lower_L
+    400002: Arm_Lower_R
+    400004: Arm_Upper_L
+    400006: Arm_Upper_R
+    400008: Armature
+    400010: Belly
+    400012: Chest
+    400014: F_Palm_L
+    400016: F_Palm_R
+    400018: F_Pmid1_L
+    400020: F_Pmid1_R
+    400022: F_Pmid2_L
+    400024: F_Pmid2_R
+    400026: F_Pointer1_L
+    400028: F_Pointer1_R
+    400030: F_Pointer2_L
+    400032: F_Pointer2_R
+    400034: F_Thumb_L
+    400036: F_Thumb_R
+    400038: Foot_Controller_L
+    400040: Foot_Controller_R
+    400042: Foot_L
+    400044: Foot_R
+    400046: Hand_L
+    400048: Hand_R
+    400050: Head
+    400052: //RootNode
+    400054: HumanFit
+    400056: Leg_Lower_L
+    400058: Leg_Lower_R
+    400060: Leg_Upper_L
+    400062: Leg_Upper_R
+    400064: Mid
+    400066: Neck
+    400068: Root
+    400070: Shoulder_L
+    400072: Shoulder_R
+    400074: Toes_L
+    400076: Toes_R
+    400078: Waist
+    4300000: HumanFit
+    7400000: Default Take
+    7400002: Examine_Complete
+    7400004: Examine_Go
+    7400006: Idle
+    7400008: Idle_Boss
+    7400010: Pickup
+    7400012: Walk
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: HumanFit
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 0
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 2
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Default Take
+      takeName: Default Take
+      firstFrame: 0
+      lastFrame: 99
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L/Foot_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L/Toes_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R/Foot_R
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R/Toes_R
+        weight: 1
+      - path: Armature/Root/Mid
+        weight: 1
+      - path: Armature/Root/Mid/Belly
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Neck
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Neck/Head
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Palm_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Palm_L/F_Thumb_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pmid1_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pmid1_L/F_Pmid2_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pointer1_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pointer1_L/F_Pointer2_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Palm_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Palm_R/F_Thumb_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pmid1_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pmid1_R/F_Pmid2_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pointer1_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pointer1_R/F_Pointer2_R
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_L
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_L/Leg_Lower_L
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_R
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_R/Leg_Lower_R
+        weight: 1
+      - path: HumanFit
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Examine_Complete
+      takeName: Examine_Complete
+      firstFrame: 0
+      lastFrame: 79
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L/Foot_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L/Toes_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R/Foot_R
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R/Toes_R
+        weight: 1
+      - path: Armature/Root/Mid
+        weight: 1
+      - path: Armature/Root/Mid/Belly
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Neck
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Neck/Head
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Palm_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Palm_L/F_Thumb_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pmid1_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pmid1_L/F_Pmid2_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pointer1_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pointer1_L/F_Pointer2_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Palm_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Palm_R/F_Thumb_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pmid1_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pmid1_R/F_Pmid2_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pointer1_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pointer1_R/F_Pointer2_R
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_L
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_L/Leg_Lower_L
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_R
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_R/Leg_Lower_R
+        weight: 1
+      - path: HumanFit
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Examine_Go
+      takeName: Examine_Go
+      firstFrame: 0
+      lastFrame: 79
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L/Foot_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L/Toes_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R/Foot_R
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R/Toes_R
+        weight: 1
+      - path: Armature/Root/Mid
+        weight: 1
+      - path: Armature/Root/Mid/Belly
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Neck
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Neck/Head
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Palm_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Palm_L/F_Thumb_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pmid1_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pmid1_L/F_Pmid2_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pointer1_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pointer1_L/F_Pointer2_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Palm_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Palm_R/F_Thumb_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pmid1_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pmid1_R/F_Pmid2_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pointer1_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pointer1_R/F_Pointer2_R
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_L
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_L/Leg_Lower_L
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_R
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_R/Leg_Lower_R
+        weight: 1
+      - path: HumanFit
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Idle
+      takeName: Idle
+      firstFrame: 0
+      lastFrame: 99
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 1
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L/Foot_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L/Toes_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R/Foot_R
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R/Toes_R
+        weight: 1
+      - path: Armature/Root/Mid
+        weight: 1
+      - path: Armature/Root/Mid/Belly
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Neck
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Neck/Head
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Palm_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Palm_L/F_Thumb_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pmid1_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pmid1_L/F_Pmid2_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pointer1_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pointer1_L/F_Pointer2_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Palm_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Palm_R/F_Thumb_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pmid1_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pmid1_R/F_Pmid2_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pointer1_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pointer1_R/F_Pointer2_R
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_L
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_L/Leg_Lower_L
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_R
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_R/Leg_Lower_R
+        weight: 1
+      - path: HumanFit
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Idle_Boss
+      takeName: Idle_Boss
+      firstFrame: 0
+      lastFrame: 99
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L/Foot_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L/Toes_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R/Foot_R
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R/Toes_R
+        weight: 1
+      - path: Armature/Root/Mid
+        weight: 1
+      - path: Armature/Root/Mid/Belly
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Neck
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Neck/Head
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Palm_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Palm_L/F_Thumb_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pmid1_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pmid1_L/F_Pmid2_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pointer1_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pointer1_L/F_Pointer2_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Palm_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Palm_R/F_Thumb_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pmid1_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pmid1_R/F_Pmid2_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pointer1_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pointer1_R/F_Pointer2_R
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_L
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_L/Leg_Lower_L
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_R
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_R/Leg_Lower_R
+        weight: 1
+      - path: HumanFit
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Pickup
+      takeName: Pickup
+      firstFrame: 0
+      lastFrame: 79
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L/Foot_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L/Toes_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R/Foot_R
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R/Toes_R
+        weight: 1
+      - path: Armature/Root/Mid
+        weight: 1
+      - path: Armature/Root/Mid/Belly
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Neck
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Neck/Head
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Palm_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Palm_L/F_Thumb_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pmid1_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pmid1_L/F_Pmid2_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pointer1_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pointer1_L/F_Pointer2_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Palm_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Palm_R/F_Thumb_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pmid1_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pmid1_R/F_Pmid2_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pointer1_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pointer1_R/F_Pointer2_R
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_L
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_L/Leg_Lower_L
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_R
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_R/Leg_Lower_R
+        weight: 1
+      - path: HumanFit
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: Walk
+      takeName: Walk
+      firstFrame: 0
+      lastFrame: 31
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 1
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Root
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L/Foot_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_L/Toes_L
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R/Foot_R
+        weight: 1
+      - path: Armature/Root/Foot_Controller_R/Toes_R
+        weight: 1
+      - path: Armature/Root/Mid
+        weight: 1
+      - path: Armature/Root/Mid/Belly
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Neck
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Neck/Head
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Palm_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Palm_L/F_Thumb_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pmid1_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pmid1_L/F_Pmid2_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pointer1_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_L/Arm_Upper_L/Arm_Lower_L/Hand_L/F_Pointer1_L/F_Pointer2_L
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Palm_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Palm_R/F_Thumb_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pmid1_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pmid1_R/F_Pmid2_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pointer1_R
+        weight: 1
+      - path: Armature/Root/Mid/Belly/Waist/Chest/Shoulder_R/Arm_Upper_R/Arm_Lower_R/Hand_R/F_Pointer1_R/F_Pointer2_R
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_L
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_L/Leg_Lower_L
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_R
+        weight: 1
+      - path: Armature/Root/Mid/Leg_Upper_R/Leg_Lower_R
+        weight: 1
+      - path: HumanFit
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
