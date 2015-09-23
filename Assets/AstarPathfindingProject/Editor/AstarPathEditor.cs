@@ -191,6 +191,9 @@ public class AstarPathEditor : Editor {
 		}
 	}
 	
+	/** Holds defines found in script files, used for optimizations.
+	 * \astarpro */
+	public List<DefineObject> defines;
 	
 	//End Misc
 	
@@ -458,6 +461,13 @@ public class AstarPathEditor : Editor {
 		
 		AstarProfiler.EndProfile ("DrawMainArea");
 		
+#if ProfileAstar
+		if (GUILayout.Button ("Log Profiles")) {
+			AstarProfiler.PrintResults ();
+			AstarProfiler.PrintFastResults ();
+			AstarProfiler.Reset();
+		}
+#endif
 		
 		//bool reverted = HandleUndo ();
 		
@@ -644,6 +654,9 @@ public class AstarPathEditor : Editor {
 				"&mecanim="+(mecanim?"1":"0")+
 				"&unityversion="+Application.unityVersion+
 				"&branch="+AstarPath.Branch;
+#if ASTARDEBUG
+			Debug.Log (query);
+#endif
 			updateCheckObject = new WWW (query);
 			lastUpdateCheck = System.DateTime.UtcNow;
 		}
@@ -662,6 +675,9 @@ public class AstarPathEditor : Editor {
 			return;
 		}
 		
+#if ASTARDEBUG
+		Debug.Log ("Result from update check:\n"+result);
+#endif
 		
 		string[] splits = result.Split ('|');
 		string versionString = splits[0];
@@ -934,12 +950,95 @@ public class AstarPathEditor : Editor {
 
 		if ( fadeArea.Show () ) {
 			
-
-			GUIUtilityx.SetColor (Color.Lerp (Color.yellow,Color.white,0.5F));
-			if (GUILayout.Button ("Optimizations is an "+AstarProButton,helpBox)) {
-				Application.OpenURL (GetURL ("astarpro"));//astarProInfoURL);
+			if (defines == null) {
+				Dictionary<string,DefineObject> defs = new Dictionary<string,DefineObject> ();
+				OptimizationHandler.FindDefines (defs);
+				defines = new List<DefineObject>(defs.Values);
+				defines.Sort (delegate(DefineObject x, DefineObject y) {
+					return x.name.CompareTo(y.name);
+				});
 			}
-			GUIUtilityx.ResetColor ();
+			
+			//Rect r = EditorGUILayout.BeginVertical (graphBoxStyle);
+			//GUI.Box (r,"",graphBoxStyle);
+
+#if UNITY_BEFORE_4
+			GUILayout.Label ("Using C# pre-processor directives, performance and memory usage can be improved by disabling features that you don't use in the project.\n" +
+				"Every change to these settings requires recompiling the scripts and the settings themselves are saved in the script source files as " +
+				"commented or uncommented #define statements",helpBox);
+#else
+			EditorGUILayout.HelpBox ("Using C# pre-processor directives, performance and memory usage can be improved by disabling features that you don't use in the project.\n" +
+			                 "Every change to these settings requires recompiling the scripts and the settings themselves are saved in the script source files as " +
+			                 "commented or uncommented #define statements", MessageType.Info);
+#endif
+			
+			//foreach (KeyValuePair<string,DefineObject> define in defines) {
+			foreach (DefineObject define in defines) {	
+				//Rect r2 = EditorGUILayout.BeginVertical (helpBox);
+				//GUI.Box (r2,"",helpBox);
+				EditorGUILayout.Separator ();
+				
+				GUIContent label = new GUIContent (ObjectNames.NicifyVariableName (define.name),define.brief+"\nDefined in:\n"+define.files);
+
+				if (define.enumValues == null) {
+					define.enabled = EditorGUILayout.Toggle (label,define.enabled);
+				} else {
+					/*int i = 0;
+					
+					if (define.Value.enabled) {
+						for (int j=0;j<define.Value.enumValues.Length;j++) {
+							if (define.Key == define.Value.enumValues[i]) {
+								i = j;
+								break;
+							}
+						}
+					}*/
+					
+					define.selectedEnum = EditorGUILayout.Popup (label.text,define.selectedEnum,define.enumValues);
+					
+					//The define is enabled if it is not zero (zero == "Disabled")
+					define.enabled = define.selectedEnum != 0;
+				}
+
+#if UNITY_BEFORE_4
+				GUILayout.Label (define.brief+"\nDefined in: "+define.files,helpBox);//,EditorStyles.miniLabel);
+#else
+				EditorGUILayout.HelpBox (define.brief+"\n\nDefined in: "+define.files, MessageType.None);//,EditorStyles.miniLabel);
+#endif
+
+				if (define.inconsistent) {
+					Color preColor = GUI.color;
+					GUI.color *= Color.red;
+#if UNITY_BEFORE_4
+					GUILayout.Label ("This define is inconsistent in the source files, some are enabled some are not. Press Apply to change them to the same value",helpBox);
+#else
+					EditorGUILayout.HelpBox ("This define is inconsistent in the source files, some are enabled some are not. Press Apply to change them to the same value", MessageType.Error);
+#endif
+					GUI.color = preColor;
+				}
+				//EditorGUILayout.EndVertical ();
+			}
+			
+			EditorGUILayout.Separator ();
+			GUILayout.BeginHorizontal ();
+			GUILayout.FlexibleSpace ();
+			
+			if (GUILayout.Button ("Refresh",GUILayout.Width (150))) {
+				defines = null;
+				//defines = new Dictionary<string,DefineObject> ();
+				//OptimizationHandler.FindDefines (defines);
+			}
+			if (GUILayout.Button ("Apply",GUILayout.Width (150))) {
+				if (EditorUtility.DisplayDialog ("Apply Optimizations","Applying optimizations requires (in case anything changed) a recompilation of the scripts. The inspector also has to be reloaded. Do you want to continue?","Ok","Cancel")) {
+					OptimizationHandler.ApplyDefines (defines);
+					AssetDatabase.Refresh ();
+					//optimizationSettings = false;
+				}
+			}
+			GUILayout.FlexibleSpace ();
+			GUILayout.EndHorizontal ();
+			
+			//EditorGUILayout.EndVertical ();
 		}
 		
 		GUILayoutx.EndFadeArea ();
@@ -1683,6 +1782,10 @@ public class AstarPathEditor : Editor {
 				string path = EditorUtility.SaveFilePanel ("Save Graphs","","graph.bytes","bytes");
 				
 				if (path != "") {
+	#if ASTARDEBUG
+					System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch ();
+					watch.Start ();
+	#endif
 					if (EditorUtility.DisplayDialog ("Scan before saving?","Do you want to scan the graphs before saving" +
 						"\nNot scanning can cause node data to be omitted from the file if Save Node Data is enabled","Scan","Don't scan")) {
 						MenuScan ();
@@ -1693,6 +1796,10 @@ public class AstarPathEditor : Editor {
 					Pathfinding.Serialization.AstarSerializer.SaveToFile (path,bytes);
 					
 					EditorUtility.DisplayDialog ("Done Saving","Done saving graph data.","Ok");
+	#if ASTARDEBUG
+					watch.Stop ();
+					Debug.Log ("Saved to file, process took "+(watch.ElapsedTicks*0.0001).ToString ("0.00")+" ms to complete");
+	#endif
 				}
 			}
 			
@@ -1748,8 +1855,7 @@ public class AstarPathEditor : Editor {
 		
 			GUI.enabled = true;
 			int threads = AstarPath.CalculateThreadCount(script.threadCount);
-			if (threads > 0) EditorGUILayout.HelpBox ("Using " + threads +" thread(s)" + (script.threadCount < 0 ? " on your machine" : "") + ".\n" +
-				"The free version of the A* Pathfinding Project is limited to at most one thread.", MessageType.None);
+			if (threads > 0) EditorGUILayout.HelpBox ("Using " + threads +" thread(s)" + (script.threadCount < 0 ? " on your machine" : ""), MessageType.None);
 			else EditorGUILayout.HelpBox ("Using a single coroutine (no threads)" + (script.threadCount < 0 ? " on your machine" : ""), MessageType.None);
 			
 		/*
@@ -2378,6 +2484,9 @@ public class AstarPathEditor : Editor {
 			sr.SerializeEditorSettings (graphEditors);
 			bytes = sr.CloseSerialize();
 			ch = sr.GetChecksum ();
+	#if ASTARDEBUG
+			Debug.Log ("Got a whole bunch of data, "+bytes.Length+" bytes");
+	#endif
 			return true;
 		}));
 		
@@ -2473,6 +2582,9 @@ public class AstarPathEditor : Editor {
 		
 		List<System.Type> graphList = new List<System.Type> ();
 		
+#if ASTARDEBUG
+		string debugString = "Graph Types Found\n";
+#endif
 		
 		//Iterate through the assembly for classes which inherit from GraphEditor
 		foreach (System.Type type in types) {
@@ -2491,6 +2603,9 @@ public class AstarPathEditor : Editor {
 							cge.editorType = type;
 							graphList.Add (cge.graphType);
 							graphEditorTypes.Add (cge.graphType.Name,cge);
+#if ASTARDEBUG
+							debugString += "-- "+cge.graphType.Name +"\n";
+#endif	
 						}
 						
 					}
@@ -2506,6 +2621,9 @@ public class AstarPathEditor : Editor {
 		asm = Assembly.GetAssembly (typeof(AstarPath));
 		types = asm.GetTypes ();
 
+#if ASTARDEBUG
+		bool anyWithoutEditor = false;
+#endif
 
 		//Not really required, but it's so fast so why not make a check and see if any graph types didn't have any editors
 		foreach (System.Type type in types) {
@@ -2523,6 +2641,10 @@ public class AstarPathEditor : Editor {
 					}
 					if (!alreadyFound) {
 						graphList.Add (type);
+#if ASTARDEBUG
+						anyWithoutEditor = true;
+						debugString += "-- "+type.Name+" was found, but it has no editor\n";
+#endif
 					}
 					break;
 				}
@@ -2533,6 +2655,10 @@ public class AstarPathEditor : Editor {
 		
 		script.astarData.graphTypes = graphList.ToArray ();
 		
+#if ASTARDEBUG
+		debugString += "\n"+script.astarData.graphTypes.Length+" in total\n";
+		Debug.Log ("Graph Editors:\n"+debugString);
+#endif
 	}
 	
 	[InitializeOnLoad]

@@ -304,6 +304,7 @@ namespace Pathfinding {
 		 */
 		public virtual Color NodeColor (GraphNode node, PathHandler data) {
 			
+	#if !PhotonImplementation
 			Color c = AstarColor.NodeConnection;
 			bool colSet = false;
 			
@@ -355,6 +356,9 @@ namespace Pathfinding {
 			}
 			c.a *= 0.5F;
 			return c;
+	#else
+			return new Color (1,1,1);
+	#endif
 			
 		}
 		
@@ -508,8 +512,25 @@ namespace Pathfinding {
 		/** Use Unity 2D API */
 		public bool use2D = false;
 
+#if !PhotonImplementation
 		public bool collisionCheck = true; /**< Toggle collision check */
 		public bool heightCheck = true; /**< Toggle height check. If false, the grid will be flat */
+#else
+		//No height or collision checks can be done outside of Unity
+		public bool collisionCheck {
+			get {
+				return false;
+			}
+			set {}
+		}
+		
+		public bool heightCheck {
+			get {
+				return false;
+			}
+			set {}
+		}
+#endif
 
 		/** Direction to use as \a UP.
 		 * \see Initialize */

@@ -116,6 +116,7 @@ public class AIPath : MonoBehaviour {
 	/** Cached NavmeshController component */
 	protected NavmeshController navController;
 	
+	protected RVOController rvoController;
 	
 	/** Cached Rigidbody component */
 	protected Rigidbody rigid;
@@ -159,6 +160,8 @@ public class AIPath : MonoBehaviour {
 		//Cache some other components (not all are necessarily there)
 		controller = GetComponent<CharacterController>();
 		navController = GetComponent<NavmeshController>();
+		rvoController = GetComponent<RVOController>();
+		if ( rvoController != null ) rvoController.enableRotation = false;
 		rigid = GetComponent<Rigidbody>();
 	}
 	
@@ -254,17 +257,27 @@ public class AIPath : MonoBehaviour {
 		//End of path has been reached
 		//If you want custom logic for when the AI has reached it's destination
 		//add it here
-
-        canMove = false;
-//        Debug.Log(0);
-        tr.gameObject.GetComponent<BHV_BasicAnimations>().PlayAnimation(0);
-
-
 		//You can also create a new script which inherits from this one
 		//and override the function in that script
 	}
-	
-	/** Called when a requested path has finished calculation.
+
+    #region CUSTOM_Region
+    public void setUnitTarget(Transform myTarget) {
+        target = myTarget;
+    }
+
+    public void stopMoving() {
+        canMove = false;
+    }
+
+    public void resumeMoving()
+    {
+        canMove = true;
+    }
+    #endregion
+
+
+    /** Called when a requested path has finished calculation.
 	  * A path is first requested by #SearchPath, it is then calculated, probably in the same or the next frame.
 	  * Finally it is returned to the seeker which forwards it to this function.\n
 	  */
@@ -307,6 +320,9 @@ public class AIPath : MonoBehaviour {
 			dir /= magn;
 			int steps = (int)(magn/pickNextWaypointDist);
 
+#if ASTARDEBUG
+			Debug.DrawLine (p1,p2,Color.red,1);
+#endif
 
 			for (int i=0;i<=steps;i++) {
 				CalculateVelocity (p1);
@@ -317,12 +333,13 @@ public class AIPath : MonoBehaviour {
 	}
 	
 	public virtual Vector3 GetFeetPosition () {
+		if (rvoController != null) {
+			return tr.position - Vector3.up*rvoController.height*0.5f;
+		} else
 		if (controller != null) {
-            // i dont want any gravity.
-            //return tr.position - Vector3.up*controller.height*0.5F;
-            return tr.position;     // CUSTOM
+			return tr.position - Vector3.up*controller.height*0.5F;
 		}
-        Debug.Log(tr.position);
+
 		return tr.position;
 	}
 	
@@ -333,48 +350,24 @@ public class AIPath : MonoBehaviour {
 		Vector3 dir = CalculateVelocity (GetFeetPosition());
 
 		//Rotate towards targetDirection (filled in by CalculateVelocity)
-		RotateTowards (targetDirection);
+        RotateTowardsAndGravity(targetDirection);
 	
+		if (rvoController != null) {
+			rvoController.Move (dir);
+		} else
 		if (navController != null) {
+#if FALSE
+			navController.SimpleMove (GetFeetPosition(),dir);
+#endif
 		} else if (controller != null) {
-            // i dont want any gravity.
-            //controller.SimpleMove (dir);
-
-            SetAngleAndHeight();    // CUSTOM
+            //controller.SimpleMove(dir);
             controller.Move(dir * Time.deltaTime);
-//            Debug.Log(1);
-            tr.gameObject.GetComponent<BHV_BasicAnimations>().PlayAnimation(1);
-
 		} else if (rigid != null) {
 			rigid.AddForce (dir);
 		} else {
 			transform.Translate (dir*Time.deltaTime, Space.World);
 		}
 	}
-
-    Quaternion angle = Quaternion.identity;
-    Vector3 lastNormal = Vector3.zero;
-    float lastYPos = 0;
-    public void SetAngleAndHeight()
-    {
-        RaycastHit hit;
-        Vector3 down = tr.TransformDirection(Vector3.up * -10);
-        if (Physics.Raycast(tr.position, down, out hit, 10, 1 << 8))
-        {
-            if (lastNormal != hit.normal)
-            {
-                lastNormal = hit.normal;
-                var temp = Quaternion.FromToRotation(Vector3.up, hit.normal);
-                angle.eulerAngles = new Vector3(0, 0, temp.eulerAngles.z / 2);
-            }
-
-            if (hit.point.y + 1f != lastYPos)
-            {
-                lastYPos = hit.point.y + 1f;
-                tr.transform.position = new Vector3(tr.transform.position.x, lastYPos, tr.transform.position.z);
-            }
-        }
-    }
 	
 	/** Point to where the AI is heading.
 	  * Filled in by #CalculateVelocity */
@@ -455,6 +448,13 @@ public class AIPath : MonoBehaviour {
 		float dot = Vector3.Dot (dir.normalized,forward);
 		float sp = speed * Mathf.Max (dot,minMoveScale) * slowdown;
 		
+#if ASTARDEBUG
+		Debug.DrawLine (vPath[currentWaypointIndex-1] , vPath[currentWaypointIndex],Color.black);
+		Debug.DrawLine (GetFeetPosition(),targetPosition,Color.red);
+		Debug.DrawRay (targetPosition,Vector3.up, Color.red);
+		Debug.DrawRay (GetFeetPosition(),dir,Color.yellow);
+		Debug.DrawRay (GetFeetPosition(),forward*sp,Color.cyan);
+#endif
 		
 		if (Time.deltaTime	> 0) {
 			sp = Mathf.Clamp (sp,0,targetDist/(Time.deltaTime*2));
@@ -466,10 +466,20 @@ public class AIPath : MonoBehaviour {
 	 * Rotates around the Y-axis.
 	 * \see turningSpeed
 	 */
-	protected virtual void RotateTowards (Vector3 dir) {
+    public LayerMask map;
+
+	protected virtual void RotateTowardsAndGravity (Vector3 dir) {
 		
 		if (dir == Vector3.zero) return;
-		
+        
+        RaycastHit hit;
+        Vector3 dirDown = -tr.up * 2;
+        if (Physics.Raycast(tr.position, dirDown * 5, out hit, 5, map))
+        {
+            if (tr.position.y != hit.point.y + 1f)
+            tr.position = new Vector3(tr.position.x, hit.point.y + 1f, tr.position.z);
+        }
+
 		Quaternion rot = tr.rotation;
 		Quaternion toTarget = Quaternion.LookRotation (dir);
 		

@@ -107,6 +107,8 @@ namespace Pathfinding {
 			_MeshEdgeColor = new Color (0,0,0,0.5F);
 			_MeshColor = new Color (0.125F, 0.686F, 0, 0.19F);
 		}
+		
+		//new Color (0.909F,0.937F,0.243F,0.6F);
 	}
 	
 	
@@ -197,7 +199,11 @@ namespace Pathfinding {
 			
 			if (constrainArea && area >= 0 && node.Area != area) return false;
 			
+#if ConfigureTagsAsMultiple
+			if (constrainTags && (tags & node.Tag) == 0) return false;
+#else
 			if (constrainTags && ((tags >> (int)node.Tag) & 0x1) == 0) return false;
+#endif
 			
 			return true;
 		}
@@ -468,8 +474,12 @@ namespace Pathfinding {
 		public bool modifyWalkability = false; /**< If true, all nodes \a walkable variables will be set to #setWalkability */
 		public bool setWalkability = false; /**< If #modifyWalkability is true, the nodes' \a walkable variable will be set to this */
 		
+#if ConfigureTagsAsMultiple
+		public TagMask tags;
+#else
 		public bool modifyTag = false;
 		public int setTag = 0;
+#endif
 		
 		/** Track which nodes are changed and save backup data.
 		 * Used internally to revert changes if needed.
@@ -542,7 +552,11 @@ namespace Pathfinding {
 				}
 				
 				//Update tags
+#if ConfigureTagsAsMultiple
+				node.Tag = (node.Tag & ~tags.tagsChange) | (tags.tagsSet & tags.tagsChange);
+#else
 				if (modifyTag) node.Tag = (uint)setTag;
+#endif
 			}
 		}
 		

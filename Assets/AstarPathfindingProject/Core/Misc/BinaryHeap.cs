@@ -70,6 +70,9 @@ namespace Pathfinding {
 				for (int i=0;i<binaryHeap.Length;i++) {
 					tmp[i] = binaryHeap[i];
 				}
+#if ASTARDEBUG
+				Debug.Log ("Resizing binary heap to "+newSize);
+#endif
 				binaryHeap = tmp;
 				
 				//Debug.Log ("Forced to discard nodes because of binary heap size limit, please consider increasing the size ("+numberOfItems +" "+binaryHeap.Length+")");
@@ -230,6 +233,9 @@ namespace Pathfinding {
 		/** Rebuilds the heap by trickeling down all items.
 		 * Usually called after the hTarget on a path has been changed */
 		public void Rebuild () {
+#if ASTARDEBUG
+			int changes = 0;
+#endif
 			
 			for (int i=2;i<numberOfItems;i++) {
 				int bubbleIndex = i;
@@ -243,6 +249,9 @@ namespace Pathfinding {
 						binaryHeap[bubbleIndex] = binaryHeap[parentIndex];
 						binaryHeap[parentIndex] = node;
 						bubbleIndex = parentIndex;
+#if ASTARDEBUG
+						changes++;
+#endif
 					} else {
 						break;
 					}
@@ -250,6 +259,9 @@ namespace Pathfinding {
 				
 			}
 			
+#if ASTARDEBUG
+			Debug.Log ("+++ Rebuilt Heap - "+changes+" changes +++");
+#endif
 			
 		}
 	}

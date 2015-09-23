@@ -260,6 +260,11 @@ namespace Pathfinding.Serialization
 			bytes = output.ToArray();
 			output.Dispose();
 			
+#if ASTARDEBUG
+			CompatFileStream fs = new CompatFileStream("output.zip",FileMode.Create);
+			fs.Write(bytes,0,bytes.Length);
+			fs.Close();
+#endif
 			
 			zip.Dispose();
 			
@@ -754,6 +759,9 @@ for every node {
 				
 				MemoryStream str = new MemoryStream();
 				
+#if ASTARDEBUG
+				Debug.Log ("Loading graph "+i+"'s nodes");
+#endif
 				
 				entry.Extract (str);
 				str.Position = 0;
@@ -768,6 +776,9 @@ for every node {
 				ZipEntry entry = zip["graph"+i+"_conns"+binaryExt];
 				if (entry == null) continue;
 				
+#if ASTARDEBUG
+				Debug.Log ("Loading graph "+i+"'s connections");
+#endif
 				MemoryStream str = new MemoryStream();
 				
 				entry.Extract (str);
@@ -892,11 +903,59 @@ for every node {
 		
 		/** Deserializes nodes for a specified graph */
 		private void DeserializeNodes (int index, BinaryReader reader) {
+#if FALSE
+			GraphNode[] nodes = graphs[index].nodes;
+			
+			if (nodes == null)
+				throw new Exception ("No nodes exist in graph "+index+" even though it has been requested to create "+meta.nodeCounts[index]+" nodes");
+			
+			if (reader.BaseStream.Length < nodes.Length*(4*(3+1+1)))
+				throw new Exception ("Expected more data than was available in stream when reading node data for graph "+index+" at position "+(reader.BaseStream.Position));
+			
+			int chunk = reader.ReadInt32();
+			if (chunk != 1)
+				throw new Exception ("Expected chunk 1 (positions) when reading node data for graph "+index+" at position "+(reader.BaseStream.Position-4)+" in stream");
+			
+			/** \bug Positions not supported */
+			//for (int i=0;i<nodes.Length;i++)
+			//	nodes[i].Position = new Int3(reader.ReadInt32(),reader.ReadInt32(),reader.ReadInt32());
+			
+			chunk = reader.ReadInt32();
+			if (chunk != 2)
+				throw new Exception ("Expected chunk 2 (penalties) when reading node data for graph "+index+" at position "+(reader.BaseStream.Position-4)+" in stream");
+			
+			for (int i=0;i<nodes.Length;i++)
+				nodes[i].Penalty = reader.ReadUInt32();
+			
+			chunk = reader.ReadInt32();
+			if (chunk != 3)
+				throw new Exception ("Expected chunk 3 (flags) when reading node data for graph "+index+" at position "+(reader.BaseStream.Position-4)+" in stream");
+			
+			for (int i=0;i<nodes.Length;i++)
+				nodes[i].Flags = reader.ReadUInt32();
+#endif
 		}
 		
 		/** Deserializes node connections for a specified graph
 		 */
 		private void DeserializeNodeConnections (int index, BinaryReader reader) {
+#if FALSE
+			GraphNode[] nodes = graphs[index].nodes;
+			
+			for (int i=0;i<nodes.Length;i++) {
+				GraphNode node = nodes[i];
+				int count = reader.ReadUInt16();
+				node.connections = new GraphNode[count];
+				node.connectionCosts = new int[count];
+				
+				for (int j=0;j<count;j++) {
+					int otherNodeIndex = reader.ReadInt32();
+					int cost = reader.ReadInt32();
+					node.connections[j] = GetNodeWithIndex (otherNodeIndex);
+					node.connectionCosts[j] = cost;
+				}
+			}
+#endif
 		}
 		
 //#if UNITY_EDITOR

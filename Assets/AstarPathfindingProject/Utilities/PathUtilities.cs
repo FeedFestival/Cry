@@ -59,6 +59,10 @@ namespace Pathfinding
 		 * For better memory management the returned list should be pooled, see Pathfinding.Util.ListPool
 		 */
 		public static List<GraphNode> GetReachableNodes (GraphNode seed, int tagMask = -1) {
+#if ASTAR_PROFILE
+			System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+			watch.Start ();
+#endif
 			Stack<GraphNode> stack = Pathfinding.Util.StackPool<GraphNode>.Claim ();
 			List<GraphNode> list = Pathfinding.Util.ListPool<GraphNode>.Claim ();
 			
@@ -90,6 +94,10 @@ namespace Pathfinding
 			
 			Pathfinding.Util.StackPool<GraphNode>.Release (stack);
 			
+#if ASTAR_PROFILE
+			watch.Stop ();
+			Debug.Log ((1000*watch.Elapsed.TotalSeconds).ToString("0.0 ms"));
+#endif
 			return list;
 		}
 
@@ -120,6 +128,10 @@ namespace Pathfinding
 		 * \warning This method is not thread safe. Only use it from the Unity thread (i.e normal game code).
 		 */
 		public static List<GraphNode> BFS (GraphNode seed, int depth, int tagMask = -1) {
+			#if ASTAR_PROFILE
+			System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+			watch.Start ();
+			#endif
 
 			if ( BFSQueue == null ) BFSQueue = new Queue<GraphNode>();
 			var que = BFSQueue;
@@ -170,6 +182,10 @@ namespace Pathfinding
 			que.Clear ();
 			map.Clear ();
 
+			#if ASTAR_PROFILE
+			watch.Stop ();
+			Debug.Log ((1000*watch.Elapsed.TotalSeconds).ToString("0.0 ms"));
+			#endif
 			return result;
 		}
 
@@ -367,6 +383,7 @@ namespace Pathfinding
 						tot += a;
 						accs.Add (tot);
 					}
+#if !ASTAR_NO_GRID_GRAPH
 					 else {
 						GridNode gnode = nodes[i] as GridNode;
 						
@@ -379,6 +396,7 @@ namespace Pathfinding
 							accs.Add(tot);
 						}
 					}
+#endif
 				}
 				
 				for (int i=0;i<count;i++) {
@@ -423,6 +441,7 @@ namespace Pathfinding
 							
 							p = ((Vector3)(node.GetVertex(1)-node.GetVertex(0)))*v1 + ((Vector3)(node.GetVertex(2)-node.GetVertex(0)))*v2 + (Vector3)node.GetVertex(0);
 						} else {
+#if !ASTAR_NO_GRID_GRAPH
 							GridNode gnode = nodes[v] as GridNode;
 							
 							if (gnode != null) {
@@ -432,6 +451,7 @@ namespace Pathfinding
 								float v2 = (float)rnd.NextDouble();
 								p = (Vector3)gnode.position + new Vector3(v1 - 0.5f, 0, v2 - 0.5f) * gg.nodeSize;
 							} else
+#endif 
 							{
 								//Point nodes have no area, so we break directly instead
 								pts.Add ((Vector3)nodes[v].position);

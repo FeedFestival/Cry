@@ -35,6 +35,7 @@ and have a low memory footprint because of their smaller size to describe the sa
 
 	 */
 	public class NavMeshGraph : NavGraph, INavmesh, IUpdatableGraph, IFunnelGraph, INavmeshHolder
+	,IRaycastableGraph 
 	{
 		
 		public override void CreateNodes (int number) {
@@ -129,7 +130,11 @@ and have a low memory footprint because of their smaller size to describe the sa
 		
 		public void GenerateMatrix () {
 			
+#if !PhotonImplementation
 			SetMatrix (Matrix4x4.TRS (offset,Quaternion.Euler (rotation),new Vector3 (scale,scale,scale)));
+#else
+			SetMatrix (Matrix4x4.TRS (offset,rotation,new Vector3 (scale,scale,scale)));
+#endif
 			
 		}
 		
@@ -161,6 +166,11 @@ and have a low memory footprint because of their smaller size to describe the sa
 			
 			SetMatrix (newMatrix);
 			
+			// Make a new BBTree
+			bbTree = new BBTree(this);
+			for (int i=0;i<nodes.Length;i++) {
+				bbTree.Insert (nodes[i]);
+			}
 		}
 	
 		public static NNInfo GetNearest (NavMeshGraph graph, GraphNode[] nodes, Vector3 position, NNConstraint constraint, bool accurateNearestNode) {
@@ -172,7 +182,46 @@ and have a low memory footprint because of their smaller size to describe the sa
 			if (constraint == null) constraint = NNConstraint.None;
 			
 			
-			return GetNearestForceBoth (graph,graph, position, NNConstraint.None, accurateNearestNode);
+			Int3[] vertices = graph.vertices;
+			
+			//Query BBTree
+			
+			if (graph.bbTree == null) {
+				/** \todo Change method to require a navgraph */
+				return GetNearestForce (graph as NavGraph, graph as INavmeshHolder, position, constraint, accurateNearestNode);
+				//Debug.LogError ("No Bounding Box Tree has been assigned");
+				//return new NNInfo ();
+			}
+			
+			//Searches in radiuses of 0.05 - 0.2 - 0.45 ... 1.28 times the average of the width and depth of the bbTree
+			float w = (graph.bbTree.Size.width + graph.bbTree.Size.height)*0.5F*0.02F;
+			
+			NNInfo query = graph.bbTree.QueryCircle (position,w,constraint);//graph.bbTree.Query (position,constraint);
+			
+			if (query.node == null) {
+				
+				for (int i=1;i<=8;i++) {
+					query = graph.bbTree.QueryCircle (position, i*i*w, constraint);
+					
+					if (query.node != null || (i-1)*(i-1)*w > AstarPath.active.maxNearestNodeDistance*2) { // *2 for a margin
+						break;
+					}
+				}
+			}
+			
+			if (query.node != null) {
+				query.clampedPosition = ClosestPointOnNode (query.node as TriangleMeshNode,vertices,position);
+			}
+			
+			if (query.constrainedNode != null) {
+				if (constraint.constrainDistance && ((Vector3)query.constrainedNode.position - position).sqrMagnitude > AstarPath.active.maxNearestNodeDistanceSqr) {
+					query.constrainedNode = null;
+				} else {
+					query.constClampedPosition = ClosestPointOnNode (query.constrainedNode as TriangleMeshNode, vertices, position);
+				}
+			}
+			
+			return query;	
 		}
 		
 		public override NNInfo GetNearest (Vector3 position, NNConstraint constraint, GraphNode hint) {
@@ -253,6 +302,11 @@ and have a low memory footprint because of their smaller size to describe the sa
 						
 					} else {
 					
+#if ASTARDEBUG
+						Debug.DrawLine ((Vector3)vertices[node.v0],(Vector3)vertices[node.v1],Color.blue);
+						Debug.DrawLine ((Vector3)vertices[node.v1],(Vector3)vertices[node.v2],Color.blue);
+						Debug.DrawLine ((Vector3)vertices[node.v2],(Vector3)vertices[node.v0],Color.blue);
+#endif
 						
 						int dist = AstarMath.Abs (node.position.y-pos.y);
 						
@@ -342,6 +396,208 @@ and have a low memory footprint because of their smaller size to describe the sa
 		public void AddPortal (GraphNode n1, GraphNode n2, List<Vector3> left, List<Vector3> right) {
 		}
 		
+		/** Returns if there is an obstacle between \a origin and \a end on the graph.
+		 * This is not the same as Physics.Linecast, this function traverses the \b graph and looks for collisions instead of checking for collider intersection.
+		 * \astarpro */
+		public bool Linecast (Vector3 origin, Vector3 end) {
+			return Linecast (origin, end, GetNearest (origin, NNConstraint.None).node);
+		}
+		
+		/** Returns if there is an obstacle between \a origin and \a end on the graph.
+		 * \param [in] origin Point to linecast from
+		 * \param [in] end Point to linecast to
+		 * \param [out] hit Contains info on what was hit, see GraphHitInfo
+		 * \param [in] hint You need to pass the node closest to the start point
+		 * This is not the same as Physics.Linecast, this function traverses the \b graph and looks for collisions instead of checking for collider intersection.
+		 * \astarpro */
+		public bool Linecast (Vector3 origin, Vector3 end, GraphNode hint, out GraphHitInfo hit) {
+			return Linecast (this as INavmesh, origin,end,hint, out hit, null);
+		}
+		
+		/** Returns if there is an obstacle between \a origin and \a end on the graph.
+		 * \param [in] origin Point to linecast from
+		 * \param [in] end Point to linecast to
+		 * \param [in] hint You need to pass the node closest to the start point
+		 * This is not the same as Physics.Linecast, this function traverses the \b graph and looks for collisions instead of checking for collider intersection.
+		 * \astarpro */
+		public bool Linecast (Vector3 origin, Vector3 end, GraphNode hint) {
+			GraphHitInfo hit;
+			return Linecast (this as INavmesh, origin,end,hint, out hit, null);
+		}
+		
+		/** Returns if there is an obstacle between \a origin and \a end on the graph.
+		 * \param [in] origin Point to linecast from
+		 * \param [in] end Point to linecast to
+		 * \param [out] hit Contains info on what was hit, see GraphHitInfo
+		 * \param [in] hint You need to pass the node closest to the start point
+		 * \param trace If a list is passed, then it will be filled with all nodes the linecast traverses
+		 * This is not the same as Physics.Linecast, this function traverses the \b graph and looks for collisions instead of checking for collider intersection.
+		 * \astarpro */
+		public bool Linecast (Vector3 origin, Vector3 end, GraphNode hint, out GraphHitInfo hit, List<GraphNode> trace) {
+			return Linecast (this as INavmesh, origin,end,hint, out hit, trace);
+		}
+		
+		/** Returns if there is an obstacle between \a origin and \a end on the graph.
+		 * \param [in] graph The graph to perform the search on
+		 * \param [in] tmp_origin Point to start from
+		 * \param [in] tmp_end Point to linecast to
+		 * \param [out] hit Contains info on what was hit, see GraphHitInfo
+		 * \param [in] hint You need to pass the node closest to the start point, if null, a search for the closest node will be done
+		 * This is not the same as Physics.Linecast, this function traverses the \b graph and looks for collisions instead of checking for collider intersection.
+		 * \astarpro */
+		public static bool Linecast (INavmesh graph, Vector3 tmp_origin, Vector3 tmp_end, GraphNode hint, out GraphHitInfo hit) {
+			return Linecast (graph, tmp_origin, tmp_end, hint, out hit, null);
+		}
+			
+		/** Returns if there is an obstacle between \a origin and \a end on the graph.
+		 * \param [in] graph The graph to perform the search on
+		 * \param [in] tmp_origin Point to start from
+		 * \param [in] tmp_end Point to linecast to
+		 * \param [out] hit Contains info on what was hit, see GraphHitInfo
+		 * \param [in] hint You need to pass the node closest to the start point, if null, a search for the closest node will be done
+		 * \param trace If a list is passed, then it will be filled with all nodes the linecast traverses
+		 * This is not the same as Physics.Linecast, this function traverses the \b graph and looks for collisions instead of checking for collider intersection.
+		 * \astarpro */
+		public static bool Linecast (INavmesh graph, Vector3 tmp_origin, Vector3 tmp_end, GraphNode hint, out GraphHitInfo hit, List<GraphNode> trace) {
+			Int3 end = (Int3)tmp_end;
+			Int3 origin = (Int3)tmp_origin;
+			
+			hit = new GraphHitInfo ();
+			
+			if (float.IsNaN (tmp_origin.x + tmp_origin.y + tmp_origin.z)) throw new System.ArgumentException ("origin is NaN");
+			if (float.IsNaN (tmp_end.x + tmp_end.y + tmp_end.z)) throw new System.ArgumentException ("end is NaN");
+			
+			TriangleMeshNode node = hint as TriangleMeshNode;
+			if (node == null) {
+				node = (graph as NavGraph).GetNearest (tmp_origin, NNConstraint.None).node as TriangleMeshNode;
+				
+				if (node == null) {
+					Debug.LogError ("Could not find a valid node to start from");
+					hit.point = tmp_origin;
+					return true;
+				}
+			}
+			
+			if (origin == end) {
+				hit.node = node;
+				return false;
+			}
+			
+			origin = (Int3)node.ClosestPointOnNode ((Vector3)origin);
+			hit.origin = (Vector3)origin;
+			
+			if (!node.Walkable) {
+				hit.point = (Vector3)origin;
+				hit.tangentOrigin = (Vector3)origin;
+				return true;
+			}
+			
+			
+			List<Vector3> left = Pathfinding.Util.ListPool<Vector3>.Claim();//new List<Vector3>(1);
+			List<Vector3> right = Pathfinding.Util.ListPool<Vector3>.Claim();//new List<Vector3>(1);
+
+			int counter = 0;
+			while (true) {
+
+				counter++;
+				if ( counter > 2000 ) {
+					Debug.LogError ("Linecast was stuck in infinite loop. Breaking.");
+					Pathfinding.Util.ListPool<Vector3>.Release(left);
+					Pathfinding.Util.ListPool<Vector3>.Release(right);
+					return true;
+				}
+
+				TriangleMeshNode newNode = null;
+				
+				if (trace != null) trace.Add (node);
+				
+				if (node.ContainsPoint (end)) {
+					Pathfinding.Util.ListPool<Vector3>.Release(left);
+					Pathfinding.Util.ListPool<Vector3>.Release(right);
+					return false;
+				}
+				
+				for (int i=0;i<node.connections.Length;i++) {
+					//Nodes on other graphs should not be considered
+					//They might even be of other types (not MeshNode)
+					if (node.connections[i].GraphIndex != node.GraphIndex) continue;
+					
+					left.Clear();
+					right.Clear();
+					
+					if (!node.GetPortal (node.connections[i],left,right,false)) continue;
+					
+					Vector3 a = left[0];
+					Vector3 b = right[0];
+					
+					//i.e Right or colinear
+					if (!Polygon.LeftNotColinear (a,b,hit.origin)) {
+						if (Polygon.LeftNotColinear (a, b, tmp_end)) {
+							//Since polygons are laid out in clockwise order, the ray would intersect (if intersecting) this edge going in to the node, not going out from it
+							continue;
+						}
+					}
+					
+					float factor1, factor2;
+					
+					if (Polygon.IntersectionFactor (a,b,hit.origin,tmp_end, out factor1, out factor2)) {
+						//Intersection behind the start
+						if (factor2 < 0) continue;
+						
+						if (factor1 >= 0 && factor1 <= 1) {
+							newNode = node.connections[i] as TriangleMeshNode;
+							break;
+						}
+					}
+				}
+				
+				if (newNode == null) {
+					//Possible edge hit
+					int vs = node.GetVertexCount();
+					
+					for (int i=0;i<vs;i++) {
+						Vector3 a = (Vector3)node.GetVertex(i);
+						Vector3 b = (Vector3)node.GetVertex((i + 1) % vs);
+						
+						
+						//i.e right or colinear
+						if (!Polygon.LeftNotColinear (a,b,hit.origin)) {
+							//Since polygons are laid out in clockwise order, the ray would intersect (if intersecting) this edge going in to the node, not going out from it
+							if (Polygon.LeftNotColinear (a, b, tmp_end)) {
+								//Since polygons are laid out in clockwise order, the ray would intersect (if intersecting) this edge going in to the node, not going out from it
+								continue;
+							}
+						}
+						
+						float factor1, factor2;
+						if (Polygon.IntersectionFactor (a,b,hit.origin,tmp_end, out factor1, out factor2)) {
+							if (factor2 < 0) continue;
+							
+							if (factor1 >= 0 && factor1 <= 1) {
+								Vector3 intersectionPoint = a + (b-a)*factor1;
+								hit.point = intersectionPoint;
+								hit.node = node;
+								hit.tangent = b-a;
+								hit.tangentOrigin = a;
+								
+								Pathfinding.Util.ListPool<Vector3>.Release(left);
+								Pathfinding.Util.ListPool<Vector3>.Release(right);
+								return true;
+							}
+						}
+					}
+					
+					//Ok, this is wrong...
+					Debug.LogWarning ("Linecast failing because point not inside node, and line does not hit any edges of it");
+					
+					Pathfinding.Util.ListPool<Vector3>.Release(left);
+					Pathfinding.Util.ListPool<Vector3>.Release(right);
+					return false;
+				}
+				
+				node = newNode;
+			}
+		}
 		
 		public GraphUpdateThreading CanUpdateAsync (GraphUpdateObject o) {
 			return GraphUpdateThreading.UnityThread;
@@ -379,6 +635,12 @@ and have a low memory footprint because of their smaller size to describe the sa
 			Int3 ic = (Int3)c;
 			Int3 id = (Int3)d;
 			
+#if ASTARDEBUG
+			Debug.DrawLine (a,b,Color.white);
+			Debug.DrawLine (a,c,Color.white);
+			Debug.DrawLine (c,d,Color.white);
+			Debug.DrawLine (d,b,Color.white);
+#endif
 			
 			//for (int i=0;i<nodes.Length;i++) {
 			graph.GetNodes (delegate (GraphNode _node) {
@@ -684,6 +946,27 @@ and have a low memory footprint because of their smaller size to describe the sa
 
 			Profiler.EndSample ();
 
+#if ASTARDEBUG
+			for (int i=0;i<nodes.Length;i++) {
+				TriangleMeshNode node = nodes[i] as TriangleMeshNode;
+				
+				float a1 = Polygon.TriangleArea2 ((Vector3)vertices[node.v0],(Vector3)vertices[node.v1],(Vector3)vertices[node.v2]);
+				
+				long a2 = Polygon.TriangleArea2 (vertices[node.v0],vertices[node.v1],vertices[node.v2]);
+				if (a1 * a2 < 0) Debug.LogError (a1+ " " + a2);
+				
+				
+				if (Polygon.IsClockwise (vertices[node.v0],vertices[node.v1],vertices[node.v2])) {
+					Debug.DrawLine ((Vector3)vertices[node.v0],(Vector3)vertices[node.v1],Color.green);
+					Debug.DrawLine ((Vector3)vertices[node.v1],(Vector3)vertices[node.v2],Color.green);
+					Debug.DrawLine ((Vector3)vertices[node.v2],(Vector3)vertices[node.v0],Color.green);
+				} else {
+					Debug.DrawLine ((Vector3)vertices[node.v0],(Vector3)vertices[node.v1],Color.red);
+					Debug.DrawLine ((Vector3)vertices[node.v1],(Vector3)vertices[node.v2],Color.red);
+					Debug.DrawLine ((Vector3)vertices[node.v2],(Vector3)vertices[node.v0],Color.red);
+				}
+			}
+#endif
 			//Debug.Log ("Graph Generation - NavMesh - Time to compute graph "+((Time.realtimeSinceStartup-startTime)*1000F).ToString ("0")+"ms");
 		}
 		
@@ -691,10 +974,55 @@ and have a low memory footprint because of their smaller size to describe the sa
 		 * \astarpro
 		 * \see NavMeshGraph.bbTree */
 		public static void RebuildBBTree (NavMeshGraph graph) {
-			//BBTrees is a A* Pathfinding Project Pro only feature - The Pro version can be bought in the Unity Asset Store or on arongranberg.com
+			//Build Axis Aligned Bounding Box Tree
+			
+			NavMeshGraph meshGraph = graph as NavMeshGraph;
+
+			BBTree bbTree = meshGraph.bbTree;
+			if ( bbTree == null ) {
+				bbTree = new BBTree (graph as INavmeshHolder);
+			}
+			bbTree.Clear ();
+
+			TriangleMeshNode[] nodes = meshGraph.TriNodes;
+			
+			for (int i=nodes.Length-1;i>=0;i--) {
+				bbTree.Insert (nodes[i]);
+			}
+			
+			meshGraph.bbTree = bbTree;
 		}
 		
 		public void PostProcess () {
+#if FALSE
+			int rnd = Random.Range (0,nodes.Length);
+			
+			GraphNode nodex = nodes[rnd];
+			
+			NavGraph gr = null;
+			
+			if (AstarPath.active.astarData.GetGraphIndex(this) == 0) {
+				gr = AstarPath.active.graphs[1];
+			} else {
+				gr = AstarPath.active.graphs[0];
+			}
+			
+			rnd = Random.Range (0,gr.nodes.Length);
+			
+			List<GraphNode> connections = new List<GraphNode> ();
+			List<int> connectionCosts = new List<int> ();
+			
+			connections.AddRange (nodex.connections);
+			connectionCosts.AddRange (nodex.connectionCosts);
+			
+			GraphNode otherNode = gr.nodes[rnd];
+			
+			connections.Add (otherNode);
+			connectionCosts.Add ((nodex.position-otherNode.position).costMagnitude);
+			
+			nodex.connections = connections.ToArray ();
+			nodex.connectionCosts = connectionCosts.ToArray ();
+#endif
 		}
 		
 		public void Sort (Vector3[] a) {
@@ -795,6 +1123,7 @@ and have a low memory footprint because of their smaller size to describe the sa
 				originalVertices[i] = new Vector3(ctx.reader.ReadSingle(), ctx.reader.ReadSingle(), ctx.reader.ReadSingle());
 			}
 			
+			bbTree = new BBTree(this);
 			
 			for (int i=0;i<c1;i++) {
 				nodes[i] = new TriangleMeshNode(active);
@@ -802,6 +1131,7 @@ and have a low memory footprint because of their smaller size to describe the sa
 				node.DeserializeNode(ctx);
 				node.GraphIndex = graphIndex;
 				node.UpdatePositionFromVertices();
+				bbTree.Insert (node);
 			}
 		}
 		

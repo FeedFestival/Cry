@@ -25,8 +25,10 @@ namespace Pathfinding {
 		private int nodeIndex;
 		protected uint flags;
 		
+#if !ASTAR_NO_PENALTY
 		/** Penlty cost for walking on this node. This can be used to make it harder/slower to walk over certain areas. */
 		private uint penalty;
+#endif
 		
 		// Some fallback properties
 		
@@ -133,6 +135,7 @@ namespace Pathfinding {
 		
 		/** Penalty cost for walking on this node. This can be used to make it harder/slower to walk over certain areas. */
 		public uint Penalty {
+#if !ASTAR_NO_PENALTY
 			get {
 				return penalty;
 			}
@@ -143,6 +146,10 @@ namespace Pathfinding {
 						"Penalty value applied: "+value);
 				penalty = value;
 			}
+#else
+			get { return 0U; }
+			set {}
+#endif
 		}
 		
 		/** True if the node is traversable */
@@ -185,7 +192,11 @@ namespace Pathfinding {
 #endregion
 		
 		public void UpdateG (Path path, PathNode pathNode) {
+#if ASTAR_CONSTANT_PENALTY
+			pathNode.G = pathNode.parent.G + pathNode.cost + path.GetTraversalCost(this);
+#else
 			pathNode.G = pathNode.parent.G + pathNode.cost;
+#endif
 		}
 		
 		public virtual void UpdateRecursiveG (Path path, PathNode pathNode, PathHandler handler) {

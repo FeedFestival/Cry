@@ -146,6 +146,9 @@ namespace Pathfinding
 		const int BucketIndexMask = (1 << BucketSizeLog2)-1;
 		
 		/** Array of buckets containing PathNodes */
+#if ASTAR_CONTINOUS_PATH_DATA
+		public PathNode[] nodes = new PathNode[0];
+#else
 		public PathNode[][] nodes = new PathNode[0][];
 		private bool[] bucketNew = new bool[0];
 		private bool[] bucketCreated = new bool[0];
@@ -153,6 +156,7 @@ namespace Pathfinding
 		private Stack<PathNode[]> bucketCache = new Stack<PathNode[]> ();
 		
 		private int filledBuckets = 0;
+#endif
 		
 		/** StringBuilder that paths can use to build debug strings.
 		 * Better to use a single StringBuilder instead of each path creating its own
@@ -163,6 +167,28 @@ namespace Pathfinding
 			this.threadID = threadID;
 			this.totalThreadCount = totalThreadCount;
 
+#if ASTAR_INIT_BUCKETS
+			for (int bucketNumber=10;bucketNumber>=0;bucketNumber--) {
+				if (bucketNumber >= nodes.Length) {
+					//At least increase the size to:
+					//Current size * 1.5
+					//Current size + 2 or
+					//bucketNumber
+					
+					PathNode[][] newNodes = new PathNode[System.Math.Max (System.Math.Max (nodes.Length*3 / 2,bucketNumber+1), nodes.Length+2)][];
+					for (int i=0;i<nodes.Length;i++) newNodes[i] = nodes[i];
+					Debug.Log ("Resizing Bucket List from " + nodes.Length + " to " + newNodes.Length + " (bucketNumber="+bucketNumber+")");
+					nodes = newNodes;
+				}
+				
+				if (nodes[bucketNumber] == null) {
+					//Debug.Log ("Creating Bucket " + bucketNumber);
+					PathNode[] ns = new PathNode[BucketSize];
+					for (int i=0;i<BucketSize;i++) ns[i] = new PathNode ();
+					nodes[bucketNumber] = ns;
+				}
+			}
+#endif
 		}
 		
 		public void InitializeForPath (Path p) {
@@ -185,6 +211,16 @@ namespace Pathfinding
 			//Get the index of the node
 			int ind = node.NodeIndex;
 
+#if ASTAR_CONTINOUS_PATH_DATA
+			if (ind >= nodes.Length) {
+				PathNode[] newNodes = new PathNode[System.Math.Max (128, nodes.Length*2)];
+				for (int i=0;i<nodes.Length;i++) newNodes[i] = nodes[i];
+				for (int i=nodes.Length; i < newNodes.Length; i++) newNodes[i] = new PathNode();
+				nodes = newNodes;
+			}
+			
+			nodes[ind].node = node;
+#else
 			int bucketNumber = ind >> BucketSizeLog2;
 			int bucketIndex = ind & BucketIndexMask;
 			
@@ -230,17 +266,28 @@ namespace Pathfinding
 			
 			PathNode pn = nodes[bucketNumber][bucketIndex];
 			pn.node = node;
+#endif
 		}
 
 		public PathNode GetPathNode ( int nodeIndex ) {
+#if ASTAR_CONTINOUS_PATH_DATA
+			/** \todo Profile to see if one continous memory region should be used */
+			return nodes[nodeIndex];//nodes[nodeIndex >> BucketSizeLog2][nodeIndex & BucketIndexMask];
+#else
 			return nodes[nodeIndex >> BucketSizeLog2][nodeIndex & BucketIndexMask];	
+#endif
 		}
 
 		public PathNode GetPathNode ( GraphNode node ) {
 			//Get the index of the node
 			int ind = node.NodeIndex;
 			
+#if ASTAR_CONTINOUS_PATH_DATA
+			/** \todo Profile to see if one continous memory region should be used */
+			return nodes[ind];//nodes[ind >> BucketSizeLog2][ind & BucketIndexMask];
+#else
 			return nodes[ind >> BucketSizeLog2][ind & BucketIndexMask];	
+#endif
 		}
 		
 		/** Set all node's pathIDs to 0.
@@ -248,10 +295,16 @@ namespace Pathfinding
 		 */
 		public void ClearPathIDs () {
 			
+#if ASTAR_CONTINOUS_PATH_DATA
+			for (int i=0;i<nodes.Length;i++) {
+				nodes[i].pathID = 0;
+			}
+#else
 			for (int i=0;i<nodes.Length;i++) {
 				PathNode[] ns = nodes[i];
 				if (nodes[i] != null) for (int j=0;j<BucketSize;j++) ns[j].pathID = 0;
 			}
+#endif
 		}
 	}
 }

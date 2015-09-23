@@ -1,6 +1,6 @@
 /** \page changelog Changelog
 
-- 3.6 (2015-02-02)
+- 3.6 (2015-01-31)
 	- Upgrade notes:
 		- Cache data for faster startup is now stored in a separate file.\n
 			This reduces the huge lag some users have been experiencing since Unity changed their Undo system.\n

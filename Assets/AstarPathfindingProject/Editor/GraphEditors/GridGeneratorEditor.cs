@@ -263,7 +263,13 @@ namespace Pathfinding {
 			Separator ();
 			
 			graph.cutCorners = EditorGUILayout.Toggle (new GUIContent ("Cut Corners","Enables or disables cutting corners. See docs for image example"),graph.cutCorners);
+			if ( !graph.cutCorners && graph.useJumpPointSearch ) {
+				EditorGUILayout.HelpBox ("Jump Point Search only works if 'Cut Corners' is enabled.", MessageType.Error);
+			}
 			graph.neighbours = (NumNeighbours)EditorGUILayout.EnumPopup (new GUIContent ("Connections","Sets how many connections a node should have to it's neighbour nodes."),graph.neighbours);
+			if ( graph.neighbours != NumNeighbours.Eight && graph.useJumpPointSearch ) {
+				EditorGUILayout.HelpBox ("Jump Point Search only works for 8 neighbours.", MessageType.Error);
+			}
 
 			graph.maxClimb = EditorGUILayout.FloatField (new GUIContent ("Max Climb","How high, relative to the graph, should a climbable level be. A zero (0) indicates infinity"),graph.maxClimb);
 			if ( graph.maxClimb < 0 ) graph.maxClimb = 0;
@@ -338,14 +344,104 @@ namespace Pathfinding {
 					EditorGUI.indentLevel--;
 				}
 				
-				GUI.enabled = false;
-				ToggleGroup (new GUIContent ("Use Texture",AstarPathEditor.AstarProTooltip),false);
-				GUI.enabled = true;
+				if (textureVisible) {
+					DrawTextureData (graph.textureData, graph);
+				}
 				EditorGUI.indentLevel-=2;
+			}
+
+			graph.useJumpPointSearch = EditorGUILayout.Toggle (new GUIContent ("Use Jump Point Search", "Jump Point Search can significantly speed up pathfinding. But only works on uniformly weighted graphs"),graph.useJumpPointSearch);
+			if ( graph.useJumpPointSearch ) {
+				EditorGUILayout.HelpBox ("Jump Point Search assumes that there are no penalties applied to the graph. Tag penalties cannot be used either.", MessageType.Warning);
+
+#if !ASTAR_JPS
+				EditorGUILayout.HelpBox ("JPS needs to be enabled using a compiler directive before it can be used.\n" +
+					"Enabling this will add ASTAR_JPS to the Scriping Define Symbols field in the Unity Player Settings", MessageType.Warning);
+				if ( GUILayout.Button ("Enable Jump Point Search support") ) {
+					var vals = System.Enum.GetValues(typeof(BuildTargetGroup)) as int[];
+
+					for ( int i = 0; i < vals.Length; i++ ) {
+						string s = PlayerSettings.GetScriptingDefineSymbolsForGroup ((BuildTargetGroup)vals[i]);
+						if (s != null ) {
+							s += ";ASTAR_JPS";
+							PlayerSettings.SetScriptingDefineSymbolsForGroup ((BuildTargetGroup)vals[i], s);
+						}
+					}
+				}
+#endif
+			} else {
+#if ASTAR_JPS
+				EditorGUILayout.HelpBox ("If you are not using JPS in any scene, you can disable it to save memory", MessageType.Info);
+				if ( GUILayout.Button ("Disable Jump Point Search support") ) {
+					var vals = System.Enum.GetValues(typeof(BuildTargetGroup)) as int[];
+					
+					for ( int i = 0; i < vals.Length; i++ ) {
+						string s = PlayerSettings.GetScriptingDefineSymbolsForGroup ((BuildTargetGroup)vals[i]);
+						if (s != null ) {
+							s = s.Replace ("ASTAR_JPS;","");
+							s = s.Replace (";ASTAR_JPS","");
+							s = s.Replace ("ASTAR_JPS","");
+							PlayerSettings.SetScriptingDefineSymbolsForGroup ((BuildTargetGroup)vals[i], s);
+						}
+					}
+				}
+#endif
 			}
 
 		}
 	
+		
+		public void SaveReferenceTexture (GridGraph graph) {
+			//GridGraph graph = target as GridGraph;
+			
+			if (graph.nodes == null || graph.nodes.Length != graph.width * graph.depth) {
+				AstarPath.active.Scan ();
+			}
+			
+			if (graph.nodes.Length != graph.width * graph.depth) {
+				Debug.LogError ("Couldn't create reference image since width*depth != nodes.Length");
+				return;
+			}
+			
+			if (graph.nodes.Length == 0) {
+				Debug.LogError ("Couldn't create reference image since the graph is too small (0*0)");
+				return;
+			}
+			
+			Texture2D tex = new Texture2D (graph.width,graph.depth);
+			
+			float maxY = float.NegativeInfinity;
+			for (int i=0;i<graph.nodes.Length;i++) {
+				Vector3 p = graph.inverseMatrix.MultiplyPoint ((Vector3)graph.nodes[i].position);
+				maxY = p.y > maxY ? p.y : maxY;
+			}
+			
+			Color[] cols = new Color[graph.width*graph.depth];
+			
+			for (int z=0;z<graph.depth;z++) {
+				for (int x=0;x<graph.width;x++) {
+					GraphNode node = graph.nodes[z*graph.width+x];
+					float v = node.Walkable ? 1F : 0.0F;
+					Vector3 p = graph.inverseMatrix.MultiplyPoint ((Vector3)node.position);
+					float q = p.y / maxY;
+					cols[z*graph.width+x] = new Color (v,q,0);
+				}
+			}
+			tex.SetPixels (cols);
+			tex.Apply ();
+			
+			string path = AssetDatabase.GenerateUniqueAssetPath ("Assets/gridReference.png");
+			
+			using (System.IO.StreamWriter outstream = new System.IO.StreamWriter (path)) {
+				using (System.IO.BinaryWriter outfile = new System.IO.BinaryWriter (outstream.BaseStream)) {
+					outfile.Write (tex.EncodeToPNG ());
+				}
+			}
+			AssetDatabase.Refresh ();
+			Object obj = AssetDatabase.LoadAssetAtPath (path,typeof (Texture));
+			
+			EditorGUIUtility.PingObject (obj);
+		}
 		
 		/** Displays an object field for objects which must be in the 'Resources' folder.
 		 * If the selected object is not in the resources folder, a warning message with a Fix button will be shown
@@ -383,6 +479,84 @@ namespace Pathfinding {
 			return obj;
 		}
 		
+		
+		public static readonly string[] ChannelUseNames = new string[4] {"None","Penalty","Height","Walkability and Penalty"};
+		
+		/** Draws settings for using a texture as source for a grid.
+		 * \astarpro */
+		public void DrawTextureData (GridGraph.TextureData data, GridGraph graph) {
+			if (data == null) {
+				return;
+			}
+			
+			data.enabled = ToggleGroup ("Use Texture",data.enabled);
+				//EditorGUILayout.Toggle ("Use Texture",data.enabled);
+			//data.enabled = ToggleGroup ("Use Texture",data.enabled);
+			if (!data.enabled) {
+				return;
+			}
+			
+			bool preGUI = GUI.enabled;
+			GUI.enabled = data.enabled && GUI.enabled;
+			
+			EditorGUI.indentLevel++;
+			//data.source = EditorGUILayout.ObjectField ("Source",data.source,typeof(Texture2D),false) as Texture2D;
+			data.source = ObjectField ("Source",data.source,typeof(Texture2D),false) as Texture2D;
+			
+			if (data.source != null) {
+				string path = AssetDatabase.GetAssetPath (data.source);
+				
+				if (path != "") {
+					TextureImporter importer = AssetImporter.GetAtPath (path) as TextureImporter;
+					if (!importer.isReadable) {
+						if (FixLabel ("Texture is not readable")) {
+							importer.isReadable = true;
+							EditorUtility.SetDirty (importer);
+							AssetDatabase.ImportAsset (path);
+						}
+					}
+				}
+			}
+			
+			for (int i=0;i<3;i++) {
+				string channelName = i == 0 ? "R" : (i == 1 ? "G" : "B");
+				data.channels[i] = (GridGraph.TextureData.ChannelUse)EditorGUILayout.Popup (channelName, (int)data.channels[i], ChannelUseNames);
+				
+				if (data.channels[i] != GridGraph.TextureData.ChannelUse.None) {
+					EditorGUI.indentLevel++;
+					data.factors[i] = EditorGUILayout.FloatField ("Factor",data.factors[i]);
+					
+					string help = "";
+					switch (data.channels[i]) {
+					case GridGraph.TextureData.ChannelUse.Penalty:
+						help = "Nodes are applied penalty according to channel '"+channelName+"', multiplied with factor";
+						break;
+					case GridGraph.TextureData.ChannelUse.Position:
+						help = "Nodes Y position is changed according to channel '"+channelName+"', multiplied with factor";
+						
+						if (graph.collision.heightCheck) {
+							HelpBox ("Getting position both from raycast and from texture. You should disable one of them");
+						}
+						break;
+					case GridGraph.TextureData.ChannelUse.WalkablePenalty:
+						help = "If channel '"+channelName+"' is 0, the node is made unwalkable. Otherwise the node is applied penalty multiplied with factor";
+						break;
+					}
+					
+					HelpBox (help);
+					
+					EditorGUI.indentLevel--;
+				}
+				
+			}
+			
+			if (GUILayout.Button ("Generate Reference")) {
+				SaveReferenceTexture (graph);
+			}
+			
+			GUI.enabled = preGUI;
+			EditorGUI.indentLevel--;
+		}
 		
 		public void SnapSizeToNodes (int newWidth, int newDepth, GridGraph graph) {
 			//Vector2 preSize = graph.unclampedSize;
@@ -565,6 +739,35 @@ namespace Pathfinding {
 			
 			
 			
+	#if ASTARDEBUG
+			//Draws some info over the node closest to the mouse
+			Ray ray = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
+			
+			Vector3 p = ray.GetPoint (100);
+			
+			
+			if (Event.current.shift) {
+				
+				GraphNode close = graph.GetNearest (p).node;
+				
+				if (close != null) {
+					node1 = close;
+				}
+					
+				if (node1 == null) {
+					return;
+				}
+				
+				Handles.SphereCap (0,(Vector3)node1.position,Quaternion.identity,graph.nodeSize*0.5F);
+				
+				
+				//Node node = node1;
+				
+				GUI.color = Color.white;
+				//Handles.Label((Vector3)node.position + Vector3.up*2,"G : "+node.+"\nH : "+node.h+"\nF : "+node.f+"\nPosition : "+node.position.ToString (),EditorStyles.whiteBoldLabel);
+			}
+			
+	#endif
 			
 		}
 		
