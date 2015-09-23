@@ -43,20 +43,26 @@ public class UnitController : MonoBehaviour
                 UnitStats.UnitBasicAnimation.GoIdle();
             }
         }
+        else
+        {
+            UnitStats.UnitPrimaryState = UnitPrimaryState.Idle;
+            UnitStats.UnitBasicAnimation.GoIdle();
+
+            UnitStats.thisUnitTarget.thisTransform.position = UnitStats.thisTransform.position;
+        }
     }
 
     public void ResumeMoving()
     {
-        UnitStats.UnitPrimaryState = UnitPrimaryState.Walking;
         UnitStats.AIPath.resumeMoving();
+        UnitStats.UnitPrimaryState = UnitPrimaryState.Walking;
         UnitStats.UnitBasicAnimation.GoWalk();
     }
 
     public void GoToTarget()
     {
-        UnitStats.UnitPrimaryState = UnitPrimaryState.Walking;
+        ResumeMoving();
         UnitStats.AIPath.SearchPath();
-        UnitStats.UnitBasicAnimation.GoWalk();
     }
 
     public void SetPathToTarget(Vector3 targetVector)

@@ -9,21 +9,21 @@ public class UnitActionAnimation : MonoBehaviour
     [HideInInspector]
     private UnitStats UnitStats;
 
-    [HideInInspector]
+    
     public bool ControllerFollowRoot;
 
     [HideInInspector]
-    public bool IsLastAction;
+    public LadderPath CurentAction;
 
     public void Initialize(UnitStats unitStats)
     {
         UnitStats = unitStats;
     }
 
-    public void PlayAnimation(LadderAnimations animation, bool isLastAction = false)
+    public void PlayAnimation(LadderPath action)
     {
-        IsLastAction = isLastAction;
-        switch (animation)
+        CurentAction = action;
+        switch (action.LadderAnimation)
         {
             case LadderAnimations.GetOn_From_Bottom:
 
@@ -77,8 +77,8 @@ public class UnitActionAnimation : MonoBehaviour
     {
         yield return new WaitForSeconds(animTime);
 
-        if (IsLastAction)
-            PlayAnimation(LadderAnimations.Idle);
+        if (CurentAction.IsLastAction)
+            PlayAnimation(new LadderPath { LadderAnimation = LadderAnimations.Idle });    // OVERKILL
     }
 
     void Update()

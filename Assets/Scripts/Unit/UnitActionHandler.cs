@@ -19,6 +19,7 @@ public class UnitActionHandler : MonoBehaviour
     public void Initialize(UnitStats unitStats)
     {
         UnitStats = unitStats;
+        curentActionType = ActionType.None;
     }
 
     #endregion
@@ -127,22 +128,26 @@ public class UnitActionHandler : MonoBehaviour
 
     public void StartAction()
     {
+        UnitStats.UnitPrimaryState = UnitPrimaryState.Busy;
+        UnitStats.UnitActionInMind = UnitActionInMind.None;
+
         switch (curentActionType)
         {
             case ActionType.Ladder:
 
-                UnitStats.UnitPrimaryState = UnitPrimaryState.Busy;
                 UnitStats.UnitActionState = UnitActionState.ClimbingLadder;
-                UnitStats.UnitActionInMind = UnitActionInMind.None;
+
+                //  This also sets the Unit to follow the pivot of the ladder to be guided throut the animation
+                UnitStats.Root = UnitStats.LadderStats.Root;
 
                 UnitStats.UnitLadderAction.PlayActionAnimation();
                 break;
 
             case ActionType.ChairClimb:
 
-                UnitStats.UnitPrimaryState = UnitPrimaryState.Busy;
                 UnitStats.UnitActionState = UnitActionState.ClimbingChair;
-                UnitStats.UnitActionInMind = UnitActionInMind.None;
+
+                UnitStats.Root = UnitStats.ChairStats.Root;
 
                 UnitStats.UnitChairAction.PlayActionAnimation();
                 break;
@@ -152,10 +157,34 @@ public class UnitActionHandler : MonoBehaviour
         }
     }
 
-    //  Cancel the curent action thorugh visual input. (ex: Climb down the ladder.)
     public void ExitCurentAction()
     {
+        UnitStats.Root = null;
 
+        UnitStats.UnitPrimaryState = UnitPrimaryState.Idle;
+        UnitStats.UnitActionState = UnitActionState.None;
+        UnitStats.UnitActionInMind = UnitActionInMind.None;
+
+        switch (curentActionType)
+        {
+            case ActionType.Ladder:
+
+                UnitStats.LadderStats = null;
+                UnitStats.UnitLadderAction.LadderPath = null;
+                break;
+
+            case ActionType.ChairClimb:
+
+                UnitStats.ChairStats = null;
+
+                break;
+
+            default:
+                break;
+        }
+
+        curentActionType = ActionType.None;
+        UnitStats.UnitController.StopMoving();
     }
 
     // Call when you cancel an action.

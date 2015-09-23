@@ -145,22 +145,23 @@ public class UnitLadderAction : MonoBehaviour
 
     public void PlayActionAnimation()
     {
-        foreach (LadderPath ladderAction in LadderPath)
+        if (LadderPath != null)
         {
-            if (ladderAction.Played == false)
+            foreach (LadderPath ladderAction in LadderPath)
             {
-                ladderAction.Played = true;
-                //  (down)  This also sets the Unit to follow the pivot of the ladder to be guided throut the animation
-                UnitStats.Root = UnitStats.LadderStats.Root;
+                if (ladderAction.Played == false)
+                {
+                    ladderAction.Played = true;
 
-                if (debuging)
-                    Debug.Log(" - action : " + ladderAction.LadderAnimation + " ; last action : " +  ladderAction.IsLastAction);
+                    if (debuging)
+                        Debug.Log(" - action : " + ladderAction.LadderAnimation + " ; last action : " + ladderAction.IsLastAction);
 
-                UnitStats.UnitActionAnimation.PlayAnimation(ladderAction.LadderAnimation, ladderAction.IsLastAction);
-                UnitStats.LadderStats.LadderAnimation.PlayAnimation(ladderAction.LadderAnimation);
+                    UnitStats.UnitActionAnimation.PlayAnimation(ladderAction);
+                    UnitStats.LadderStats.LadderAnimation.PlayAnimation(ladderAction.LadderAnimation);
 
-                return;
-            }    
+                    return;
+                }
+            }
         }
     }
 }

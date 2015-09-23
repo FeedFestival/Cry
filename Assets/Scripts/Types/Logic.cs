@@ -48,7 +48,7 @@ namespace Assets.Scripts.Types
 
     public enum ActionType
     {
-        Ladder = 0, ChairClimb = 1, ChairGrab = 2
+        None = 0, Ladder = 1, ChairClimb = 2, ChairGrab = 3
     }
 
     public enum ChairStartPoint

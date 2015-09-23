@@ -8,6 +8,8 @@ public class LadderAnimation : MonoBehaviour {
 
     private LadderStats LadderStats;
 
+    private bool ExitAction;
+
     public void Initialize(LadderStats ladderStats)
     {
         LadderStats = ladderStats;
@@ -16,7 +18,7 @@ public class LadderAnimation : MonoBehaviour {
     // After the user click somewhere this is gonna get called to play the pivot animation.
     public void PlayAnimation(LadderAnimations animation)
     {
-        //LadderStats.lastAnimation = animationIndex;
+        ExitAction = false;
         switch (animation)
         {
             case LadderAnimations.GetOn_From_Bottom:
@@ -31,6 +33,7 @@ public class LadderAnimation : MonoBehaviour {
 
             case LadderAnimations.Climb_Exit_To_Level2_Top:
 
+                ExitAction = true;
                 Play(LadderStats.Climb_Exit_To_Level2_Top);
                 break;
 
@@ -47,6 +50,7 @@ public class LadderAnimation : MonoBehaviour {
 
             case LadderAnimations.ClimbDown_Exit_To_Bottom:
 
+                ExitAction = true;
                 Play(LadderStats.ClimbDown_Exit_To_Bottom);
                 break;
 
@@ -93,15 +97,21 @@ public class LadderAnimation : MonoBehaviour {
         LadderStats.LadderAnimator.CrossFade(animationString);
 
         float animationLenght = LadderStats.LadderAnimator[animationString].length;
+
         if (debug)
             Debug.Log(" an - " + animationString + " , length = " + animationLenght);
+
         StartCoroutine(WaitForEndOfAnimation(animationLenght));
     }
     IEnumerator WaitForEndOfAnimation(float animTime, bool endEvent = true)
     {
         yield return new WaitForSeconds(animTime);
 
-        // Play Next Animation in the List
-        LadderStats.SceneManager.PlayerStats.UnitLadderAction.PlayActionAnimation();
+
+        if (ExitAction)
+            LadderStats.SceneManager.PlayerStats.UnitActionHandler.ExitCurentAction();
+        else 
+            // Play Next Animation in the List
+            LadderStats.SceneManager.PlayerStats.UnitLadderAction.PlayActionAnimation();
     }
 }

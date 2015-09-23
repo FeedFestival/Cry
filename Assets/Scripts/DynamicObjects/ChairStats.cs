@@ -29,6 +29,8 @@ public class ChairStats : MonoBehaviour
     [HideInInspector]
     public Transform StartPoint_Back;
 
+    public Transform Root;
+
     //[HideInInspector]
     public Animation ChairStaticAnimator;
 

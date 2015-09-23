@@ -66,9 +66,14 @@ public class UnitStats : MonoBehaviour
             if (UnitActionAnimation)
             {
                 if (_root != null)
+                {
                     UnitActionAnimation.ControllerFollowRoot = true;
+                }
                 else
+                {
+                    //_root = OriginalRoot;
                     UnitActionAnimation.ControllerFollowRoot = false;
+                }
             }
         }
     }
@@ -129,7 +134,8 @@ public class UnitStats : MonoBehaviour
             switch (child.gameObject.name)
             {
                 case "Root":
-                    Root = child;
+                    //Root = child;
+                    //OriginalRoot = Root;
                     break;
                 case "FeetCollider":    // HARD_CODED
                     child.transform.tag = this.Tag;
@@ -157,6 +163,8 @@ public class UnitStats : MonoBehaviour
         UnitBasicAnimation = this.GetComponent<UnitBasicAnimation>();
         if (UnitBasicAnimation)
             UnitBasicAnimation.Initialize(this);
+
+        UnitController.StopMoving();
 
         UnitActionHandler = this.GetComponent<UnitActionHandler>();
         if (UnitActionHandler)

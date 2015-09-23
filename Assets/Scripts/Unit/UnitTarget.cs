@@ -8,13 +8,18 @@ public class UnitTarget : MonoBehaviour
 
     private UnitStats UnitStats;
 
+    [HideInInspector]
+    public Transform thisTransform;
+
     // Use this for initialization
     public void Initialize(string Name, UnitStats unitStats)
     {
         this.UnitStats = unitStats;
 
-        this.transform.gameObject.name = UnitStats.gameObject.name + "Target";
-        this.transform.gameObject.layer = 11;
+        thisTransform = this.transform;
+
+        thisTransform.gameObject.name = UnitStats.gameObject.name + "Target";
+        thisTransform.gameObject.layer = 11;
     }
 
     void OnTriggerEnter(Collider foreignObjectHit)
