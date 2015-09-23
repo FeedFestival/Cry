@@ -28,6 +28,7 @@ public class UnitStats : MonoBehaviour
 
     //  Unit States - End
     //  --------------------------------------------------------------------------------
+
     [HideInInspector]
     public AIPath AIPath;
     [HideInInspector]
@@ -42,13 +43,13 @@ public class UnitStats : MonoBehaviour
     [HideInInspector]
     public BaseAI UnitBaseAI;
 
-    [HideInInspector]
+    
     [Header("Props")]
     //  --------------------------------------------------------------------------------
+    [HideInInspector]
     public string Tag;
-    //[HideInInspector] todo
-    public GameObject targetPrefab;
-    //[HideInInspector] todo
+
+    [HideInInspector]
     public UnitTarget thisUnitTarget;
 
     private Transform _root;
@@ -83,8 +84,6 @@ public class UnitStats : MonoBehaviour
 
     [Header("Actions Connections")]
     //  --------------------------------------------------------------------------------
-
-    public bool IsDoingAction = false;
 
     [HideInInspector]
     public UnitLadderAction UnitLadderAction;
@@ -203,6 +202,7 @@ public class UnitStats : MonoBehaviour
 
     private Transform CreateTarget()
     {
+        var targetPrefab = Resources.Load("Prefabs/UnitTarget") as GameObject;
         var createdTarget = (GameObject)Instantiate(targetPrefab, thisTransform.position, Quaternion.identity);
         thisUnitTarget = createdTarget.GetComponent<UnitTarget>();
 

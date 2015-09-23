@@ -131,10 +131,18 @@ public class UnitActionHandler : MonoBehaviour
         {
             case ActionType.Ladder:
 
+                UnitStats.UnitPrimaryState = UnitPrimaryState.Busy;
+                UnitStats.UnitActionState = UnitActionState.ClimbingLadder;
+                UnitStats.UnitActionInMind = UnitActionInMind.None;
+
                 UnitStats.UnitLadderAction.PlayActionAnimation();
                 break;
 
             case ActionType.ChairClimb:
+
+                UnitStats.UnitPrimaryState = UnitPrimaryState.Busy;
+                UnitStats.UnitActionState = UnitActionState.ClimbingChair;
+                UnitStats.UnitActionInMind = UnitActionInMind.None;
 
                 UnitStats.UnitChairAction.PlayActionAnimation();
                 break;

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Types;
 
 public class CameraView : MonoBehaviour
 {
@@ -68,7 +69,7 @@ public class CameraView : MonoBehaviour
 
     private bool CheckYDistance()
     {
-        if (CameraControl.SceneManager.PlayerStats.UnitController.IsWalking)
+        if (CameraControl.SceneManager.PlayerStats.UnitPrimaryState != UnitPrimaryState.Idle)
         {
             var distance = Mathf.RoundToInt(CameraControl.SceneManager.PlayerStats.thisTransform.position.y + CameraControl.YDistanceFromPlayer);
             var cameraCurrentPosition = Mathf.RoundToInt(CameraControl.thisTransform.position.y);

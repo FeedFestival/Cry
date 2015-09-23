@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Types;
 
 public class UnitController : MonoBehaviour
 {
@@ -7,9 +8,7 @@ public class UnitController : MonoBehaviour
     /*
      This script recieves info about where the unit should go, if it should stop or resume its movement.
      */
-    UnitStats UnitStats;
-
-    public bool IsWalking { get; set; }
+    private UnitStats UnitStats;
 
     public void Initialize(UnitStats unitStats)
     {
@@ -19,28 +18,43 @@ public class UnitController : MonoBehaviour
     public void StopMoving(bool targetReached = true)
     {
         if (debuging)
-            Debug.Log("Reaching (AnActionIsSet = " + UnitStats.UnitBasicAnimation.GetIsDoingAction() + ")");
+            Debug.Log("Reaching (Unit action in mind = " + UnitStats.UnitActionInMind + ")");
 
-        IsWalking = false;
         UnitStats.AIPath.stopMoving();
 
-        //  If we finish the journey and an action is set. That mean we must fire the action
-        if (targetReached && UnitStats.UnitBasicAnimation.GetIsDoingAction())
-            UnitStats.UnitActionHandler.StartAction();
-        else
-            UnitStats.UnitBasicAnimation.GoIdle();
+        if (targetReached)
+        {
+            //  If we finish the journey
+            //      - And an action is set in mind
+            //      - And the Unit is not busy with another action.
+            //  --> That means we must fire the Action in mind and exit.
+            if (UnitStats.UnitActionInMind != UnitActionInMind.None && UnitStats.UnitPrimaryState != UnitPrimaryState.Busy)
+            {
+                UnitStats.UnitActionHandler.StartAction();
+
+                return;
+            }
+
+            //  If we finish the journey
+            //      - And for some reason the unit is Busy - dont go into Idle.
+            if (UnitStats.UnitPrimaryState != UnitPrimaryState.Busy)
+            {
+                UnitStats.UnitPrimaryState = UnitPrimaryState.Idle;
+                UnitStats.UnitBasicAnimation.GoIdle();
+            }
+        }
     }
 
     public void ResumeMoving()
     {
-        IsWalking = true;
+        UnitStats.UnitPrimaryState = UnitPrimaryState.Walking;
         UnitStats.AIPath.resumeMoving();
         UnitStats.UnitBasicAnimation.GoWalk();
     }
 
     public void GoToTarget()
     {
-        IsWalking = true;
+        UnitStats.UnitPrimaryState = UnitPrimaryState.Walking;
         UnitStats.AIPath.SearchPath();
         UnitStats.UnitBasicAnimation.GoWalk();
     }

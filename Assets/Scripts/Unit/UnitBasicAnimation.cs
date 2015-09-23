@@ -1,14 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Types;
 
 public class UnitBasicAnimation : MonoBehaviour
 {
-    UnitStats UnitStats;
-
-    private bool goIdle;
-    private bool goWalk;
-
-    private bool isDoingAction;
+    private UnitStats UnitStats;
 
     #region BasicAnimations
     private string Walk;
@@ -25,37 +21,14 @@ public class UnitBasicAnimation : MonoBehaviour
 
         Walk = "Stealth_Walk";
         UnitStats.UnitAnimator[Walk].wrapMode = WrapMode.Loop;
-
-        GoIdle();
     }
 
     public void GoWalk()
     {
-        if (!isDoingAction)
-        {
-            goWalk = true;
-            goIdle = false;
-
-            UnitStats.UnitAnimator.CrossFade(Walk);
-        }
+        UnitStats.UnitAnimator.CrossFade(Walk);
     }
     public void GoIdle()
     {
-        if (!isDoingAction && goWalk)
-        {
-            goIdle = true;
-            goWalk = false;
-
-            UnitStats.UnitAnimator.CrossFade(Idle);
-        }
-    }
-
-    public void SetIsDoingAction(bool value)
-    {
-        isDoingAction = value;
-    }
-    public bool GetIsDoingAction()
-    {
-        return isDoingAction;
+        UnitStats.UnitAnimator.CrossFade(Idle);
     }
 }

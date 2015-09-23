@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Types;
 
 public class UnitAnimation : MonoBehaviour
 {
@@ -192,8 +193,8 @@ public class UnitAnimation : MonoBehaviour
             {
                 refreshAtack();
 
-                isIdle = true;
-                isWalking = false;
+                UnitStats.UnitPrimaryState = UnitPrimaryState.Idle;
+
                 curentAnimation = Idle;
 
                 UnitStats.UnitAnimator.CrossFade(Idle);
@@ -203,8 +204,8 @@ public class UnitAnimation : MonoBehaviour
             {
                 refreshAtack();
 
-                isIdle = false;
-                isWalking = true;
+                UnitStats.UnitPrimaryState = UnitPrimaryState.Walking;
+
                 curentAnimation = Walk;
                 UnitStats.UnitAnimator.CrossFade(Walk);
             }

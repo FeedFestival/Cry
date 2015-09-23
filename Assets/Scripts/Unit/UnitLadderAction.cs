@@ -24,19 +24,19 @@ public class UnitLadderAction : MonoBehaviour
 
     public void SetPathToStartPoint(LadderStartPoint ladderStartPoint)
     {
+        this.UnitStats.UnitActionInMind = UnitActionInMind.ClimbingLadder;
+
         LadderStartPoint = ladderStartPoint;
         switch (ladderStartPoint)
         {
             case LadderStartPoint.Bottom:
 
                 this.UnitStats.UnitController.SetPathToTarget(UnitStats.LadderStats.StartPoint_Bottom.position);
-                this.UnitStats.UnitBasicAnimation.SetIsDoingAction(true);
                 break;
 
             case LadderStartPoint.Level2_Top:
 
                 this.UnitStats.UnitController.SetPathToTarget(UnitStats.LadderStats.StartPoint_Level2_Top.position);
-                this.UnitStats.UnitBasicAnimation.SetIsDoingAction(true);
                 break;
 
             default: break;
