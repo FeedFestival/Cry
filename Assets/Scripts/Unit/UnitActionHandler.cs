@@ -11,14 +11,14 @@ public class UnitActionHandler : MonoBehaviour
 
     #region Variables and Start/Awake
 
-    private UnitStats UnitStats;
+    private Unit Unit;
 
     public ActionType curentActionType;
     
     // Use this for initialization
-    public void Initialize(UnitStats unitStats)
+    public void Initialize(Unit unit)
     {
-        UnitStats = unitStats;
+        Unit = unit;
         curentActionType = ActionType.None;
     }
 
@@ -31,8 +31,8 @@ public class UnitActionHandler : MonoBehaviour
             case ActionType.ChairClimb:
 
                 curentActionType = actionType;
-                if (!UnitStats.ChairStats)
-                    UnitStats.ChairStats = worldObject.GetComponent<ChairStats>();
+                if (!Unit.ChairStats)
+                    Unit.ChairStats = worldObject.GetComponent<ChairStats>();
 
                 CalculateStartPointOfAction();
 
@@ -42,20 +42,27 @@ public class UnitActionHandler : MonoBehaviour
         }
     }
 
-    public void SetAction(GameObject worldObject, ActionType actionType, LadderTriggerInput ladderTriggerInput,bool cancelFutureActions = false, bool clickedOutside = false)
+    public void SetAction(GameObject worldObject, ActionType actionType, LadderTriggerInput ladderTriggerInput)
     {
         switch (actionType)
         {
             case ActionType.Ladder:
 
-                curentActionType = actionType;
+                if (Unit.UnitActionState == UnitActionState.None)
+                {
+                    curentActionType = actionType;
 
-                if (!UnitStats.LadderStats)
-                    UnitStats.LadderStats = worldObject.GetComponent<LadderStats>();
+                    if (!Unit.LadderStats)
+                        Unit.LadderStats = worldObject.GetComponent<LadderStats>();
 
-                CalculateStartPointOfAction();
+                    CalculateStartPointOfAction();
 
-                UnitStats.UnitLadderAction.CalculateLadderPath(ladderTriggerInput);
+                    Unit.UnitLadderAction.CalculateLadderPath(ladderTriggerInput);
+                }
+                else if (Unit.UnitActionState == UnitActionState.ClimbingLadder)
+                {
+                    Unit.UnitLadderAction.CalculateLadderPath(ladderTriggerInput, true);
+                }
 
                 break;
 
@@ -67,32 +74,32 @@ public class UnitActionHandler : MonoBehaviour
     // We calculate wich part of the 'real' gameObject is closer to the player, and set a path to that object.
     public void CalculateStartPointOfAction()
     {
-        var playerPos = UnitStats.thisTransform.position;
+        var playerPos = Unit.UnitProperties.thisTransform.position;
 
         switch (curentActionType)
         {
             case ActionType.Ladder:
 
                 float[] distancesLadder = new float[2];
-                distancesLadder[(int)LadderStartPoint.Bottom] = Vector3.Distance(playerPos, UnitStats.LadderStats.StartPoint_Bottom.position);
-                distancesLadder[(int)LadderStartPoint.Level2_Top] = Vector3.Distance(playerPos, UnitStats.LadderStats.StartPoint_Level2_Top.position);
+                distancesLadder[(int)LadderStartPoint.Bottom] = Vector3.Distance(playerPos, Unit.LadderStats.StartPoint_Bottom.position);
+                distancesLadder[(int)LadderStartPoint.Level2_Top] = Vector3.Distance(playerPos, Unit.LadderStats.StartPoint_Level2_Top.position);
 
                 var smallestLadderDistance = Logic.GetSmallestDistance(distancesLadder);
-                UnitStats.UnitLadderAction.SetPathToStartPoint((LadderStartPoint)smallestLadderDistance);
+                Unit.UnitLadderAction.SetPathToStartPoint((LadderStartPoint)smallestLadderDistance);
 
                 break;
 
             case ActionType.ChairClimb:
 
                 float[] distancesChair = new float[3];
-                distancesChair[(int)ChairStartPoint.Front] = Vector3.Distance(playerPos, UnitStats.ChairStats.StartPoint_Front.position);
-                distancesChair[(int)ChairStartPoint.Left] = Vector3.Distance(playerPos, UnitStats.ChairStats.StartPoint_Left.position);
-                distancesChair[(int)ChairStartPoint.Right] = Vector3.Distance(playerPos, UnitStats.ChairStats.StartPoint_Right.position);
+                distancesChair[(int)ChairStartPoint.Front] = Vector3.Distance(playerPos, Unit.ChairStats.StartPoint_Front.position);
+                distancesChair[(int)ChairStartPoint.Left] = Vector3.Distance(playerPos, Unit.ChairStats.StartPoint_Left.position);
+                distancesChair[(int)ChairStartPoint.Right] = Vector3.Distance(playerPos, Unit.ChairStats.StartPoint_Right.position);
 
-                //distances[(int)ChairStartPoint.Back] = Vector3.Distance(playerPos, UnitStats.ChairStats.StartPoint_Back.position);
+                //distances[(int)ChairStartPoint.Back] = Vector3.Distance(playerPos, Unit.ChairStats.StartPoint_Back.position);
 
                 var smallestChairDistance = Logic.GetSmallestDistance(distancesChair);
-                UnitStats.UnitChairAction.SetPathToStartPoint((ChairStartPoint)smallestChairDistance);
+                Unit.UnitChairAction.SetPathToStartPoint((ChairStartPoint)smallestChairDistance);
 
                 break;
 
@@ -103,14 +110,14 @@ public class UnitActionHandler : MonoBehaviour
 
     public int CalculateEndPointOfAction()
     {
-        var targetPos = UnitStats.thisUnitTarget.transform.position;
+        var targetPos = Unit.UnitProperties.thisUnitTarget.transform.position;
 
         switch (curentActionType)
         {
             case ActionType.Ladder:
 
-                //var distanceToStartPointGround = Vector3.Distance(targetPos, UnitStats.LadderStats.StartPoint_Ground.position);
-                //var distanceToStartPoint4m = Vector3.Distance(targetPos, UnitStats.LadderStats.StartPoint_4m.position);
+                //var distanceToStartPointGround = Vector3.Distance(targetPos, Unit.LadderStats.StartPoint_Ground.position);
+                //var distanceToStartPoint4m = Vector3.Distance(targetPos, Unit.LadderStats.StartPoint_4m.position);
 
                 //if (distanceToStartPointGround < distanceToStartPoint4m)
                 //{
@@ -128,28 +135,28 @@ public class UnitActionHandler : MonoBehaviour
 
     public void StartAction()
     {
-        UnitStats.UnitPrimaryState = UnitPrimaryState.Busy;
-        UnitStats.UnitActionInMind = UnitActionInMind.None;
+        Unit.UnitPrimaryState = UnitPrimaryState.Busy;
+        Unit.UnitActionInMind = UnitActionInMind.None;
 
         switch (curentActionType)
         {
             case ActionType.Ladder:
 
-                UnitStats.UnitActionState = UnitActionState.ClimbingLadder;
+                Unit.UnitActionState = UnitActionState.ClimbingLadder;
 
                 //  This also sets the Unit to follow the pivot of the ladder to be guided throut the animation
-                UnitStats.Root = UnitStats.LadderStats.Root;
+                Unit.UnitProperties.Root = Unit.LadderStats.Root;
 
-                UnitStats.UnitLadderAction.PlayActionAnimation();
+                Unit.UnitLadderAction.PlayActionAnimation();
                 break;
 
             case ActionType.ChairClimb:
 
-                UnitStats.UnitActionState = UnitActionState.ClimbingChair;
+                Unit.UnitActionState = UnitActionState.ClimbingChair;
 
-                UnitStats.Root = UnitStats.ChairStats.Root;
+                Unit.UnitProperties.Root = Unit.ChairStats.Root;
 
-                UnitStats.UnitChairAction.PlayActionAnimation();
+                Unit.UnitChairAction.PlayActionAnimation();
                 break;
 
             default:
@@ -159,23 +166,23 @@ public class UnitActionHandler : MonoBehaviour
 
     public void ExitCurentAction()
     {
-        UnitStats.Root = null;
+        Unit.UnitProperties.Root = null;
 
-        UnitStats.UnitPrimaryState = UnitPrimaryState.Idle;
-        UnitStats.UnitActionState = UnitActionState.None;
-        UnitStats.UnitActionInMind = UnitActionInMind.None;
+        Unit.UnitPrimaryState = UnitPrimaryState.Idle;
+        Unit.UnitActionState = UnitActionState.None;
+        Unit.UnitActionInMind = UnitActionInMind.None;
 
         switch (curentActionType)
         {
             case ActionType.Ladder:
 
-                UnitStats.LadderStats = null;
-                UnitStats.UnitLadderAction.LadderPath = null;
+                Unit.LadderStats = null;
+                Unit.UnitLadderAction.LadderPath = null;
                 break;
 
             case ActionType.ChairClimb:
 
-                UnitStats.ChairStats = null;
+                Unit.ChairStats = null;
 
                 break;
 
@@ -184,28 +191,6 @@ public class UnitActionHandler : MonoBehaviour
         }
 
         curentActionType = ActionType.None;
-        UnitStats.UnitController.StopMoving();
-    }
-
-    // Call when you cancel an action.
-    public void ResetActions()
-    {
-
-    }
-
-    // The calls and getters to the individual actions.
-    private void setLastAction(bool value)
-    {
-
-    }
-
-    public bool getIsPlayingAction()
-    {
-        return false;
-    }
-
-    public void setIsPlayingAction(bool value)
-    {
-        
+        Unit.UnitController.StopMoving();
     }
 }

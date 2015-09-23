@@ -77,7 +77,7 @@ public class CameraControl : MonoBehaviour
         //  Transforms initialiations
         floorTag = "Map";
 
-        Target = SceneManager.Player.GetComponent<UnitStats>().thisUnitTarget.transform;
+        Target = SceneManager.PlayerStats.UnitProperties.thisUnitTarget.transform;
 
         thisTransform = this.transform;
 

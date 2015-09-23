@@ -6,27 +6,27 @@ public class UnitTarget : MonoBehaviour
 {
     public bool debug;
 
-    private UnitStats UnitStats;
+    private Unit Unit;
 
     [HideInInspector]
     public Transform thisTransform;
 
     // Use this for initialization
-    public void Initialize(string Name, UnitStats unitStats)
+    public void Initialize(string Name, Unit unit)
     {
-        this.UnitStats = unitStats;
+        this.Unit = unit;
 
         thisTransform = this.transform;
 
-        thisTransform.gameObject.name = UnitStats.gameObject.name + "Target";
+        thisTransform.gameObject.name = Unit.gameObject.name + "Target";
         thisTransform.gameObject.layer = 11;
     }
 
     void OnTriggerEnter(Collider foreignObjectHit)
     {
-        if (this.UnitStats)
+        if (this.Unit)
         {
-            if (this.UnitStats.UnitPrimaryState == UnitPrimaryState.Busy)
+            if (this.Unit.UnitPrimaryState == UnitPrimaryState.Busy)
             {
                 if (debug)
                     Debug.Log("Unit is busy with an action and doesnt care about its path target (sad face)");
@@ -34,13 +34,14 @@ public class UnitTarget : MonoBehaviour
             else
             {
                 if (debug)
-                    Debug.Log(foreignObjectHit.transform.gameObject.tag + " = " + this.UnitStats.Tag + " ; "
-                            + foreignObjectHit.transform.gameObject.name + " = " + this.UnitStats.FeetCollider.name);
+                    Debug.Log(foreignObjectHit.transform.gameObject.tag + " = " + this.Unit.UnitProperties.Tag + " ; "
+                            + foreignObjectHit.transform.gameObject.name + " = " + this.Unit.UnitProperties.FeetCollider.name);
 
                 //  When the feet reach the target we stop the unit.
-                if (foreignObjectHit.transform.gameObject.tag == this.UnitStats.Tag && foreignObjectHit.transform.gameObject.name == this.UnitStats.FeetCollider.name)
+                if (foreignObjectHit.transform.gameObject.tag == this.Unit.UnitProperties.Tag 
+                    && foreignObjectHit.transform.gameObject.name == this.Unit.UnitProperties.FeetCollider.name)
                 {
-                    this.UnitStats.UnitController.StopMoving();
+                    this.Unit.UnitController.StopMoving();
 
                 }
             }
@@ -49,16 +50,16 @@ public class UnitTarget : MonoBehaviour
 
     void OnTriggerExit()
     {
-        if (this.UnitStats)
+        if (this.Unit)
         {
-            if (this.UnitStats.UnitPrimaryState == UnitPrimaryState.Busy)
+            if (this.Unit.UnitPrimaryState == UnitPrimaryState.Busy)
             {
                 if (debug)
                     Debug.Log("Unit is busy with an action and doesnt care about its path target (sad face)");
             }
             else
             {
-                this.UnitStats.UnitController.ResumeMoving();
+                this.Unit.UnitController.ResumeMoving();
             }
         }
     }

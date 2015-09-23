@@ -3,7 +3,7 @@ using System.Collections;
 
 public class BasicAtack : MonoBehaviour {
 
-    UnitStats UnitStats;
+    Unit Unit;
     BaseAI BASEAI;
 
     Transform thisTransform;
@@ -12,8 +12,8 @@ public class BasicAtack : MonoBehaviour {
     public DebugProgressBar atackRightCoolDown;
 
 	// Use this for initialization
-	public void Initialize (UnitStats stats , UnitController uc , BaseAI baseai) {
-        UnitStats = stats;
+	public void Initialize (Unit stats , UnitController uc , BaseAI baseai) {
+        Unit = stats;
 
         thisTransform = this.transform;
 	}
@@ -35,15 +35,15 @@ public class BasicAtack : MonoBehaviour {
         {
             case 1:
                 // Atack in Front
-                UnitStats.UnitController.StopMoving();
-                atackFrontCoolDown.StartCoolDown(UnitStats.AtackSpeed_Impact ,UnitStats.AtackSpeed_ParriedOrComplete , this);
+                Unit.UnitController.StopMoving();
+                atackFrontCoolDown.StartCoolDown(Unit.UnitProperties.AtackSpeed_Impact, Unit.UnitProperties.AtackSpeed_ParriedOrComplete, this);
 
-                UnitStats.UnitController.SetPathToTarget(thisTransform.position + thisTransform.forward);
-                UnitStats.UnitController.ResumeMoving();
+                Unit.UnitController.SetPathToTarget(thisTransform.position + thisTransform.forward);
+                Unit.UnitController.ResumeMoving();
                 break;
             case 2:
-                UnitStats.UnitController.StopMoving();
-                atackRightCoolDown.StartCoolDown(UnitStats.AtackSpeed_Impact, UnitStats.AtackSpeed_ParriedOrComplete, this);
+                Unit.UnitController.StopMoving();
+                atackRightCoolDown.StartCoolDown(Unit.UnitProperties.AtackSpeed_Impact, Unit.UnitProperties.AtackSpeed_ParriedOrComplete, this);
                 break;
             default:
                 break;

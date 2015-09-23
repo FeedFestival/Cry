@@ -4,31 +4,20 @@ using Assets.Scripts.Types;
 
 public class UnitBasicAnimation : MonoBehaviour
 {
-    private UnitStats UnitStats;
-
-    #region BasicAnimations
-    private string Walk;
-    private string Idle;
-    #endregion
+    private Unit Unit;
 
     // Use this for initialization
-    public void Initialize(UnitStats unitStats)
+    public void Initialize(Unit unit)
     {
-        UnitStats = unitStats;
-
-        Idle = "Stealth_Idle";
-        UnitStats.UnitAnimator[Idle].wrapMode = WrapMode.Loop;
-
-        Walk = "Stealth_Walk";
-        UnitStats.UnitAnimator[Walk].wrapMode = WrapMode.Loop;
+        Unit = unit;
     }
 
     public void GoWalk()
     {
-        UnitStats.UnitAnimator.CrossFade(Walk);
+        Unit.UnitAnimator.CrossFade(Unit.UnitProperties.Walk);
     }
     public void GoIdle()
     {
-        UnitStats.UnitAnimator.CrossFade(Idle);
+        Unit.UnitAnimator.CrossFade(Unit.UnitProperties.Idle);
     }
 }

@@ -9,104 +9,153 @@ public class UnitLadderAction : MonoBehaviour
     public bool debuging = false;
 
     [HideInInspector]
-    UnitStats UnitStats;
+    Unit Unit;
 
     [HideInInspector]
     public LadderStartPoint LadderStartPoint;
 
     [HideInInspector]
+    public LadderAnimations LastLadderAnimation;
+
+    [HideInInspector]
     public List<LadderPath> LadderPath;
 
-    public void Initialize(UnitStats unitStats)
+    public void Initialize(Unit unit)
     {
-        UnitStats = unitStats;
+        Unit = unit;
     }
 
     public void SetPathToStartPoint(LadderStartPoint ladderStartPoint)
     {
-        this.UnitStats.UnitActionInMind = UnitActionInMind.ClimbingLadder;
+        this.Unit.UnitActionInMind = UnitActionInMind.ClimbingLadder;
 
         LadderStartPoint = ladderStartPoint;
         switch (ladderStartPoint)
         {
             case LadderStartPoint.Bottom:
 
-                this.UnitStats.UnitController.SetPathToTarget(UnitStats.LadderStats.StartPoint_Bottom.position);
+                this.Unit.UnitController.SetPathToTarget(Unit.LadderStats.StartPoint_Bottom.position);
                 break;
 
             case LadderStartPoint.Level2_Top:
 
-                this.UnitStats.UnitController.SetPathToTarget(UnitStats.LadderStats.StartPoint_Level2_Top.position);
+                this.Unit.UnitController.SetPathToTarget(Unit.LadderStats.StartPoint_Level2_Top.position);
                 break;
 
             default: break;
         }
     }
 
-    public void CalculateLadderPath(LadderTriggerInput ladderTriggerInput)
+    public void CalculateLadderPath(LadderTriggerInput ladderTriggerInput, bool isUnitOnLadder = false)
     {
-        switch (LadderStartPoint)
+        if (!isUnitOnLadder)
         {
-            case LadderStartPoint.Bottom:
+            switch (LadderStartPoint)
+            {
+                case LadderStartPoint.Bottom:
+                    switch (ladderTriggerInput)
+                    {
+                        case LadderTriggerInput.Level2_Top:
+                            LadderPath = CreateLadderPath(new int[3] { 0, 1, 2 });
+                            break;
+                        case LadderTriggerInput.Level1:
+                            LadderPath = CreateLadderPath(new int[2] { 0, 1 });
+                            break;
+                        case LadderTriggerInput.Bottom:
+                            LadderPath = CreateLadderPath(new int[1] { 0 });
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
 
-                switch (ladderTriggerInput)
-	            {
-                    case LadderTriggerInput.Level2_Top:
+                case LadderStartPoint.Level2_Top:
+                    switch (ladderTriggerInput)
+                    {
+                        case LadderTriggerInput.Level2_Top:
+                            LadderPath = CreateLadderPath(new int[1] { 3 });
+                            break;
+                        case LadderTriggerInput.Level1:
+                            LadderPath = CreateLadderPath(new int[1] { 3 });
+                            break;
+                        case LadderTriggerInput.Bottom:
+                            LadderPath = CreateLadderPath(new int[3] { 3, 4, 5 });
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                default:break;
+            }
+        }
+        else
+        {
+            switch (LastLadderAnimation)
+            {
+                case LadderAnimations.GetOn_From_Bottom:
+                    switch (ladderTriggerInput)
+                    {
+                        case LadderTriggerInput.Level2_Top:
+                            LadderPath = CreateLadderPath(new int[2] { 1, 2 });
+                            break;
+                        case LadderTriggerInput.Level1:
+                            LadderPath = CreateLadderPath(new int[1] { 1 });
+                            break;
+                        case LadderTriggerInput.Bottom:
+                            LadderPath = CreateLadderPath(new int[1] { 5 });
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case LadderAnimations.ClimbDown_From_Level1_To_Bottom:
+                    switch (ladderTriggerInput)
+                    {
+                        case LadderTriggerInput.Level2_Top:
+                            LadderPath = CreateLadderPath(new int[2] { 1, 2 });
+                            break;
+                        case LadderTriggerInput.Level1:
+                            LadderPath = CreateLadderPath(new int[1] { 1 });
+                            break;
+                        case LadderTriggerInput.Bottom:
+                            LadderPath = CreateLadderPath(new int[1] { 5 });
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                    
+                case LadderAnimations.Climb_From_Bottom_To_Level1:
+                    switch (ladderTriggerInput)
+                    {
+                        case LadderTriggerInput.Level2_Top:
+                            LadderPath = CreateLadderPath(new int[1] { 2 });
+                            break;
+                        case LadderTriggerInput.Bottom:
+                            LadderPath = CreateLadderPath(new int[2] { 4, 5 });
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case LadderAnimations.GetOn_From_Level2_Top:
+                    switch (ladderTriggerInput)
+                    {
+                        case LadderTriggerInput.Level2_Top:
+                            LadderPath = CreateLadderPath(new int[1] { 2 });
+                            break;
+                        case LadderTriggerInput.Bottom:
+                            LadderPath = CreateLadderPath(new int[2] { 4, 5 });
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                default:break;
+            }
 
-                        LadderPath = CreateLadderPath(new int[3] { 0, 1, 2 });
-                        break;
-
-                    case LadderTriggerInput.Level1:
-
-                        LadderPath = CreateLadderPath(new int[2] { 0 , 1 });
-                        break;
-
-                    case LadderTriggerInput.Bottom:
-
-                        LadderPath = CreateLadderPath(new int[1] { 0 });
-                        break;
-
-                    //case LadderTriggerInput.Level2:
-
-                    //    LadderPath = CreateLadderPath(new int[2] { 0, 1 });
-                    //    break;
-
-		            default:
-                        break;
-	            }
-                break;
-
-            case LadderStartPoint.Level2_Top:
-
-                switch (ladderTriggerInput)
-                {
-                    case LadderTriggerInput.Level2_Top:
-
-                        LadderPath = CreateLadderPath(new int[1] { 3 });
-                        break;
-
-                    case LadderTriggerInput.Level1:
-
-                        LadderPath = CreateLadderPath(new int[1] { 3 });
-                        break;
-
-                    case LadderTriggerInput.Bottom:
-
-                        LadderPath = CreateLadderPath(new int[3] { 3, 4, 5 });
-                        break;
-
-                    //case LadderTriggerInput.Level2:
-
-                    //    LadderPath = CreateLadderPath(new int[1] { 3 });
-                    //    break;
-
-                    default:
-                        break;
-                }
-                break;
-
-            default:
-                break;
+            if (Unit.UnitActionAnimation.CurrentAction.LadderAnimation == LadderAnimations.Idle)
+                PlayActionAnimation();
         }
     }
 
@@ -114,7 +163,7 @@ public class UnitLadderAction : MonoBehaviour
     {
         var actionList = new List<LadderPath>();
 
-        if (actions.Length == 1) 
+        if (actions.Length == 1)
         {
             var action = new LadderPath
             {
@@ -124,7 +173,7 @@ public class UnitLadderAction : MonoBehaviour
             };
             actionList.Add(action);
         }
-        else 
+        else
         {
             for (int i = 0; i < actions.Length; i++)
             {
@@ -156,8 +205,8 @@ public class UnitLadderAction : MonoBehaviour
                     if (debuging)
                         Debug.Log(" - action : " + ladderAction.LadderAnimation + " ; last action : " + ladderAction.IsLastAction);
 
-                    UnitStats.UnitActionAnimation.PlayAnimation(ladderAction);
-                    UnitStats.LadderStats.LadderAnimation.PlayAnimation(ladderAction.LadderAnimation);
+                    Unit.UnitActionAnimation.PlayAnimation(ladderAction);
+                    Unit.LadderStats.LadderAnimation.PlayAnimation(ladderAction.LadderAnimation);
 
                     return;
                 }

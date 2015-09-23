@@ -13,7 +13,7 @@ public class BaseAI : MonoBehaviour
 
     public bool debuging;
 
-    UnitStats UnitStats;
+    Unit Unit;
 
     Transform thisTransform;
 
@@ -29,7 +29,7 @@ public class BaseAI : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-        UnitStats = this.gameObject.GetComponent<UnitStats>();
+        Unit = this.gameObject.GetComponent<Unit>();
 
         thisTransform = this.transform;
 
@@ -45,7 +45,7 @@ public class BaseAI : MonoBehaviour
             Debug.DrawRay(thisTransform.position, dir, Color.red);
             if (pursueTarget && !ignoreEnemy)
             {
-                UnitStats.UnitController.SetPathToTarget(new Vector3(mainEnemy.transform.position.x, mainEnemy.transform.position.y - 1, mainEnemy.transform.position.z));
+                Unit.UnitController.SetPathToTarget(new Vector3(mainEnemy.transform.position.x, mainEnemy.transform.position.y - 1, mainEnemy.transform.position.z));
             }
         }
 
@@ -85,14 +85,14 @@ public class BaseAI : MonoBehaviour
             {
                 if (debuging)
                     Debug.Log(" Atack in front - " + dir);
-                //UnitStats.BASICATACK.Atack(1);
+                //Unit.BASICATACK.Atack(1);
             }
             else
                 if (angle > 45f && angle < 135f)
                 {
                     if (debuging)
                         Debug.Log(" Atack in Right - " + dir);
-                    //UnitStats.BASICATACK.Atack(2);
+                    //Unit.BASICATACK.Atack(2);
                 }
         }
     }
@@ -110,7 +110,7 @@ public class BaseAI : MonoBehaviour
         {
             isEnemyNear = false;
             pursueTarget = true;
-            UnitStats.UnitController.ResumeMoving();
+            Unit.UnitController.ResumeMoving();
         }
     }
 }

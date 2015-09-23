@@ -7,66 +7,64 @@ public class UnitActionAnimation : MonoBehaviour
     public bool debuging = false;
 
     [HideInInspector]
-    private UnitStats UnitStats;
-
-    
-    public bool ControllerFollowRoot;
+    private Unit Unit;
 
     [HideInInspector]
-    public LadderPath CurentAction;
+    public LadderPath CurrentAction;
 
-    public void Initialize(UnitStats unitStats)
+    public void Initialize(Unit unit)
     {
-        UnitStats = unitStats;
+        Unit = unit;
     }
 
     public void PlayAnimation(LadderPath action)
     {
-        CurentAction = action;
+        if (action.Played == true)  // We store the last animation that played, except the Idle animation.
+            Unit.UnitLadderAction.LastLadderAnimation = action.LadderAnimation;
+        CurrentAction = action;
         switch (action.LadderAnimation)
         {
             case LadderAnimations.GetOn_From_Bottom:
 
-                Play(UnitStats.Ladder_Get_On);
+                Play(Unit.UnitProperties.Ladder_Get_On);
                 break;
 
             case LadderAnimations.Climb_From_Bottom_To_Level1:
 
-                Play(UnitStats.Ladder_Climb);
+                Play(Unit.UnitProperties.Ladder_Climb);
                 break;
 
             case LadderAnimations.Climb_Exit_To_Level2_Top:
 
-                Play(UnitStats.Ladder_Get_Up);
+                Play(Unit.UnitProperties.Ladder_Get_Up);
                 break;
 
             case LadderAnimations.GetOn_From_Level2_Top:
 
-                Play(UnitStats.Ladder_Get_On_From_Up);
+                Play(Unit.UnitProperties.Ladder_Get_On_From_Up);
                 break;
 
             case LadderAnimations.ClimbDown_From_Level1_To_Bottom:
 
-                Play(UnitStats.Ladder_Climb_Down);
+                Play(Unit.UnitProperties.Ladder_Climb_Down);
                 break;
 
             case LadderAnimations.ClimbDown_Exit_To_Bottom:
 
-                Play(UnitStats.Ladder_Get_Down);
+                Play(Unit.UnitProperties.Ladder_Get_Down);
                 break;
 
             default:
-
-                UnitStats.UnitAnimator.CrossFade(UnitStats.Ladder_Idle);
+                Unit.UnitAnimator.CrossFade(Unit.UnitProperties.Ladder_Idle);
                 break;
         }
     }
 
     private void Play(string animationString)
     {
-        UnitStats.UnitAnimator.CrossFade(animationString);
+        Unit.UnitAnimator.CrossFade(animationString);
 
-        float animationLenght = UnitStats.UnitAnimator[animationString].length;
+        float animationLenght = Unit.UnitAnimator[animationString].length;
         if (debuging)
             Debug.Log("an - " + animationString + " , langht = " + animationLenght);
 
@@ -77,18 +75,7 @@ public class UnitActionAnimation : MonoBehaviour
     {
         yield return new WaitForSeconds(animTime);
 
-        if (CurentAction.IsLastAction)
-            PlayAnimation(new LadderPath { LadderAnimation = LadderAnimations.Idle });    // OVERKILL
-    }
-
-    void Update()
-    {
-        if (ControllerFollowRoot)
-        {
-            UnitStats.thisTransform.position = new Vector3(UnitStats.Root.position.x, UnitStats.Root.position.y + 1, UnitStats.Root.position.z);
-            var rot = new Quaternion();
-            rot.eulerAngles = new Vector3(UnitStats.Root.eulerAngles.x + 90, UnitStats.Root.eulerAngles.y - 90, UnitStats.Root.eulerAngles.z);
-            transform.rotation = Quaternion.Slerp(UnitStats.thisTransform.rotation, rot, Time.deltaTime * 5);
-        }
+        if (CurrentAction.IsLastAction)
+            PlayAnimation(new LadderPath {Played = false, LadderAnimation = LadderAnimations.Idle });    // OVERKILL
     }
 }

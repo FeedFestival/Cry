@@ -9,7 +9,7 @@ public class UnitAnimation : MonoBehaviour
 
     public bool debuging = false;
 
-    UnitStats UnitStats;
+    Unit Unit;
 
     public string curentAnimation;
     public int lastAnimation = 1000;
@@ -88,7 +88,7 @@ public class UnitAnimation : MonoBehaviour
     }
     #endregion
 
-    // UnitStats.UnitActionHandler
+    // Unit.UnitActionHandler
     bool GoIntoIdleAfterAnimation = true;
 
     #region Ladder Animations Variables
@@ -106,63 +106,63 @@ public class UnitAnimation : MonoBehaviour
 
     #endregion
 
-    public void Initialize(UnitStats unitStats)
+    public void Initialize(Unit unit)
     {
-        UnitStats = unitStats;
+        Unit = unit;
 
         isInStealth = true;
 
         if (isInStealth)
         {
             Idle = "Stealth_Idle";
-            UnitStats.UnitAnimator[Idle].wrapMode = WrapMode.Loop;
+            Unit.UnitAnimator[Idle].wrapMode = WrapMode.Loop;
 
             Walk = "Stealth_Walk";
-            UnitStats.UnitAnimator[Walk].wrapMode = WrapMode.Loop;
+            Unit.UnitAnimator[Walk].wrapMode = WrapMode.Loop;
 
             Ladder_Idle = "Ladder_Idle";
-            UnitStats.UnitAnimator[Ladder_Idle].wrapMode = WrapMode.Loop;
+            Unit.UnitAnimator[Ladder_Idle].wrapMode = WrapMode.Loop;
 
             Ladder_Climb = "Ladder_Climb";
-            UnitStats.UnitAnimator[Ladder_Climb].wrapMode = WrapMode.Once;
+            Unit.UnitAnimator[Ladder_Climb].wrapMode = WrapMode.Once;
 
             Ladder_Climb_Down = "Ladder_Climb_Down";
-            UnitStats.UnitAnimator[Ladder_Climb_Down].wrapMode = WrapMode.Once;
+            Unit.UnitAnimator[Ladder_Climb_Down].wrapMode = WrapMode.Once;
 
             Ladder_Get_On = "Ladder_Get_On";
-            UnitStats.UnitAnimator[Ladder_Get_On].wrapMode = WrapMode.PingPong;
+            Unit.UnitAnimator[Ladder_Get_On].wrapMode = WrapMode.PingPong;
 
             Ladder_Get_On_From_Up = "Ladder_Get_On_From_Up";
-            UnitStats.UnitAnimator[Ladder_Get_On_From_Up].wrapMode = WrapMode.Once;
+            Unit.UnitAnimator[Ladder_Get_On_From_Up].wrapMode = WrapMode.Once;
 
             Ladder_Get_Up = "Ladder_Get_Up";
-            UnitStats.UnitAnimator[Ladder_Get_Up].wrapMode = WrapMode.PingPong;
+            Unit.UnitAnimator[Ladder_Get_Up].wrapMode = WrapMode.PingPong;
 
             Ladder_Get_Down = "Ladder_Get_Down";
-            UnitStats.UnitAnimator[Ladder_Get_Down].wrapMode = WrapMode.PingPong;
+            Unit.UnitAnimator[Ladder_Get_Down].wrapMode = WrapMode.PingPong;
 
             Ladder_Get_Down_Fast = "Ladder_Get_Down_Fast";
-            UnitStats.UnitAnimator[Ladder_Get_Down_Fast].wrapMode = WrapMode.PingPong;
+            Unit.UnitAnimator[Ladder_Get_Down_Fast].wrapMode = WrapMode.PingPong;
         }
         else
         {
             Walk = "Sword_Walk";
-            UnitStats.UnitAnimator[Walk].wrapMode = WrapMode.Loop;
+            Unit.UnitAnimator[Walk].wrapMode = WrapMode.Loop;
 
             Atack_Sword_1 = "Sword_Atack_1_Front";
-            UnitStats.UnitAnimator[Atack_Sword_1].wrapMode = WrapMode.PingPong;
+            Unit.UnitAnimator[Atack_Sword_1].wrapMode = WrapMode.PingPong;
 
             Atack_Sword_2 = "Sword_Atack_2_Front";
-            UnitStats.UnitAnimator[Atack_Sword_2].wrapMode = WrapMode.Once;
+            Unit.UnitAnimator[Atack_Sword_2].wrapMode = WrapMode.Once;
 
             Atack_Sword_Charge = "Sword_Charge_Atack";
-            UnitStats.UnitAnimator[Atack_Sword_Charge].wrapMode = WrapMode.PingPong;
+            Unit.UnitAnimator[Atack_Sword_Charge].wrapMode = WrapMode.PingPong;
 
             Atack_Sword_3_C = "Sword_Atack_Charged_Front";
-            UnitStats.UnitAnimator[Atack_Sword_3_C].wrapMode = WrapMode.PingPong;
+            Unit.UnitAnimator[Atack_Sword_3_C].wrapMode = WrapMode.PingPong;
 
             Idle = "Sword_Idle";
-            UnitStats.UnitAnimator[Idle].wrapMode = WrapMode.Loop;
+            Unit.UnitAnimator[Idle].wrapMode = WrapMode.Loop;
 
             refreshAtack();
         }
@@ -193,21 +193,21 @@ public class UnitAnimation : MonoBehaviour
             {
                 refreshAtack();
 
-                UnitStats.UnitPrimaryState = UnitPrimaryState.Idle;
+                Unit.UnitPrimaryState = UnitPrimaryState.Idle;
 
                 curentAnimation = Idle;
 
-                UnitStats.UnitAnimator.CrossFade(Idle);
+                Unit.UnitAnimator.CrossFade(Idle);
             }
             // Animation Walk
             else if (animation == 1)
             {
                 refreshAtack();
 
-                UnitStats.UnitPrimaryState = UnitPrimaryState.Walking;
+                Unit.UnitPrimaryState = UnitPrimaryState.Walking;
 
                 curentAnimation = Walk;
-                UnitStats.UnitAnimator.CrossFade(Walk);
+                Unit.UnitAnimator.CrossFade(Walk);
             }
             #endregion
 
@@ -223,11 +223,11 @@ public class UnitAnimation : MonoBehaviour
                 {
                     dontGoIntoIdle = true;
                     ControllerFollowRoot = true;
-                    UnitStats.AIPath.stopMoving();
+                    Unit.AIPath.stopMoving();
 
                     curentAnimation = Ladder_Get_On;
-                    UnitStats.UnitAnimator.CrossFade(Ladder_Get_On);
-                    StartCoroutine(WaitForEndOfAnimation_EVENT(UnitStats.UnitAnimator[Ladder_Get_On].length, 13));
+                    Unit.UnitAnimator.CrossFade(Ladder_Get_On);
+                    StartCoroutine(WaitForEndOfAnimation_EVENT(Unit.UnitAnimator[Ladder_Get_On].length, 13));
                     if (debuging)
                         Debug.Log("Get on the ladder to climb it.");
                 }
@@ -235,11 +235,11 @@ public class UnitAnimation : MonoBehaviour
                 {
                     dontGoIntoIdle = true;
                     ControllerFollowRoot = true;
-                    UnitStats.AIPath.stopMoving();
+                    Unit.AIPath.stopMoving();
 
                     curentAnimation = Ladder_Get_On_From_Up;
-                    UnitStats.UnitAnimator.CrossFade(Ladder_Get_On_From_Up);
-                    StartCoroutine(WaitForEndOfAnimation_EVENT(UnitStats.UnitAnimator[Ladder_Get_On_From_Up].length, 13));
+                    Unit.UnitAnimator.CrossFade(Ladder_Get_On_From_Up);
+                    StartCoroutine(WaitForEndOfAnimation_EVENT(Unit.UnitAnimator[Ladder_Get_On_From_Up].length, 13));
                     if (debuging)
                         Debug.Log(" * Get on the ladder from up");
                 }
@@ -249,8 +249,8 @@ public class UnitAnimation : MonoBehaviour
                 else if (animation == 12)
                 {
                     curentAnimation = Ladder_Climb;
-                    UnitStats.UnitAnimator.CrossFade(Ladder_Climb);
-                    StartCoroutine(WaitForEndOfAnimation_EVENT(UnitStats.UnitAnimator[Ladder_Climb].length, 13));
+                    Unit.UnitAnimator.CrossFade(Ladder_Climb);
+                    StartCoroutine(WaitForEndOfAnimation_EVENT(Unit.UnitAnimator[Ladder_Climb].length, 13));
                     if (debuging)
                         Debug.Log(" * Avatar : Im climing the ladder.");
                 }
@@ -258,15 +258,15 @@ public class UnitAnimation : MonoBehaviour
                 else if (animation == 16)
                 {
                     curentAnimation = Ladder_Climb_Down;
-                    UnitStats.UnitAnimator.CrossFade(Ladder_Climb_Down);
-                    StartCoroutine(WaitForEndOfAnimation_EVENT(UnitStats.UnitAnimator[Ladder_Climb_Down].length, 13));
+                    Unit.UnitAnimator.CrossFade(Ladder_Climb_Down);
+                    StartCoroutine(WaitForEndOfAnimation_EVENT(Unit.UnitAnimator[Ladder_Climb_Down].length, 13));
                     if (debuging)
                         Debug.Log(" * Avatar : Im climing the ladder Down!.");
                 }
                 else if (animation == 13)
                 {
                     curentAnimation = Ladder_Idle;
-                    UnitStats.UnitAnimator.CrossFade(Ladder_Idle);
+                    Unit.UnitAnimator.CrossFade(Ladder_Idle);
                     if (debuging)
                         Debug.Log("On Ladder Idle.");
                 }
@@ -276,8 +276,8 @@ public class UnitAnimation : MonoBehaviour
                 else if (animation == 14)
                 {
                     curentAnimation = Ladder_Get_Down_Fast;
-                    UnitStats.UnitAnimator.CrossFade(Ladder_Get_Down_Fast);
-                    StartCoroutine(WaitForEndOfAnimation_EVENT(UnitStats.UnitAnimator[Ladder_Get_Down_Fast].length, 0, true));
+                    Unit.UnitAnimator.CrossFade(Ladder_Get_Down_Fast);
+                    StartCoroutine(WaitForEndOfAnimation_EVENT(Unit.UnitAnimator[Ladder_Get_Down_Fast].length, 0, true));
 
                     if (debuging)
                         Debug.Log("Get off the ladder FAST.");
@@ -285,16 +285,16 @@ public class UnitAnimation : MonoBehaviour
                 else if (animation == 15)
                 {
                     curentAnimation = Ladder_Get_Up;
-                    UnitStats.UnitAnimator.CrossFade(Ladder_Get_Up);
-                    StartCoroutine(WaitForEndOfAnimation_EVENT(UnitStats.UnitAnimator[Ladder_Get_Up].length, 0, true));
+                    Unit.UnitAnimator.CrossFade(Ladder_Get_Up);
+                    StartCoroutine(WaitForEndOfAnimation_EVENT(Unit.UnitAnimator[Ladder_Get_Up].length, 0, true));
 
                     Debug.Log("Get off the ladder UP.");
                 }
                 else if (animation == 11)
                 {
                     curentAnimation = Ladder_Get_Down;
-                    UnitStats.UnitAnimator.CrossFade(Ladder_Get_Down);
-                    StartCoroutine(WaitForEndOfAnimation_EVENT(UnitStats.UnitAnimator[Ladder_Get_Down].length, 0, true));
+                    Unit.UnitAnimator.CrossFade(Ladder_Get_Down);
+                    StartCoroutine(WaitForEndOfAnimation_EVENT(Unit.UnitAnimator[Ladder_Get_Down].length, 0, true));
                     if (debuging)
                         Debug.Log("Get off the ladder.");
                 }
@@ -316,9 +316,9 @@ public class UnitAnimation : MonoBehaviour
 
                     isAtacking(true);
 
-                    UnitStats.UnitAnimator.CrossFade(Atack_Sword_1, 0.1f);
+                    Unit.UnitAnimator.CrossFade(Atack_Sword_1, 0.1f);
 
-                    float Lenght = UnitStats.UnitAnimator[Atack_Sword_1].length;
+                    float Lenght = Unit.UnitAnimator[Atack_Sword_1].length;
                     StartCoroutine(WaitForAtackInFrontAnimation(Lenght / 2));
                 }
                 else // Atack 2 in front. 
@@ -333,9 +333,9 @@ public class UnitAnimation : MonoBehaviour
 
                         isAtacking(true);
 
-                        UnitStats.UnitAnimator.CrossFade(Atack_Sword_2, 0.1f);
+                        Unit.UnitAnimator.CrossFade(Atack_Sword_2, 0.1f);
 
-                        float Lenght = UnitStats.UnitAnimator[Atack_Sword_2].length;
+                        float Lenght = Unit.UnitAnimator[Atack_Sword_2].length;
                         StartCoroutine(WaitForAtackInFrontAnimation2(Lenght / 2));
                     }
                     else if (animation == 4)
@@ -347,7 +347,7 @@ public class UnitAnimation : MonoBehaviour
                         isAtacking(true);
 
                         isCharging = true;
-                        UnitStats.UnitAnimator.CrossFade(Atack_Sword_Charge);
+                        Unit.UnitAnimator.CrossFade(Atack_Sword_Charge);
                     }
                     else if (animation == 5 && !dontAtackInFront3)
                     {
@@ -358,9 +358,9 @@ public class UnitAnimation : MonoBehaviour
                         isAtackingInFront3 = true;
                         dontAtackInFront3 = true;
 
-                        UnitStats.UnitAnimator.CrossFade(Atack_Sword_3_C);
+                        Unit.UnitAnimator.CrossFade(Atack_Sword_3_C);
 
-                        float Lenght = UnitStats.UnitAnimator[Atack_Sword_3_C].length;
+                        float Lenght = Unit.UnitAnimator[Atack_Sword_3_C].length;
                         StartCoroutine(WaitForAtackInFrontAnimation3Charged(Lenght));
                     }
             #endregion
@@ -374,12 +374,12 @@ public class UnitAnimation : MonoBehaviour
     {
         yield return new WaitForSeconds(moveTime);
 
-        //UnitStats.AIPath.stepAtack(false);
+        //Unit.AIPath.stepAtack(false);
         canAtackInFront2 = true;
 
-        if (UnitStats.AIControlled)
+        if (Unit.UnitProperties.AIControlled)
         {
-            UnitStats.UnitBaseAI.EnemyNear();
+            Unit.UnitBaseAI.EnemyNear();
         }
 
         yield return new WaitForSeconds(moveTime - 0.1f);
@@ -388,7 +388,7 @@ public class UnitAnimation : MonoBehaviour
             lastAnimation = 2;
             canAtackInFront2 = false;
 
-            //UnitStats.thisModelAnimation.CrossFade(Idle, 2.5f);
+            //Unit.thisModelAnimation.CrossFade(Idle, 2.5f);
             isAtacking(false);
             PlayAnimation(0);
 
@@ -399,7 +399,7 @@ public class UnitAnimation : MonoBehaviour
     {
         yield return new WaitForSeconds(moveTime);
 
-        //UnitStats.AIPath.stepAtack(false);
+        //Unit.AIPath.stepAtack(false);
 
         yield return new WaitForSeconds(moveTime);
 
@@ -409,14 +409,14 @@ public class UnitAnimation : MonoBehaviour
 
         refreshAtack();
 
-        if (UnitStats.AIControlled)
+        if (Unit.UnitProperties.AIControlled)
         {
-            UnitStats.UnitBaseAI.EnemyNear();
+            Unit.UnitBaseAI.EnemyNear();
         }
     }
     IEnumerator WaitForAtackInFrontAnimation3Charged(float moveTime)
     {
-        //UnitStats.AIPath.stepAtack(true);
+        //Unit.AIPath.stepAtack(true);
         yield return new WaitForSeconds(moveTime - 0.1f);
         if (isAtackingInFront3)
         {
@@ -425,8 +425,8 @@ public class UnitAnimation : MonoBehaviour
 
             isAtacking(false);
 
-            UnitStats.AIPath.stopMoving();
-            //UnitStats.AIPath.stepAtack(false);
+            Unit.AIPath.stopMoving();
+            //Unit.AIPath.stepAtack(false);
 
             PlayAnimation(0);
 
@@ -441,24 +441,22 @@ public class UnitAnimation : MonoBehaviour
     IEnumerator WaitForEndOfAnimation_EVENT(float animTime, int nextAnimationIndex, bool cancelAction = false)
     {
         yield return new WaitForSeconds(animTime);
-        //if (UnitStats.UnitActionHandler.actionIndex == UnitStats.UnitActionHandler.actionOrder.Count)
+        //if (Unit.UnitActionHandler.actionIndex == Unit.UnitActionHandler.actionOrder.Count)
         if (GoIntoIdleAfterAnimation)
             PlayAnimation(nextAnimationIndex);
 
-        UnitStats.UnitActionHandler.setIsPlayingAction(false);
         if (cancelAction)
         {
             if (debuging)
                 Debug.Log("Canceled action and go idle.");
-            UnitStats.FeetCollider.SetActive(true);
+            Unit.UnitProperties.FeetCollider.SetActive(true);
             setPlayerOffActions(ActionType);
-            UnitStats.UnitController.ResumeMoving();
+            Unit.UnitController.ResumeMoving();
 
-            UnitStats.UnitActionHandler.ResetActions();
         }
         else
         {
-            UnitStats.UnitActionHandler.StartAction();
+            Unit.UnitActionHandler.StartAction();
         }
     }
 
@@ -474,10 +472,14 @@ public class UnitAnimation : MonoBehaviour
 
         if (ControllerFollowRoot)
         {
-            UnitStats.thisTransform.position = new Vector3(UnitStats.Root.position.x, UnitStats.Root.position.y + 1, UnitStats.Root.position.z);
+            Unit.UnitProperties.thisTransform.position = new Vector3(Unit.UnitProperties.Root.position.x,
+                                                                    Unit.UnitProperties.Root.position.y + 1, 
+                                                                    Unit.UnitProperties.Root.position.z);
             var rot = new Quaternion();
-            rot.eulerAngles = new Vector3(UnitStats.Root.eulerAngles.x + 90, UnitStats.Root.eulerAngles.y - 90, UnitStats.Root.eulerAngles.z);
-            transform.rotation = Quaternion.Slerp(UnitStats.thisTransform.rotation, rot, Time.deltaTime * 5);
+            rot.eulerAngles = new Vector3(Unit.UnitProperties.Root.eulerAngles.x + 90,
+                                        Unit.UnitProperties.Root.eulerAngles.y - 90,
+                                        Unit.UnitProperties.Root.eulerAngles.z);
+            transform.rotation = Quaternion.Slerp(Unit.UnitProperties.thisTransform.rotation, rot, Time.deltaTime * 5);
         }
     }
 
@@ -520,7 +522,7 @@ public class UnitAnimation : MonoBehaviour
 
         dontGoIntoIdle = false;
         ControllerFollowRoot = false;
-        //UnitStats.UnitActionHandler.currentActionIndex = 0;
+        //Unit.UnitActionHandler.currentActionIndex = 0;
     }
 
     public void Atack(int type)
@@ -536,7 +538,7 @@ public class UnitAnimation : MonoBehaviour
                     chargeTime += chargeRate * Time.deltaTime;
 
                     PlayAnimation(4);
-                    UnitStats.AIPath.stopMoving();
+                    Unit.AIPath.stopMoving();
 
                     if (atackTime <= chargeTime)
                     {
@@ -548,8 +550,8 @@ public class UnitAnimation : MonoBehaviour
                         isAtackCharged = true;
 
                         PlayAnimation(5);
-                        UnitStats.AIPath.stopMoving();
-                        UnitStats.AIPath.stepAtack(true);
+                        Unit.AIPath.stopMoving();
+                        Unit.AIPath.stepAtack(true);
                     }
                 }
                  */
@@ -563,8 +565,8 @@ public class UnitAnimation : MonoBehaviour
                     isAtackCharged = false;
 
                     PlayAnimation(2);
-                    UnitStats.AIPath.stopMoving();
-                    //UnitStats.AIPath.stepAtack(true);
+                    Unit.AIPath.stopMoving();
+                    //Unit.AIPath.stepAtack(true);
                 }
                 //  Atack the second time.
                 else if (!isAtackCharged)
@@ -576,7 +578,7 @@ public class UnitAnimation : MonoBehaviour
                         isAtackingInFront = false;
 
                         PlayAnimation(3);
-                        //UnitStats.AIPath.stepAtack(true);
+                        //Unit.AIPath.stepAtack(true);
                     }
                 }
                 break;

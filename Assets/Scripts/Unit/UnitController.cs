@@ -8,19 +8,19 @@ public class UnitController : MonoBehaviour
     /*
      This script recieves info about where the unit should go, if it should stop or resume its movement.
      */
-    private UnitStats UnitStats;
+    private Unit Unit;
 
-    public void Initialize(UnitStats unitStats)
+    public void Initialize(Unit unit)
     {
-        UnitStats = unitStats;
+        Unit = unit;
     }
 
     public void StopMoving(bool targetReached = true)
     {
         if (debuging)
-            Debug.Log("Reaching (Unit action in mind = " + UnitStats.UnitActionInMind + ")");
+            Debug.Log("Reaching (Unit action in mind = " + Unit.UnitActionInMind + ")");
 
-        UnitStats.AIPath.stopMoving();
+        Unit.AIPath.stopMoving();
 
         if (targetReached)
         {
@@ -28,46 +28,57 @@ public class UnitController : MonoBehaviour
             //      - And an action is set in mind
             //      - And the Unit is not busy with another action.
             //  --> That means we must fire the Action in mind and exit.
-            if (UnitStats.UnitActionInMind != UnitActionInMind.None && UnitStats.UnitPrimaryState != UnitPrimaryState.Busy)
+            if (Unit.UnitActionInMind != UnitActionInMind.None && Unit.UnitPrimaryState != UnitPrimaryState.Busy)
             {
-                UnitStats.UnitActionHandler.StartAction();
+                Unit.UnitActionHandler.StartAction();
 
                 return;
             }
 
             //  If we finish the journey
             //      - And for some reason the unit is Busy - dont go into Idle.
-            if (UnitStats.UnitPrimaryState != UnitPrimaryState.Busy)
+            if (Unit.UnitPrimaryState != UnitPrimaryState.Busy)
             {
-                UnitStats.UnitPrimaryState = UnitPrimaryState.Idle;
-                UnitStats.UnitBasicAnimation.GoIdle();
+                Unit.UnitPrimaryState = UnitPrimaryState.Idle;
+                Unit.UnitBasicAnimation.GoIdle();
             }
         }
         else
         {
-            UnitStats.UnitPrimaryState = UnitPrimaryState.Idle;
-            UnitStats.UnitBasicAnimation.GoIdle();
+            Unit.UnitPrimaryState = UnitPrimaryState.Idle;
+            Unit.UnitBasicAnimation.GoIdle();
 
-            UnitStats.thisUnitTarget.thisTransform.position = UnitStats.thisTransform.position;
+            Unit.UnitProperties.thisUnitTarget.thisTransform.position = Unit.UnitProperties.thisTransform.position;
         }
     }
 
     public void ResumeMoving()
     {
-        UnitStats.AIPath.resumeMoving();
-        UnitStats.UnitPrimaryState = UnitPrimaryState.Walking;
-        UnitStats.UnitBasicAnimation.GoWalk();
+        Unit.AIPath.resumeMoving();
+        Unit.UnitPrimaryState = UnitPrimaryState.Walking;
+        Unit.UnitBasicAnimation.GoWalk();
     }
 
     public void GoToTarget()
     {
         ResumeMoving();
-        UnitStats.AIPath.SearchPath();
+        Unit.AIPath.SearchPath();
     }
 
     public void SetPathToTarget(Vector3 targetVector)
     {
-        UnitStats.thisUnitTarget.transform.position = targetVector;
+        Unit.UnitProperties.thisUnitTarget.transform.position = targetVector;
         this.GoToTarget();
+    }
+
+    void Update()
+    {
+        if (Unit != null && Unit.UnitProperties.ControllerFollowRoot)
+        {
+            Unit.UnitProperties.thisTransform.position = new Vector3(Unit.UnitProperties.Root.position.x, Unit.UnitProperties.Root.position.y + 1, Unit.UnitProperties.Root.position.z);
+            var rot = new Quaternion();
+            rot.eulerAngles = new Vector3(Unit.UnitProperties.Root.eulerAngles.x + 90, Unit.UnitProperties.Root.eulerAngles.y - 90, Unit.UnitProperties.Root.eulerAngles.z);
+            transform.rotation = Quaternion.Slerp(Unit.UnitProperties.thisTransform.rotation, rot, Time.deltaTime * 5);
+        }
     }
 }
