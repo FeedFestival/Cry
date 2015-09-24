@@ -52,6 +52,11 @@ public class UnitActionAnimation : MonoBehaviour
                 Play(Unit.UnitProperties.Ladder_Get_Down);
                 break;
 
+            case LadderAnimations.ClimbDown_Exit_To_Bottom_Fast:
+
+                Play(Unit.UnitProperties.Ladder_Get_Down_Fast);
+                break;
+
             default:
                 Unit.UnitAnimator.CrossFade(Unit.UnitProperties.Ladder_Idle);
                 break;

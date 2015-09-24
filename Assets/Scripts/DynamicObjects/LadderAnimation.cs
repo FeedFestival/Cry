@@ -79,11 +79,11 @@ public class LadderAnimation : MonoBehaviour {
             //    LadderStats.LadderAnimations.CrossFade(LadderStats.Ladder_Get_Down_Origin);
             //    StartCoroutine(WaitForEndOfAnimation(LadderStats.LadderAnimations[LadderStats.Ladder_Get_Down_Origin].length, false));
             //    break;
-            //case 9:
-            //    // Get Up from the ladder
-            //    LadderStats.LadderAnimations.CrossFade(LadderStats.Ladder_Get_Up_Origin);
-            //    StartCoroutine(WaitForEndOfAnimation(LadderStats.LadderAnimations[LadderStats.Ladder_Get_Up_Origin].length, false));
-            //    break;
+            case LadderAnimations.ClimbDown_Exit_To_Bottom_Fast:
+                
+                action.ExitAction = true;
+                Play(LadderStats.ClimbDown_Exit_To_Bottom_Fast);
+                break;
 
             default:
                 // Get down from the ladder

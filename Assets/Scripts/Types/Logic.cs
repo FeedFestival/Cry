@@ -94,7 +94,10 @@ namespace Assets.Scripts.Types
 
             //, Climb_From_Level1_To_Level2 = 2
 
-            , Idle = 10
+        , 
+        Idle = 10,
+        ClimbDown_Exit_To_Bottom_Fast = 11
+
     }
 
     //  Ladder - End

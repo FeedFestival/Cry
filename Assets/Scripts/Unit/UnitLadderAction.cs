@@ -142,7 +142,7 @@ public class UnitLadderAction : MonoBehaviour
                             LadderPath = CreateLadderPath(new int[1] { 2 });
                             break;
                         case LadderTriggerInput.Bottom:
-                            LadderPath = CreateLadderPath(new int[2] { 4, 5 });
+                            LadderPath = CreateLadderPath(new int[1] { 11 }); // Get_Down_Fast
                             break;
                         default:
                             break;

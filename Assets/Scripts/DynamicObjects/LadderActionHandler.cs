@@ -70,7 +70,7 @@ public class LadderActionHandler : MonoBehaviour
 
             return;
         }
-        else
+        else if (this.Unit.UnitActionState == UnitActionState.ClimbingLadder)
         {
             RaycastHit CircleHit;
             Ray CircleRay = Camera.main.ScreenPointToRay(Input.mousePosition);

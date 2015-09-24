@@ -112,6 +112,11 @@ public class LadderStats : MonoBehaviour {
     [HideInInspector]
     public string Climb_From_Level1_To_Level2;
 
+    //-----------------------------------------
+
+    [HideInInspector]
+    public string ClimbDown_Exit_To_Bottom_Fast;
+
     //public string Ladder_Get_Down_Fast_O;
     //[HideInInspector]
     //public string Ladder_Get_Down_Origin;
@@ -156,6 +161,9 @@ public class LadderStats : MonoBehaviour {
 
         //----------------------------------------------------------------------------------------
 
+        ClimbDown_Exit_To_Bottom_Fast = "Ladder_Get_Down_Fast_O";
+        LadderAnimator[ClimbDown_Exit_To_Bottom_Fast].wrapMode = WrapMode.Once;
+
         //Climb_Exit_To_Level2_Top = "Ladder_Zone_2_to_3";
         //LadderAnimations[Climb_Exit_To_Level2_Top].wrapMode = WrapMode.Once;
 
@@ -167,8 +175,6 @@ public class LadderStats : MonoBehaviour {
         //Ladder_Climb_Down = "Ladder_Climb_Down";
         //LadderAnimations[Ladder_Climb_Down].wrapMode = WrapMode.Once;
 
-        //Ladder_Get_Down_Fast_O = "Ladder_Get_Down_Fast_O";
-        //LadderAnimations[Ladder_Get_Down_Fast_O].wrapMode = WrapMode.Once;
         //Ladder_Get_Down_Origin = "Ladder_Get_Down_Origin";
         //LadderAnimations[Ladder_Get_Down_Origin].wrapMode = WrapMode.Once;
 

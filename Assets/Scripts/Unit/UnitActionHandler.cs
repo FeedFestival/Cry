@@ -77,7 +77,7 @@ public class UnitActionHandler : MonoBehaviour
             case ActionType.Ladder:
 
                 Unit.UnitActionState = UnitActionState.ClimbingLadder;
-                Unit.LadderStats.LadderActionHandler.CalculateLadderCursor();
+                Unit.LadderStats.LadderActionHandler.CalculateLadderCursor();   // DOUBLE_CHECK
 
                 //  This also sets the Unit to follow the pivot of the ladder to be guided throut the animation
                 Unit.UnitProperties.Root = Unit.LadderStats.Root;
