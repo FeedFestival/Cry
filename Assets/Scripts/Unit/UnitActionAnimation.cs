@@ -19,8 +19,6 @@ public class UnitActionAnimation : MonoBehaviour
 
     public void PlayAnimation(LadderPath action)
     {
-        if (action.Played == true)  // We store the last animation that played, except the Idle animation.
-            Unit.UnitLadderAction.LastLadderAnimation = action.LadderAnimation;
         CurrentAction = action;
         switch (action.LadderAnimation)
         {

@@ -10,6 +10,9 @@ public class CameraCursor : MonoBehaviour {
      * - The function its called from the object in question that senses the 'hover'.
      */
 
+    [HideInInspector]
+    public CursorType lastCursor = CursorType.Default;
+
     public Texture2D curentCursor;
 
     // Normal Cursor
@@ -54,7 +57,6 @@ public class CameraCursor : MonoBehaviour {
                         , curentCursor);
     }
 
-    CursorType lastCursor = CursorType.Default;
     public void ChangeCursor(CursorType cursorType)
     {
         if (lastCursor != cursorType)

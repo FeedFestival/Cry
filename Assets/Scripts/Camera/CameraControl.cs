@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Types;
 
 public class CameraControl : MonoBehaviour
 {
@@ -23,14 +24,16 @@ public class CameraControl : MonoBehaviour
 
     private Transform Target;
 
-    private string floorTag;
+    [HideInInspector]
+    public string floorTag;
 
     [HideInInspector]
     public float YDistanceFromPlayer;
 
-    //    Camera movement;
     [HideInInspector]
     public Transform thisTransform;
+
+    #region Camera movement Variables
 
     Rect recdownFast;
     Rect recupFast;
@@ -59,6 +62,8 @@ public class CameraControl : MonoBehaviour
     float GUIsizeSlow = 90;
     float GUIsizeMed = 60;
     float GUIsizeFast = 25;
+
+    #endregion
 
     public void Initialize(SceneManager sceneManager)
     {
@@ -99,8 +104,6 @@ public class CameraControl : MonoBehaviour
 
     void Update()
     {
-        // Right Click control;
-
         if (Input.GetKey(KeyCode.Mouse1) && leftClickFlag)
             leftClickFlag = false;
 
@@ -109,99 +112,102 @@ public class CameraControl : MonoBehaviour
             RightClickMove();
         }
 
-        // Camera Panning
-
         if (!Input.GetKey(KeyCode.Space) && !LockCamera)
         {
-            //thisTransform.parent = null;
+            CameraPan();
+        }
+    }
 
-            if (recdownSlow.Contains(Input.mousePosition) || recdownMed.Contains(Input.mousePosition) || recdownFast.Contains(Input.mousePosition))
+    private void CameraPan(){
+        if (recdownSlow.Contains(Input.mousePosition) || recdownMed.Contains(Input.mousePosition) || recdownFast.Contains(Input.mousePosition))
+        {
+            if (recdownFast.Contains(Input.mousePosition))
             {
-                if (recdownFast.Contains(Input.mousePosition))
+                CamSpeed = CamSpeedFast;
+            }
+            else
+                if (recdownMed.Contains(Input.mousePosition))
                 {
-                    CamSpeed = CamSpeedFast;
+                    CamSpeed = CamSpeedMed;
                 }
                 else
-                    if (recdownMed.Contains(Input.mousePosition))
-                    {
-                        CamSpeed = CamSpeedMed;
-                    }
-                    else
-                    {
-                        CamSpeed = CamSpeedSlow;
-                    }
-            }
+                {
+                    CamSpeed = CamSpeedSlow;
+                }
+        }
 
-            if (recupSlow.Contains(Input.mousePosition) || recupMed.Contains(Input.mousePosition) || recupFast.Contains(Input.mousePosition))
+        if (recupSlow.Contains(Input.mousePosition) || recupMed.Contains(Input.mousePosition) || recupFast.Contains(Input.mousePosition))
+        {
+            if (recupFast.Contains(Input.mousePosition))
             {
-                if (recupFast.Contains(Input.mousePosition))
+                CamSpeed = CamSpeedFast;
+            }
+            else
+                if (recupMed.Contains(Input.mousePosition))
                 {
-                    CamSpeed = CamSpeedFast;
+                    CamSpeed = CamSpeedMed;
                 }
                 else
-                    if (recupMed.Contains(Input.mousePosition))
-                    {
-                        CamSpeed = CamSpeedMed;
-                    }
-                    else
-                    {
-                        CamSpeed = CamSpeedSlow;
-                    }
-            }
-            if (recleftSlow.Contains(Input.mousePosition) || recleftMed.Contains(Input.mousePosition) || recleftFast.Contains(Input.mousePosition))
-            {
-                if (recleftFast.Contains(Input.mousePosition))
                 {
-                    CamSpeed = CamSpeedFast;
+                    CamSpeed = CamSpeedSlow;
+                }
+        }
+        if (recleftSlow.Contains(Input.mousePosition) || recleftMed.Contains(Input.mousePosition) || recleftFast.Contains(Input.mousePosition))
+        {
+            if (recleftFast.Contains(Input.mousePosition))
+            {
+                CamSpeed = CamSpeedFast;
+            }
+            else
+                if (recleftMed.Contains(Input.mousePosition))
+                {
+                    CamSpeed = CamSpeedMed;
                 }
                 else
-                    if (recleftMed.Contains(Input.mousePosition))
-                    {
-                        CamSpeed = CamSpeedMed;
-                    }
-                    else
-                    {
-                        CamSpeed = CamSpeedSlow;
-                    }
-            }
-            if (recrightSlow.Contains(Input.mousePosition) || recrightMed.Contains(Input.mousePosition) || recrightFast.Contains(Input.mousePosition))
-            {
-                if (recrightFast.Contains(Input.mousePosition))
                 {
-                    CamSpeed = CamSpeedFast;
+                    CamSpeed = CamSpeedSlow;
+                }
+        }
+        if (recrightSlow.Contains(Input.mousePosition) || recrightMed.Contains(Input.mousePosition) || recrightFast.Contains(Input.mousePosition))
+        {
+            if (recrightFast.Contains(Input.mousePosition))
+            {
+                CamSpeed = CamSpeedFast;
+            }
+            else
+                if (recrightMed.Contains(Input.mousePosition))
+                {
+                    CamSpeed = CamSpeedMed;
                 }
                 else
-                    if (recrightMed.Contains(Input.mousePosition))
-                    {
-                        CamSpeed = CamSpeedMed;
-                    }
-                    else
-                    {
-                        CamSpeed = CamSpeedSlow;
-                    }
-            }
+                {
+                    CamSpeed = CamSpeedSlow;
+                }
         }
     }
 
     private void RightClickMove()
     {
-        leftClickFlag = true;
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out hit, 100))
+        if (SceneManager.PlayerStats.UnitPrimaryState != UnitPrimaryState.Busy)
         {
-            if (debug)
-                Debug.Log("Ray launched");
+            leftClickFlag = true;
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (hit.transform.tag == floorTag)
+            if (Physics.Raycast(ray, out hit, 100))
             {
-                Target.position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-
                 if (debug)
-                    Debug.Log("target_move to this pos : " + Target.position);
-                
-                SceneManager.Player.GetComponent<UnitController>().GoToTarget();
+                    Debug.Log("Ray launched");
+
+                if (hit.transform.tag == floorTag)
+                {
+                    Target.position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+
+                    if (debug)
+                        Debug.Log("target_move to this pos : " + Target.position);
+
+                    SceneManager.PlayerStats.UnitController.GoToTarget();
+                }
             }
         }
     }

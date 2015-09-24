@@ -15,9 +15,6 @@ public class UnitLadderAction : MonoBehaviour
     public LadderStartPoint LadderStartPoint;
 
     [HideInInspector]
-    public LadderAnimations LastLadderAnimation;
-
-    [HideInInspector]
     public List<LadderPath> LadderPath;
 
     public void Initialize(Unit unit)
@@ -90,7 +87,7 @@ public class UnitLadderAction : MonoBehaviour
         }
         else
         {
-            switch (LastLadderAnimation)
+            switch (Unit.LadderStats.LadderAnimation.CurrentAction.LadderAnimation)
             {
                 case LadderAnimations.GetOn_From_Bottom:
                     switch (ladderTriggerInput)
@@ -206,7 +203,7 @@ public class UnitLadderAction : MonoBehaviour
                         Debug.Log(" - action : " + ladderAction.LadderAnimation + " ; last action : " + ladderAction.IsLastAction);
 
                     Unit.UnitActionAnimation.PlayAnimation(ladderAction);
-                    Unit.LadderStats.LadderAnimation.PlayAnimation(ladderAction.LadderAnimation);
+                    Unit.LadderStats.LadderAnimation.PlayAnimation(ladderAction);
 
                     return;
                 }

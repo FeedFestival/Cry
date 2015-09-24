@@ -125,10 +125,8 @@ public class Unit : MonoBehaviour
         if (UnitBasicAnimation)
             UnitBasicAnimation.Initialize(this);
 
-        
-        UnitProperties.Initialize_LadderAnimations();
+        // Go_Idle()
         UnitController.StopMoving();
-        AIPath.speed = UnitProperties.MovementSpeed;
     }
 
     public void SetTeam(bool controlledByAI = false)

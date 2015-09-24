@@ -61,9 +61,10 @@ public class CameraView : MonoBehaviour
 
     void Update()
     {
-        if (CheckYDistance())
+        if (CameraControl)
+            if (CameraControl.SceneManager.PlayerStats != null && CheckYDistance())
             CameraControl.thisTransform.position = new Vector3(CameraControl.thisTransform.position.x,
-                                                CameraControl.SceneManager.PlayerStats.thisTransform.position.y + CameraControl.YDistanceFromPlayer,
+                                                CameraControl.SceneManager.PlayerStats.UnitProperties.thisTransform.position.y + CameraControl.YDistanceFromPlayer,
                                                 CameraControl.thisTransform.position.z);
     }
 
@@ -71,7 +72,7 @@ public class CameraView : MonoBehaviour
     {
         if (CameraControl.SceneManager.PlayerStats.UnitPrimaryState != UnitPrimaryState.Idle)
         {
-            var distance = Mathf.RoundToInt(CameraControl.SceneManager.PlayerStats.thisTransform.position.y + CameraControl.YDistanceFromPlayer);
+            var distance = Mathf.RoundToInt(CameraControl.SceneManager.PlayerStats.UnitProperties.thisTransform.position.y + CameraControl.YDistanceFromPlayer);
             var cameraCurrentPosition = Mathf.RoundToInt(CameraControl.thisTransform.position.y);
             if (distance != cameraCurrentPosition)
                 return true;

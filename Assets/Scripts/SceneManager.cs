@@ -10,6 +10,8 @@ public class SceneManager : MonoBehaviour
     [HideInInspector]
     public Unit PlayerStats;
 
+    public MapInputTrigger Map;
+
     public CameraControl CameraControl; // HARD_CODED
 
     // The only awake function in the game !!
@@ -19,5 +21,7 @@ public class SceneManager : MonoBehaviour
         PlayerStats.Initialize(this);    // HARD_CODED
 
         CameraControl.Initialize(this);
+
+        Map.Initialize(this);
     }
 }

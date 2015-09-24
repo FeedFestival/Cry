@@ -63,17 +63,17 @@ public class LadderStats : MonoBehaviour {
             else if (child.gameObject.name == "Bottom")
             {
                 child.gameObject.AddComponent<LadderInputTrigger>();
-                child.gameObject.GetComponent<LadderInputTrigger>().Initialize(LadderTriggerInput.Bottom, LadderActionHandler);
+                child.gameObject.GetComponent<LadderInputTrigger>().Initialize(LadderTriggerInput.Bottom, this);
             }
             else if (child.gameObject.name == "Level1")
             {
                 child.gameObject.AddComponent<LadderInputTrigger>();
-                child.gameObject.GetComponent<LadderInputTrigger>().Initialize(LadderTriggerInput.Level1, LadderActionHandler);
+                child.gameObject.GetComponent<LadderInputTrigger>().Initialize(LadderTriggerInput.Level1, this);
             }
             else if (child.gameObject.name == "Level2_Top")
             {
                 child.gameObject.AddComponent<LadderInputTrigger>();
-                child.gameObject.GetComponent<LadderInputTrigger>().Initialize(LadderTriggerInput.Level2_Top, LadderActionHandler);
+                child.gameObject.GetComponent<LadderInputTrigger>().Initialize(LadderTriggerInput.Level2_Top, this);
             }
             //else if (child.gameObject.name == "Level2")
             //{

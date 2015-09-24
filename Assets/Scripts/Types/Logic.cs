@@ -9,6 +9,7 @@ namespace Assets.Scripts.Types
     {
         public bool Played { get; set; }
         public bool IsLastAction { get; set; }
+        public bool ExitAction { get; set; }
         public LadderAnimations LadderAnimation { get; set; }
     }
 
