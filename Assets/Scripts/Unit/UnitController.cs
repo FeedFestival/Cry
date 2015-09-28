@@ -55,7 +55,7 @@ public class UnitController : MonoBehaviour
     public void ResumeMoving()
     {
         Unit.AIPath.resumeMoving();
-        Unit.UnitPrimaryState = UnitPrimaryState.Walking;
+        Unit.UnitPrimaryState = UnitPrimaryState.Walk;
         Unit.UnitBasicAnimation.GoWalk();
     }
 
@@ -77,7 +77,7 @@ public class UnitController : MonoBehaviour
         {
             Unit.UnitProperties.thisTransform.position = new Vector3(Unit.UnitProperties.Root.position.x, Unit.UnitProperties.Root.position.y + 1, Unit.UnitProperties.Root.position.z);
             var rot = new Quaternion();
-            rot.eulerAngles = new Vector3(Unit.UnitProperties.Root.eulerAngles.x + 90, Unit.UnitProperties.Root.eulerAngles.y - 90, Unit.UnitProperties.Root.eulerAngles.z);
+            rot.eulerAngles = new Vector3(Unit.UnitProperties.Root.eulerAngles.x + 90, Unit.UnitProperties.Root.eulerAngles.y + 180, Unit.UnitProperties.Root.eulerAngles.z);
             transform.rotation = Quaternion.Slerp(Unit.UnitProperties.thisTransform.rotation, rot, Time.deltaTime * 5);
         }
     }

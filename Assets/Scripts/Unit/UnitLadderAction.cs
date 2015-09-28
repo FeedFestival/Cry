@@ -76,7 +76,7 @@ public class UnitLadderAction : MonoBehaviour
                             LadderPath = CreateLadderPath(new int[1] { 3 });
                             break;
                         case LadderTriggerInput.Bottom:
-                            LadderPath = CreateLadderPath(new int[3] { 3, 4, 5 });
+                            LadderPath = CreateLadderPath(new int[2] { 3, 11 });
                             break;
                         default:
                             break;
@@ -121,15 +121,15 @@ public class UnitLadderAction : MonoBehaviour
                             break;
                     }
                     break;
-                    
-                case LadderAnimations.Climb_From_Bottom_To_Level1:
+
+                case LadderAnimations.Climb_From_Level1_To_Level2:
                     switch (ladderTriggerInput)
                     {
                         case LadderTriggerInput.Level2_Top:
                             LadderPath = CreateLadderPath(new int[1] { 2 });
                             break;
                         case LadderTriggerInput.Bottom:
-                            LadderPath = CreateLadderPath(new int[2] { 4, 5 });
+                            LadderPath = CreateLadderPath(new int[1] { 11 });
                             break;
                         default:
                             break;
@@ -151,7 +151,7 @@ public class UnitLadderAction : MonoBehaviour
                 default:break;
             }
 
-            if (Unit.UnitActionAnimation.CurrentAction.LadderAnimation == LadderAnimations.Idle)
+            if (Unit.UnitActionAnimation.CurrentAction.LadderAnimation == LadderAnimations.Idle_Ladder)
                 PlayActionAnimation();
         }
     }

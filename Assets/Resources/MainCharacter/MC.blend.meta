@@ -1,0 +1,160 @@
+fileFormatVersion: 2
+guid: 213f58ff845fb1a41b53bd8ddaf00a5b
+timeCreated: 1443452799
+licenseType: Free
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: Arm_Lower_L
+    100002: Arm_Lower_R
+    100004: Arm_Upper_L
+    100006: Arm_Upper_R
+    100008: Belly
+    100010: Chest
+    100012: F_Palm_L
+    100014: F_Palm_R
+    100016: F_Pmid1_L
+    100018: F_Pmid1_R
+    100020: F_Pmid2_L
+    100022: F_Pmid2_R
+    100024: F_Pointer1_L
+    100026: F_Pointer1_R
+    100028: F_Pointer2_L
+    100030: F_Pointer2_R
+    100032: F_Thumb_L
+    100034: F_Thumb_R
+    100036: Foot_L
+    100038: Foot_R
+    100040: Hand_L
+    100042: Hand_R
+    100044: Head
+    100046: Leg_Lower_L
+    100048: Leg_Lower_R
+    100050: Leg_Upper_L
+    100052: Leg_Upper_R
+    100054: //RootNode
+    100056: MC_Armature
+    100058: MC_Body
+    100060: MC_Shirt
+    100062: Mid
+    100064: Neck
+    100066: Root
+    100068: Shoulder_L
+    100070: Shoulder_R
+    100072: Toes_L
+    100074: Toes_R
+    100076: Waist
+    400000: Arm_Lower_L
+    400002: Arm_Lower_R
+    400004: Arm_Upper_L
+    400006: Arm_Upper_R
+    400008: Belly
+    400010: Chest
+    400012: F_Palm_L
+    400014: F_Palm_R
+    400016: F_Pmid1_L
+    400018: F_Pmid1_R
+    400020: F_Pmid2_L
+    400022: F_Pmid2_R
+    400024: F_Pointer1_L
+    400026: F_Pointer1_R
+    400028: F_Pointer2_L
+    400030: F_Pointer2_R
+    400032: F_Thumb_L
+    400034: F_Thumb_R
+    400036: Foot_L
+    400038: Foot_R
+    400040: Hand_L
+    400042: Hand_R
+    400044: Head
+    400046: Leg_Lower_L
+    400048: Leg_Lower_R
+    400050: Leg_Upper_L
+    400052: Leg_Upper_R
+    400054: //RootNode
+    400056: MC_Armature
+    400058: MC_Body
+    400060: MC_Shirt
+    400062: Mid
+    400064: Neck
+    400066: Root
+    400068: Shoulder_L
+    400070: Shoulder_R
+    400072: Toes_L
+    400074: Toes_R
+    400076: Waist
+    4300000: MC_Shirt
+    4300002: MC_Body
+    7400000: Default Take
+    7400002: Climb_Exit_To_Level2_Top
+    7400004: Climb_From_Level1_To_Level2
+    7400006: ClimbDown_Exit_To_Bottom
+    7400008: ClimbDown_From_Level2_To_Level1
+    7400010: GetOn_From_Bottom
+    7400012: GetOn_From_Level2_Top
+    7400014: Idle
+    7400016: Idle_Ladder
+    7400018: Jump_Exit_To_Bottom
+    7400020: Walk
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: MC_Body
+    13700002: MC_Shirt
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

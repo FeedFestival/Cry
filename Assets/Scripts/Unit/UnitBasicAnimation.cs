@@ -14,10 +14,10 @@ public class UnitBasicAnimation : MonoBehaviour
 
     public void GoWalk()
     {
-        Unit.UnitAnimator.CrossFade(Unit.UnitProperties.Walk);
+        Unit.UnitAnimator.CrossFade(Unit.UnitProperties.ArmatureName + UnitPrimaryState.Walk);
     }
     public void GoIdle()
     {
-        Unit.UnitAnimator.CrossFade(Unit.UnitProperties.Idle);
+        Unit.UnitAnimator.CrossFade(Unit.UnitProperties.ArmatureName + UnitPrimaryState.Idle);
     }
 }

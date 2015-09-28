@@ -27,7 +27,7 @@ namespace Assets.Scripts.Types
 
     public enum UnitPrimaryState
     {
-        Idle = 0, Walking = 1, Busy = 2
+        Idle = 0, Walk = 1, Busy = 2
     }
 
     public enum UnitActionState
@@ -81,7 +81,8 @@ namespace Assets.Scripts.Types
     public enum LadderAnimations
     {
         GetOn_From_Bottom = 0,
-        Climb_From_Bottom_To_Level1 = 1,
+        //Climb_Exit_To_Level1_Top = 2,
+        Climb_From_Level1_To_Level2 = 1,
         Climb_Exit_To_Level2_Top = 2,
 
         GetOn_From_Level2_Top = 3,
@@ -95,8 +96,8 @@ namespace Assets.Scripts.Types
             //, Climb_From_Level1_To_Level2 = 2
 
         , 
-        Idle = 10,
-        ClimbDown_Exit_To_Bottom_Fast = 11
+        Idle_Ladder = 10,
+        Jump_Exit_To_Bottom = 11
 
     }
 

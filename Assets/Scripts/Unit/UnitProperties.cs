@@ -20,6 +20,10 @@ public class UnitProperties : MonoBehaviour {
     public float DefenseSpeed;
 
     [Header("Props")]
+
+    [HideInInspector]
+    public string ArmatureName;
+
     [HideInInspector]
     public string Tag;
 
@@ -71,6 +75,9 @@ public class UnitProperties : MonoBehaviour {
 
         // Transforms initialization
 
+        //this.ArmatureName = "MC_Armature|";
+        this.ArmatureName = "";
+
         this.Tag = "Player"; // HARD_CODED
 
         Transform[] allChildren = this.GetComponentsInChildren<Transform>();
@@ -87,7 +94,7 @@ public class UnitProperties : MonoBehaviour {
                     FeetCollider = child.gameObject;
                     FeetCollider.layer = 12;
                     break;
-                case "Human":   // HARD_CODED
+                case "MC":   // HARD_CODED
                     Unit.UnitAnimator = child.gameObject.GetComponent<Animation>();
                     break;
                 default:
@@ -97,11 +104,11 @@ public class UnitProperties : MonoBehaviour {
         thisTransform = this.transform;
         thisTransform.tag = Tag;
 
-        Idle = "Stealth_Idle";
-        Unit.UnitAnimator[Idle].wrapMode = WrapMode.Loop;
+        //Idle = "Idle";
+        //Unit.UnitAnimator[Idle].wrapMode = WrapMode.Loop;
 
-        Walk = "Sword_Walk";
-        Unit.UnitAnimator[Walk].wrapMode = WrapMode.Loop;
+        //Walk = "Walk";
+        //Unit.UnitAnimator[Walk].wrapMode = WrapMode.Loop;
 
         //  Target initialization
         if (!thisUnitTarget)
@@ -111,7 +118,7 @@ public class UnitProperties : MonoBehaviour {
 
         thisUnitTarget.Initialize(thisTransform.gameObject.name, Unit);
 
-        Initialize_LadderAnimations();
+        //Initialize_LadderAnimations();
     }
 
     private Transform CreateTarget()

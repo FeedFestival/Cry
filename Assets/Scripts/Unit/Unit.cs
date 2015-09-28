@@ -65,9 +65,6 @@ public class Unit : MonoBehaviour
     public UnitProperties UnitProperties;
 
     [HideInInspector]
-    public BaseAI UnitBaseAI;
-    
-    [HideInInspector]
     public Animation UnitAnimator;
 
     [Header("Actions Connections")]
@@ -132,7 +129,7 @@ public class Unit : MonoBehaviour
     public void SetTeam(bool controlledByAI = false)
     {
         UnitProperties.AIControlled = controlledByAI;
-        UnitBaseAI = this.GetComponent<BaseAI>();
+        //UnitBaseAI = this.GetComponent<BaseAI>();
 
         //this.Tag = "Enemy"; // HARD_CODED
     }

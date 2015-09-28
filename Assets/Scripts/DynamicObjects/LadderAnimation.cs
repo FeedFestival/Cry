@@ -20,77 +20,17 @@ public class LadderAnimation : MonoBehaviour {
     public void PlayAnimation(LadderPath action)
     {
         CurrentAction = action;
-        switch (action.LadderAnimation)
-        {
-            case LadderAnimations.GetOn_From_Bottom:
-                
-                Play(LadderStats.GetOn_From_Bottom);
-                break;
 
-            case LadderAnimations.Climb_From_Bottom_To_Level1:
+        var txtObject = "Ladder|";
 
-                Play(LadderStats.Climb_From_Bottom_To_Level1);
-                break;
+        if (action.LadderAnimation == LadderAnimations.Climb_Exit_To_Level2_Top)
+            action.ExitAction = true;
+        else if (action.LadderAnimation == LadderAnimations.ClimbDown_Exit_To_Bottom)
+            action.ExitAction = true;
+        else if (action.LadderAnimation == LadderAnimations.Jump_Exit_To_Bottom)
+            action.ExitAction = true;
 
-            case LadderAnimations.Climb_Exit_To_Level2_Top:
-
-                action.ExitAction = true;
-                Play(LadderStats.Climb_Exit_To_Level2_Top);
-                break;
-
-            //------------------------------------------------------
-            case LadderAnimations.GetOn_From_Level2_Top:
-
-                Play(LadderStats.GetOn_From_Level2_Top);
-                break;
-
-            case LadderAnimations.ClimbDown_From_Level1_To_Bottom:
-
-                Play(LadderStats.ClimbDown_From_Level1_To_Bottom);
-                break;
-
-            case LadderAnimations.ClimbDown_Exit_To_Bottom:
-
-                action.ExitAction = true;
-                Play(LadderStats.ClimbDown_Exit_To_Bottom);
-                break;
-
-            ////  Climb Down
-            //case 5:
-            //    // Climb ladder to zone 1
-
-            //    LadderStats.LadderAnimations.CrossFade(LadderStats.Ladder_Zone_1_to_0);
-            //    StartCoroutine(WaitForEndOfAnimation(LadderStats.LadderAnimations[LadderStats.Ladder_Zone_1_to_0].length));
-            //    break;
-            //case 6:
-            //    // Climb ladder to zone 2
-            //    LadderStats.LadderAnimations.CrossFade(LadderStats.Ladder_Zone_2_to_1);
-            //    StartCoroutine(WaitForEndOfAnimation(LadderStats.LadderAnimations[LadderStats.Ladder_Zone_2_to_1].length));
-            //    break;
-            //case 7:
-            //    // Climb ladder to zone 3
-            //    LadderStats.LadderAnimations.CrossFade(LadderStats.Ladder_Zone_3_to_2);
-            //    StartCoroutine(WaitForEndOfAnimation(LadderStats.LadderAnimations[LadderStats.Ladder_Zone_3_to_2].length));
-            //    break;
-
-            ////  Get off the ladder from up or down and stop the interaction
-            //case 8:
-            //    // Climb down from the ladder onto surface.
-            //    LadderStats.LadderAnimations.CrossFade(LadderStats.Ladder_Get_Down_Origin);
-            //    StartCoroutine(WaitForEndOfAnimation(LadderStats.LadderAnimations[LadderStats.Ladder_Get_Down_Origin].length, false));
-            //    break;
-            case LadderAnimations.ClimbDown_Exit_To_Bottom_Fast:
-                
-                action.ExitAction = true;
-                Play(LadderStats.ClimbDown_Exit_To_Bottom_Fast);
-                break;
-
-            default:
-                // Get down from the ladder
-                //LadderStats.LadderAnimations.CrossFade(LadderStats.Ladder_Get_Down_Fast_O);
-                //StartCoroutine(WaitForEndOfAnimation(LadderStats.LadderAnimations[LadderStats.Ladder_Get_Down_Fast_O].length, false));
-                break;
-        }
+        Play(txtObject + action.LadderAnimation);
     }
 
     private void Play(string animationString)
