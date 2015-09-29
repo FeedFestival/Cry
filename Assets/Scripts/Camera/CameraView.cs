@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using Assets.Scripts.Types;
 
 public class CameraView : MonoBehaviour
 {
-
     private CameraControl CameraControl;
 
     void Awake()
@@ -61,23 +61,8 @@ public class CameraView : MonoBehaviour
 
     void Update()
     {
-        if (CameraControl)
-            if (CameraControl.SceneManager.PlayerStats != null && CheckYDistance())
-            CameraControl.thisTransform.position = new Vector3(CameraControl.thisTransform.position.x,
-                                                CameraControl.SceneManager.PlayerStats.UnitProperties.thisTransform.position.y + CameraControl.YDistanceFromPlayer,
-                                                CameraControl.thisTransform.position.z);
-    }
-
-    private bool CheckYDistance()
-    {
-        if (CameraControl.SceneManager.PlayerStats.UnitPrimaryState != UnitPrimaryState.Idle)
-        {
-            var distance = Mathf.RoundToInt(CameraControl.SceneManager.PlayerStats.UnitProperties.thisTransform.position.y + CameraControl.YDistanceFromPlayer);
-            var cameraCurrentPosition = Mathf.RoundToInt(CameraControl.thisTransform.position.y);
-            if (distance != cameraCurrentPosition)
-                return true;
-        }
-        return false;
+        if (Input.GetKeyDown(KeyCode.P))
+            EditorApplication.isPaused = !EditorApplication.isPaused;
     }
 
     void OnGUI()

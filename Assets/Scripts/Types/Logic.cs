@@ -98,11 +98,15 @@ namespace Assets.Scripts.Types
         , 
         Idle_Ladder = 10,
         Jump_Exit_To_Bottom = 11
-
     }
 
     //  Ladder - End
     //-----------------------
+
+    public enum WallLedgeType
+    {
+        TwoMetters = 2, ThreeMetters = 3, FourMetters = 4
+    }
 
     public static class Logic
     {

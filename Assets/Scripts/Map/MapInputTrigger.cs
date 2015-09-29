@@ -2,7 +2,9 @@
 using System.Collections;
 using Assets.Scripts.Types;
 
-public class MapInputTrigger : MonoBehaviour {
+public class MapInputTrigger : MonoBehaviour
+{
+    public bool debug = true;
 
     private SceneManager SceneManager;
 
@@ -45,6 +47,27 @@ public class MapInputTrigger : MonoBehaviour {
                         SceneManager.PlayerStats.LadderStats.LadderActionHandler.SetAction(LadderTriggerInput.Bottom);
                     }
                 }
+            }
+            else
+            {
+                var Target = SceneManager.PlayerStats.UnitProperties.thisUnitTarget.thisTransform;
+
+                RaycastHit hit;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                if (Physics.Raycast(ray, out hit, 100))
+                {
+                    if (debug)
+                        Debug.Log("Ray launched");
+
+                    Target.position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+
+                    if (debug)
+                        Debug.Log("target_move to this pos : " + Target.position);
+
+                    SceneManager.PlayerStats.UnitController.GoToTarget();
+                }
+
             }
         }
     }

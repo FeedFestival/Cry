@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Types;
 
 public class UnitProperties : MonoBehaviour {
 
@@ -75,9 +76,6 @@ public class UnitProperties : MonoBehaviour {
 
         // Transforms initialization
 
-        //this.ArmatureName = "MC_Armature|";
-        this.ArmatureName = "";
-
         this.Tag = "Player"; // HARD_CODED
 
         Transform[] allChildren = this.GetComponentsInChildren<Transform>();
@@ -104,11 +102,9 @@ public class UnitProperties : MonoBehaviour {
         thisTransform = this.transform;
         thisTransform.tag = Tag;
 
-        //Idle = "Idle";
-        //Unit.UnitAnimator[Idle].wrapMode = WrapMode.Loop;
-
-        //Walk = "Walk";
-        //Unit.UnitAnimator[Walk].wrapMode = WrapMode.Loop;
+        Unit.UnitAnimator["Walk"].wrapMode = WrapMode.Loop;
+        Unit.UnitAnimator["Idle"].wrapMode = WrapMode.Loop;
+        Unit.UnitAnimator[LadderAnimations.Idle_Ladder.ToString()].wrapMode = WrapMode.Loop;
 
         //  Target initialization
         if (!thisUnitTarget)
@@ -117,8 +113,6 @@ public class UnitProperties : MonoBehaviour {
             Unit.AIPath.setUnitTarget(thisUnitTarget.transform);
 
         thisUnitTarget.Initialize(thisTransform.gameObject.name, Unit);
-
-        //Initialize_LadderAnimations();
     }
 
     private Transform CreateTarget()
@@ -128,46 +122,5 @@ public class UnitProperties : MonoBehaviour {
         thisUnitTarget = createdTarget.GetComponent<UnitTarget>();
 
         return createdTarget.transform;
-    }
-
-    [HideInInspector]
-    public string Walk;
-    [HideInInspector]
-    public string Idle;
-
-    [HideInInspector]
-    public string Ladder_Idle;
-    [HideInInspector]
-    public string Ladder_Climb;
-    [HideInInspector]
-    public string Ladder_Climb_Down;
-    [HideInInspector]
-    public string Ladder_Get_On;
-    [HideInInspector]
-    public string Ladder_Get_On_From_Up;
-    [HideInInspector]
-    public string Ladder_Get_Up;
-    [HideInInspector]
-    public string Ladder_Get_Down;
-    [HideInInspector]
-    public string Ladder_Get_Down_Fast;
-
-    public void Initialize_LadderAnimations()
-    {
-        Ladder_Idle = "Ladder_Idle"; Unit.UnitAnimator[Ladder_Idle].wrapMode = WrapMode.PingPong;
-
-        Ladder_Climb = "Ladder_Climb"; Unit.UnitAnimator[Ladder_Climb].wrapMode = WrapMode.PingPong;
-
-        Ladder_Climb_Down = "Ladder_Climb_Down"; Unit.UnitAnimator[Ladder_Climb_Down].wrapMode = WrapMode.PingPong;
-
-        Ladder_Get_On = "Ladder_Get_On"; Unit.UnitAnimator[Ladder_Get_On].wrapMode = WrapMode.PingPong;
-
-        Ladder_Get_On_From_Up = "Ladder_Get_On_From_Up"; Unit.UnitAnimator[Ladder_Get_On_From_Up].wrapMode = WrapMode.PingPong;
-
-        Ladder_Get_Up = "Ladder_Get_Up"; Unit.UnitAnimator[Ladder_Get_Up].wrapMode = WrapMode.PingPong;
-
-        Ladder_Get_Down = "Ladder_Get_Down"; Unit.UnitAnimator[Ladder_Get_Down].wrapMode = WrapMode.PingPong;
-
-        Ladder_Get_Down_Fast = "Ladder_Get_Down_Fast"; Unit.UnitAnimator[Ladder_Get_Down_Fast].wrapMode = WrapMode.PingPong;
     }
 }

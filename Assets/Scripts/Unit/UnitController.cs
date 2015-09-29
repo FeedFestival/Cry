@@ -80,5 +80,31 @@ public class UnitController : MonoBehaviour
             rot.eulerAngles = new Vector3(Unit.UnitProperties.Root.eulerAngles.x + 90, Unit.UnitProperties.Root.eulerAngles.y + 180, Unit.UnitProperties.Root.eulerAngles.z);
             transform.rotation = Quaternion.Slerp(Unit.UnitProperties.thisTransform.rotation, rot, Time.deltaTime * 5);
         }
+        if (Unit.UnitPrimaryState == UnitPrimaryState.Walk)
+        {
+            var pos = Unit.UnitProperties.FeetCollider.transform.position;
+
+            var posDown =new Vector3(pos.x,pos.y - 2f,pos.z);
+
+            var direction = posDown - pos;
+
+            if (debuging)
+                Debug.DrawLine(pos, (pos + direction));
+
+            Ray Ray = new Ray(pos, direction);
+            RaycastHit Hit;
+            if (Physics.Raycast(Ray, out Hit, 100))
+            {
+                if (Hit.transform.tag == "Map")
+                {
+                    if (debuging)
+                        Debug.DrawLine(pos, (pos + direction), Color.red);
+                    Unit.UnitProperties.thisTransform.position = new Vector3(Unit.UnitProperties.thisTransform.position.x,
+                                                                            Hit.point.y + 1f,
+                                                                            Unit.UnitProperties.thisTransform.position.z);
+                }
+            }
+        }
     }
+
 }
