@@ -45,10 +45,12 @@ public class CameraControl : MonoBehaviour
     void Update()
     {
         if (CheckYDistance())
-            thisTransform.position = new Vector3(thisTransform.position.x,
+        {
+            var desiredPosition = new Vector3(thisTransform.position.x,
                                                 SceneManager.PlayerStats.UnitProperties.thisTransform.position.y + YDistanceFromPlayer,
                                                 thisTransform.position.z);
-
+            thisTransform.position = Vector3.Lerp(thisTransform.position, desiredPosition, Time.deltaTime * 1.7f);
+        }
         if (!Input.GetKey(KeyCode.Space))
         {
             CameraPan();

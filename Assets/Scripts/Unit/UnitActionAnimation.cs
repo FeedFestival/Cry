@@ -10,6 +10,9 @@ public class UnitActionAnimation : MonoBehaviour
     private Unit Unit;
 
     [HideInInspector]
+    public string CurrentAnimation;
+
+    [HideInInspector]
     public LadderPath CurrentAction;
 
     public void Initialize(Unit unit)
@@ -22,6 +25,11 @@ public class UnitActionAnimation : MonoBehaviour
         CurrentAction = action;
 
         Play(Unit.UnitProperties.ArmatureName + action.LadderAnimation.ToString());
+    }
+
+    public void PlayAnimation(string animationString)
+    {
+        Play(Unit.UnitProperties.ArmatureName + animationString);
     }
 
     private void Play(string animationString)
@@ -39,7 +47,25 @@ public class UnitActionAnimation : MonoBehaviour
     {
         yield return new WaitForSeconds(animTime);
 
-        if (CurrentAction.IsLastAction)
-            PlayAnimation(new LadderPath {Played = false, LadderAnimation = LadderAnimations.Idle_Ladder });    // OVERKILL
+        switch (Unit.UnitActionHandler.curentActionType)
+        {
+            case ActionType.Ladder:
+
+                if (CurrentAction.IsLastAction)
+                    PlayAnimation(new LadderPath { Played = false, LadderAnimation = LadderAnimations.Idle_Ladder });    // OVERKILL
+                break;
+
+            case ActionType.ChairClimb:
+                break;
+            case ActionType.ChairGrab:
+                break;
+            case ActionType.LedgeClimb:
+
+
+                break;
+
+            default:
+                break;
+        }
     }
 }

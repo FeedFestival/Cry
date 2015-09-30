@@ -128,7 +128,7 @@ public class GroupController : MonoBehaviour {
 		}
 	}
 				
-	/** Radians to degrees constant */
+	/** Radians to degrees unitYPos */
 	const float rad2Deg = 360.0f/ ((float)System.Math.PI*2);
 	
 	/** Color from an angle */

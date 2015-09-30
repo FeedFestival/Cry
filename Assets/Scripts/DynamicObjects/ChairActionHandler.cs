@@ -7,7 +7,7 @@ public class ChairActionHandler : MonoBehaviour
     public bool debug;
 
     [HideInInspector]
-    public ChairStats ChairStats;
+    public Chair Chair;
 
     [HideInInspector]
     private UnitActionHandler UnitActionHandler;
@@ -16,11 +16,11 @@ public class ChairActionHandler : MonoBehaviour
 
     private ActionType ChairActionType;
 
-    public void Initialize(ChairStats chairStats)
+    public void Initialize(Chair chair)
     {
-        this.ChairStats = chairStats;
-        this.Unit = ChairStats.SceneManager.PlayerStats;
-        UnitActionHandler = ChairStats.SceneManager.PlayerStats.UnitActionHandler;
+        this.Chair = chair;
+        this.Unit = Chair.SceneManager.PlayerStats;
+        UnitActionHandler = Chair.SceneManager.PlayerStats.UnitActionHandler;
         ChairActionType = ActionType.ChairClimb;
     }
 
@@ -29,11 +29,11 @@ public class ChairActionHandler : MonoBehaviour
         var playerPos = this.Unit.UnitProperties.thisTransform.position;
 
         float[] distancesChair = new float[3];
-        distancesChair[(int)ChairStartPoint.Front] = Vector3.Distance(playerPos, this.Unit.ChairStats.StartPoint_Front.position);
-        distancesChair[(int)ChairStartPoint.Left] = Vector3.Distance(playerPos, this.Unit.ChairStats.StartPoint_Left.position);
-        distancesChair[(int)ChairStartPoint.Right] = Vector3.Distance(playerPos, this.Unit.ChairStats.StartPoint_Right.position);
+        distancesChair[(int)ChairStartPoint.Front] = Vector3.Distance(playerPos, this.Unit.Chair.StartPoint_Front.position);
+        distancesChair[(int)ChairStartPoint.Left] = Vector3.Distance(playerPos, this.Unit.Chair.StartPoint_Left.position);
+        distancesChair[(int)ChairStartPoint.Right] = Vector3.Distance(playerPos, this.Unit.Chair.StartPoint_Right.position);
 
-        //distances[(int)ChairStartPoint.Back] = Vector3.Distance(playerPos, Unit.ChairStats.StartPoint_Back.position);
+        //distances[(int)ChairStartPoint.Back] = Vector3.Distance(playerPos, Unit.Chair.StartPoint_Back.position);
 
         return (ChairStartPoint)Logic.GetSmallestDistance(distancesChair);
     }
@@ -45,16 +45,46 @@ public class ChairActionHandler : MonoBehaviour
         {
             oldValue = value;
             if (value)
-                ChairStats.ChairMaterial.SetFloat("_Brightness", 2.0f);
+                Chair.ChairMaterial.SetFloat("_Brightness", 2.0f);
             else
-                ChairStats.ChairMaterial.SetFloat("_Brightness", 1.0f);
+                Chair.ChairMaterial.SetFloat("_Brightness", 1.0f);
         }
     }
     public void SetAction(int triggerId)
     {
-        if (ChairStats.SceneManager.PlayerStats.UnitActionState == UnitActionState.None)
+        if (Chair.SceneManager.PlayerStats.UnitActionState == UnitActionState.None)
         {
             UnitActionHandler.SetAction(this.gameObject, ChairActionType);
+        }
+    }
+
+    public void PlayActionAnimation()
+    {
+        // Check if we are on the chair allready
+        if (Unit.UnitFeetState == UnitFeetState.OnGround)
+        {
+            switch (Chair.ChairStartPoint)
+            {
+                case ChairStartPoint.Front:
+
+                    this.Unit.Chair.ChairAnimation.PlayAnimation(ChairStaticAnimation.GetOn_FromFront);
+                    break;
+
+                case ChairStartPoint.Left:
+
+                    this.Unit.Chair.ChairAnimation.PlayAnimation(ChairStaticAnimation.GetOn_FromLeft);
+                    break;
+
+                case ChairStartPoint.Right:
+
+                    this.Unit.Chair.ChairAnimation.PlayAnimation(ChairStaticAnimation.GetOn_FromRight);
+                    break;
+
+                case ChairStartPoint.Back:
+
+                    break;
+                default: break;
+            }
         }
     }
 }

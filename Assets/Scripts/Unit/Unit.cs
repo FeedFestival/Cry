@@ -70,13 +70,9 @@ public class Unit : MonoBehaviour
     [Header("Actions Connections")]
     //  --------------------------------------------------------------------------------
 
-    [HideInInspector]
-    public UnitLadderAction UnitLadderAction;
-    [HideInInspector]
-    public UnitChairAction UnitChairAction;
-
-    public LadderStats LadderStats;
-    public ChairStats ChairStats;
+    public Ladder Ladder;
+    public Chair Chair;
+    public Ledge Ledge;
 
     // Use this for initialization
     public void Initialize(SceneManager sceneManager)
@@ -106,14 +102,6 @@ public class Unit : MonoBehaviour
         if (UnitActionAnimation)
             UnitActionAnimation.Initialize(this);
 
-        UnitLadderAction = this.GetComponent<UnitLadderAction>();
-        if (UnitLadderAction)
-            UnitLadderAction.Initialize(this);
-
-        UnitChairAction = this.GetComponent<UnitChairAction>();
-        if (UnitChairAction)
-            UnitChairAction.Initialize(this);
-
         UnitProperties = this.GetComponent<UnitProperties>();
         if (UnitProperties)
             UnitProperties.Initialize(this);
@@ -122,7 +110,8 @@ public class Unit : MonoBehaviour
         if (UnitBasicAnimation)
             UnitBasicAnimation.Initialize(this);
 
-        // Go_Idle()
+        SetupAnimations();
+        
         UnitController.StopMoving();
     }
 
@@ -132,5 +121,14 @@ public class Unit : MonoBehaviour
         //UnitBaseAI = this.GetComponent<BaseAI>();
 
         //this.Tag = "Enemy"; // HARD_CODED
+    }
+
+    void SetupAnimations()
+    {
+        UnitAnimator[UnitPrimaryState.Idle.ToString()].wrapMode = WrapMode.Loop;
+        UnitAnimator[UnitPrimaryState.Walk.ToString()].wrapMode = WrapMode.Loop;
+
+        UnitAnimator[WallClimb_Animations.WallClimb_2Metters.ToString()].wrapMode = WrapMode.PingPong;
+        UnitAnimator[WallClimb_Animations.WallClimbDown_2Metters.ToString()].wrapMode = WrapMode.PingPong;
     }
 }

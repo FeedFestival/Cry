@@ -12,7 +12,7 @@ public class UnitActionHandler : MonoBehaviour
     private Unit Unit;
 
     public ActionType curentActionType;
-    
+
     // Use this for initialization
     public void Initialize(Unit unit)
     {
@@ -24,13 +24,44 @@ public class UnitActionHandler : MonoBehaviour
     {
         switch (actionType)
         {
+            case ActionType.Ladder:
+
+                if (Unit.UnitActionState == UnitActionState.None)
+                {
+                    curentActionType = actionType;
+
+                    if (!Unit.Ladder)
+                        Unit.Ladder = worldObject.GetComponent<Ladder>();
+
+                    Unit.Ladder.LadderActionHandler.CalculateStartPoint();
+                    this.SetPathToStartPoint();
+
+                    Unit.Ladder.LadderActionHandler.CalculateLadderPath(Unit.Ladder.LadderTriggerInput);
+                }
+                else if (Unit.UnitActionState == UnitActionState.ClimbingLadder)
+                {
+                    Unit.Ladder.LadderActionHandler.CalculateLadderPath(Unit.Ladder.LadderTriggerInput, true);
+                }
+
+                break;
+
             case ActionType.ChairClimb:
 
                 curentActionType = actionType;
-                if (!Unit.ChairStats)
-                    Unit.ChairStats = worldObject.GetComponent<ChairStats>();
+                if (!Unit.Chair)
+                    Unit.Chair = worldObject.GetComponent<Chair>();
 
-                Unit.ChairStats.ChairActionHandler.CalculateStartPoint();
+                Unit.Chair.ChairActionHandler.CalculateStartPoint();
+
+                break;
+            case ActionType.LedgeClimb:
+
+                curentActionType = actionType;
+
+                if (!Unit.Ledge)
+                    Unit.Ledge = worldObject.GetComponent<Ledge>();
+
+                SetPathToStartPoint();
 
                 break;
             default:
@@ -38,30 +69,67 @@ public class UnitActionHandler : MonoBehaviour
         }
     }
 
-    public void SetAction(GameObject worldObject, ActionType actionType, LadderTriggerInput ladderTriggerInput)
+    public void SetPathToStartPoint()
     {
-        switch (actionType)
+        switch (curentActionType)
         {
+            case ActionType.None:
+                break;
             case ActionType.Ladder:
 
-                if (Unit.UnitActionState == UnitActionState.None)
+                this.Unit.UnitActionInMind = UnitActionInMind.ClimbingLadder;
+                switch (Unit.Ladder.LadderStartPoint)
                 {
-                    curentActionType = actionType;
+                    case LadderStartPoint.Bottom:
 
-                    if (!Unit.LadderStats)
-                        Unit.LadderStats = worldObject.GetComponent<LadderStats>();
+                        this.Unit.UnitController.SetPathToTarget(Unit.Ladder.StartPoint_Bottom.position);
+                        break;
 
-                    Unit.UnitLadderAction.SetPathToStartPoint(Unit.LadderStats.LadderActionHandler.CalculateStartPoint());
+                    case LadderStartPoint.Level2_Top:
 
-                    Unit.UnitLadderAction.CalculateLadderPath(ladderTriggerInput);
+                        this.Unit.UnitController.SetPathToTarget(Unit.Ladder.StartPoint_Level2_Top.position);
+                        break;
+
+                    default: break;
                 }
-                else if (Unit.UnitActionState == UnitActionState.ClimbingLadder)
-                {
-                    Unit.UnitLadderAction.CalculateLadderPath(ladderTriggerInput, true);
-                }
-
                 break;
+            case ActionType.ChairClimb:
 
+                this.Unit.UnitActionInMind = UnitActionInMind.ClimbingChair;
+                switch (Unit.Chair.ChairStartPoint)
+                {
+                    case ChairStartPoint.Front:
+
+                        this.Unit.UnitController.SetPathToTarget(Unit.Chair.StartPoint_Front.position);
+                        break;
+
+                    case ChairStartPoint.Left:
+
+                        this.Unit.UnitController.SetPathToTarget(Unit.Chair.StartPoint_Left.position);
+                        break;
+
+                    case ChairStartPoint.Right:
+
+                        this.Unit.UnitController.SetPathToTarget(Unit.Chair.StartPoint_Right.position);
+                        break;
+
+                    case ChairStartPoint.Back:
+
+                        this.Unit.UnitController.SetPathToTarget(Unit.Chair.StartPoint_Back.position);
+                        break;
+
+                    default: break;
+                }
+                break;
+            case ActionType.ChairGrab:
+                break;
+            case ActionType.LedgeClimb:
+
+                this.Unit.UnitActionInMind = UnitActionInMind.ClimbingWall;
+
+                this.Unit.UnitController.SetPathToTarget(Unit.Ledge.StartPointPosition);
+                
+                break;
             default:
                 break;
         }
@@ -77,21 +145,30 @@ public class UnitActionHandler : MonoBehaviour
             case ActionType.Ladder:
 
                 Unit.UnitActionState = UnitActionState.ClimbingLadder;
-                Unit.LadderStats.LadderActionHandler.CalculateLadderCursor();   // DOUBLE_CHECK
+                Unit.Ladder.LadderActionHandler.CalculateLadderCursor();   // DOUBLE_CHECK
 
                 //  This also sets the Unit to follow the pivot of the ladder to be guided throut the animation
-                Unit.UnitProperties.Root = Unit.LadderStats.Root;
+                Unit.UnitProperties.Root = Unit.Ladder.Root;
 
-                Unit.UnitLadderAction.PlayActionAnimation();
+                Unit.Ladder.LadderActionHandler.PlayActionAnimation();
                 break;
 
             case ActionType.ChairClimb:
 
                 Unit.UnitActionState = UnitActionState.ClimbingChair;
 
-                Unit.UnitProperties.Root = Unit.ChairStats.Root;
+                Unit.UnitProperties.Root = Unit.Chair.Root;
 
-                Unit.UnitChairAction.PlayActionAnimation();
+                break;
+
+            case ActionType.LedgeClimb:
+
+                Unit.UnitActionState = UnitActionState.ClimbingWall;
+
+                Unit.UnitProperties.Root = Unit.Ledge.Root;
+
+                Unit.Ledge.LedgeActionHandler.PlayActionAnimation(Unit);
+
                 break;
 
             default:
@@ -101,24 +178,29 @@ public class UnitActionHandler : MonoBehaviour
 
     public void ExitCurentAction()
     {
-        Unit.UnitProperties.Root = null;
-
         Unit.UnitPrimaryState = UnitPrimaryState.Idle;
         Unit.UnitActionState = UnitActionState.None;
         Unit.UnitActionInMind = UnitActionInMind.None;
+
+        Unit.UnitController.ExitAction();
 
         switch (curentActionType)
         {
             case ActionType.Ladder:
 
-                Unit.LadderStats = null;
-                Unit.UnitLadderAction.LadderPath = null;
+                Unit.Ladder = null;
+                Unit.Ladder.LadderActionHandler.LadderPath = null;
                 break;
 
             case ActionType.ChairClimb:
 
-                Unit.ChairStats = null;
+                Unit.Chair = null;
+                break;
 
+            case ActionType.LedgeClimb:
+
+                Unit.Ledge.ResetLedgeAction();
+                Unit.Ledge = null;
                 break;
 
             default:
@@ -126,6 +208,6 @@ public class UnitActionHandler : MonoBehaviour
         }
 
         curentActionType = ActionType.None;
-        Unit.UnitController.StopMoving();
+        
     }
 }

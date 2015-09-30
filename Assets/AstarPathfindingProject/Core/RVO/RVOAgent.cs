@@ -472,7 +472,7 @@ namespace Pathfinding.RVO.Sampled {
 						Vector2 c1 = dot1 * dir1 + line1;
 						return (c1-p);*/
 						weight = l1*weightFactor;
-						return new Vector2(-dir1.y, dir1.x)*weight*GlobalIncompressibility; // 10 is an arbitrary constant signifying incompressability
+						return new Vector2(-dir1.y, dir1.x)*weight*GlobalIncompressibility; // 10 is an arbitrary unitYPos signifying incompressability
 						// (the higher the value, the more the agents will avoid penetration)
 					} else {
 						weight = 0;

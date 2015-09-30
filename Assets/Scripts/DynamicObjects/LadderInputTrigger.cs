@@ -6,28 +6,28 @@ public class LadderInputTrigger : MonoBehaviour
 {
     private LadderTriggerInput TriggerInput;
 
-    private LadderStats LadderStats;
+    private Ladder Ladder;
 
     // Use this for initialization
-    public void Initialize(LadderTriggerInput triggerInput, LadderStats ladderStats)
+    public void Initialize(LadderTriggerInput triggerInput, Ladder ladder)
     {
-        this.LadderStats = ladderStats;
+        this.Ladder = ladder;
         this.TriggerInput = triggerInput;
     }
 
     void OnMouseEnter()
     {
-        this.LadderStats.LadderActionHandler.CalculateLadderCursor();
+        this.Ladder.LadderActionHandler.CalculateLadderCursor();
     }
     void OnMouseOver()
     {
         if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
         {
-            this.LadderStats.LadderActionHandler.SetAction(this.TriggerInput);
+            this.Ladder.LadderActionHandler.SetAction(this.TriggerInput);
         }
     }
     void OnMouseExit()
     {
-        this.LadderStats.SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
+        this.Ladder.SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
     }
 }

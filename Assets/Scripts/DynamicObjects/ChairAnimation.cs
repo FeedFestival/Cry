@@ -4,44 +4,44 @@ using Assets.Scripts.Types;
 
 public class ChairAnimation : MonoBehaviour {
 
-    private ChairStats ChairStats;
+    private Chair Chair;
 
-    public void Initialize(ChairStats chairStats)
+    public void Initialize(Chair chair)
     {
-        ChairStats = chairStats;
+        Chair = chair;
     }
 
     public void PlayAnimation(ChairStaticAnimation animation)
     {
-        //ChairStats.lastPlayedAnimation = animationIndex;
+        //Chair.lastPlayedAnimation = animationIndex;
         float animationLenght = 0.0f;
         switch (animation)
         {
             case ChairStaticAnimation.GetOn_FromFront:
 
-                ChairStats.ChairStaticAnimator.CrossFade(ChairStats.GetOn_FromFront);
-                animationLenght = ChairStats.ChairStaticAnimator[ChairStats.GetOn_FromFront].length;
+                Chair.ChairStaticAnimator.CrossFade(Chair.GetOn_FromFront);
+                animationLenght = Chair.ChairStaticAnimator[Chair.GetOn_FromFront].length;
                 StartCoroutine(WaitForEndOfAnimation(animationLenght));
                 break;
 
             case ChairStaticAnimation.GetOn_FromLeft:
 
-                ChairStats.ChairStaticAnimator.CrossFade(ChairStats.GetOn_FromLeft);
-                animationLenght = ChairStats.ChairStaticAnimator[ChairStats.GetOn_FromLeft].length;
+                Chair.ChairStaticAnimator.CrossFade(Chair.GetOn_FromLeft);
+                animationLenght = Chair.ChairStaticAnimator[Chair.GetOn_FromLeft].length;
                 StartCoroutine(WaitForEndOfAnimation(animationLenght));
                 break;
 
             case ChairStaticAnimation.GetOn_FromRight:
 
-                ChairStats.ChairStaticAnimator.CrossFade(ChairStats.GetOn_FromRight);
-                animationLenght = ChairStats.ChairStaticAnimator[ChairStats.GetOn_FromRight].length;
+                Chair.ChairStaticAnimator.CrossFade(Chair.GetOn_FromRight);
+                animationLenght = Chair.ChairStaticAnimator[Chair.GetOn_FromRight].length;
                 StartCoroutine(WaitForEndOfAnimation(animationLenght));
                 break;
 
             //case ChairAnimation.GetOn_FromRight:
 
-            //    ChairStats.ChairStaticAnimations.CrossFade(ChairStats.GetOn_FromRight);
-            //    animationLenght = ChairStats.ChairStaticAnimations[ChairStats.GetOn_FromRight].length;
+            //    Chair.ChairStaticAnimations.CrossFade(Chair.GetOn_FromRight);
+            //    animationLenght = Chair.ChairStaticAnimations[Chair.GetOn_FromRight].length;
             //    StartCoroutine(WaitForEndOfAnimation(animationLenght));
             //    break;
 

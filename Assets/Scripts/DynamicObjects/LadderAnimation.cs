@@ -6,14 +6,14 @@ public class LadderAnimation : MonoBehaviour {
 
     public bool debug = false;
 
-    private LadderStats LadderStats;
+    private Ladder Ladder;
 
     [HideInInspector]
     public LadderPath CurrentAction;
 
-    public void Initialize(LadderStats ladderStats)
+    public void Initialize(Ladder ladder)
     {
-        LadderStats = ladderStats;
+        Ladder = ladder;
     }
 
     // After the user click somewhere this is gonna get called to play the pivot animation.
@@ -35,9 +35,9 @@ public class LadderAnimation : MonoBehaviour {
 
     private void Play(string animationString)
     {
-        LadderStats.LadderAnimator.CrossFade(animationString);
+        Ladder.LadderAnimator.CrossFade(animationString);
 
-        float animationLenght = LadderStats.LadderAnimator[animationString].length;
+        float animationLenght = Ladder.LadderAnimator[animationString].length;
 
         if (debug)
             Debug.Log("an (Unit) - " + animationString + " , length = " + animationLenght);
@@ -48,11 +48,10 @@ public class LadderAnimation : MonoBehaviour {
     {
         yield return new WaitForSeconds(animTime);
 
-
         if (CurrentAction.ExitAction)
-            LadderStats.SceneManager.PlayerStats.UnitActionHandler.ExitCurentAction();
+            Ladder.SceneManager.PlayerStats.UnitActionHandler.ExitCurentAction();
         else 
             // Play Next Animation in the List
-            LadderStats.SceneManager.PlayerStats.UnitLadderAction.PlayActionAnimation();
+            Ladder.SceneManager.PlayerStats.Ladder.LadderActionHandler.PlayActionAnimation();
     }
 }

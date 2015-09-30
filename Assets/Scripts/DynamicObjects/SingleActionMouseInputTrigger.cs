@@ -15,7 +15,7 @@ public class SingleActionMouseInputTrigger : MonoBehaviour
     public void Initialize(ChairActionHandler chairActionHandler)
     {
         this.ChairActionHandler = chairActionHandler;
-        this.SceneManager = ChairActionHandler.ChairStats.SceneManager;
+        this.SceneManager = ChairActionHandler.Chair.SceneManager;
     }
 
     #endregion

@@ -4,7 +4,7 @@ using Assets.Scripts.Types;
 
 public class MapInputTrigger : MonoBehaviour
 {
-    public bool debug = true;
+    public bool debug = false;
 
     private SceneManager SceneManager;
 
@@ -21,7 +21,7 @@ public class MapInputTrigger : MonoBehaviour
             {
                 if (SceneManager.PlayerStats.UnitActionState == UnitActionState.ClimbingLadder)
                 {
-                    SceneManager.PlayerStats.LadderStats.LadderActionHandler.CalculateLadderCursor();
+                    SceneManager.PlayerStats.Ladder.LadderActionHandler.CalculateLadderCursor();
                 }
             }
             else
@@ -40,11 +40,11 @@ public class MapInputTrigger : MonoBehaviour
                 {
                     if (SceneManager.CameraControl.CameraCursor.lastCursor == CursorType.Ladder_Up)
                     {
-                        SceneManager.PlayerStats.LadderStats.LadderActionHandler.SetAction(LadderTriggerInput.Level2_Top);
+                        SceneManager.PlayerStats.Ladder.LadderActionHandler.SetAction(LadderTriggerInput.Level2_Top);
                     }
                     else
                     {
-                        SceneManager.PlayerStats.LadderStats.LadderActionHandler.SetAction(LadderTriggerInput.Bottom);
+                        SceneManager.PlayerStats.Ladder.LadderActionHandler.SetAction(LadderTriggerInput.Bottom);
                     }
                 }
             }

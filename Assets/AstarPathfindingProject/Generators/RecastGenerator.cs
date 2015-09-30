@@ -977,7 +977,7 @@ But this time, edit the setting named "Forward" to "Z forward" (not -Z as it is 
 				TriangleMeshNode node = a.nodes[i];
 				if (node.connections == null) continue;
 				for (int j=0;;j++) {
-					//Length will not be constant if connections are removed
+					//Length will not be unitYPos if connections are removed
 					if (j >= node.connections.Length) break;
 					
 					TriangleMeshNode other = node.connections[j] as TriangleMeshNode;

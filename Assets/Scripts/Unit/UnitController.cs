@@ -71,20 +71,23 @@ public class UnitController : MonoBehaviour
         this.GoToTarget();
     }
 
+    bool startLerp;
+    bool lerpComplete;
+
+    Vector3 rootPos_lerp = new Vector3();
+
     void Update()
     {
         if (Unit != null && Unit.UnitProperties.ControllerFollowRoot)
         {
-            Unit.UnitProperties.thisTransform.position = new Vector3(Unit.UnitProperties.Root.position.x, Unit.UnitProperties.Root.position.y + 1, Unit.UnitProperties.Root.position.z);
-            var rot = new Quaternion();
-            rot.eulerAngles = new Vector3(Unit.UnitProperties.Root.eulerAngles.x + 90, Unit.UnitProperties.Root.eulerAngles.y + 180, Unit.UnitProperties.Root.eulerAngles.z);
-            transform.rotation = Quaternion.Slerp(Unit.UnitProperties.thisTransform.rotation, rot, Time.deltaTime * 5);
+            FollowRoot();
         }
+
         if (Unit.UnitPrimaryState == UnitPrimaryState.Walk)
         {
             var pos = Unit.UnitProperties.FeetCollider.transform.position;
 
-            var posDown =new Vector3(pos.x,pos.y - 2f,pos.z);
+            var posDown = new Vector3(pos.x, pos.y - 2f, pos.z);
 
             var direction = posDown - pos;
 
@@ -107,4 +110,47 @@ public class UnitController : MonoBehaviour
         }
     }
 
+    void FollowRoot()
+    {
+        if (lerpComplete == false)
+        {
+            if (startLerp == false)
+            {
+                startLerp = true;
+                StartCoroutine(LerpToPosition(0.5f));
+            }
+            rootPos_lerp = new Vector3(Unit.UnitProperties.Root.position.x,
+                                    Unit.UnitProperties.Root.position.y + 1,
+                                    Unit.UnitProperties.Root.position.z);
+            Unit.UnitProperties.thisTransform.position = Vector3.Lerp(Unit.UnitProperties.thisTransform.position, rootPos_lerp, Time.deltaTime * 7);
+        }
+        if (lerpComplete)
+        {
+            var rootPos = new Vector3(Unit.UnitProperties.Root.position.x,
+                                Unit.UnitProperties.Root.position.y + 1,
+                                Unit.UnitProperties.Root.position.z);
+            Unit.UnitProperties.thisTransform.position = rootPos;
+        }
+
+        var rot = new Quaternion();
+        rot.eulerAngles = new Vector3(Unit.UnitProperties.Root.eulerAngles.x + 90,  //90
+                                    Unit.UnitProperties.Root.eulerAngles.y - 90,   //180
+                                    Unit.UnitProperties.Root.eulerAngles.z);
+        transform.rotation = Quaternion.Slerp(Unit.UnitProperties.thisTransform.rotation, rot, Time.deltaTime * 10);
+    }
+
+    public void ExitAction()
+    {
+        startLerp = false;
+        lerpComplete = false;
+
+        Unit.UnitProperties.Root = null;
+        StopMoving();
+    }
+
+    IEnumerator LerpToPosition(float lerpTime)
+    {
+        yield return new WaitForSeconds(lerpTime);
+        lerpComplete = true;
+    }
 }

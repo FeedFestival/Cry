@@ -873,7 +873,7 @@ namespace Pathfinding {
 								
 								for (int i=0;i<4;i++) {
 									int conn = node.GetConnectionValue (i);
-									/** \todo Add constant for 0xF - InvalidConnection *
+									/** \todo Add unitYPos for 0xF - InvalidConnection *
 									if (conn != 0xF) {
 										nodes[index+neighbourOffsets[i] + width*depth*conn].walkable = false;
 									}
