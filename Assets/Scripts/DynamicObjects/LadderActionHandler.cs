@@ -123,6 +123,10 @@ public class LadderActionHandler : MonoBehaviour
                     break;
 
                 case LadderStartPoint.Level2_Top:
+
+                    Ladder.LadderAnimator.Play(LadderAnimations.GetOn_From_Level2_Top.ToString());
+                    Ladder.LadderAnimator[LadderAnimations.GetOn_From_Level2_Top.ToString()].speed = 0f;
+
                     switch (ladderTriggerInput)
                     {
                         case LadderTriggerInput.Level2_Top:

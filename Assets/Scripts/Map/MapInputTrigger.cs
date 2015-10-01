@@ -67,7 +67,6 @@ public class MapInputTrigger : MonoBehaviour
 
                     SceneManager.PlayerStats.UnitController.GoToTarget();
                 }
-
             }
         }
     }

@@ -110,19 +110,25 @@ public class UnitController : MonoBehaviour
         }
     }
 
+    public float xRot;
+    public float yRot;
+
     void FollowRoot()
     {
         if (lerpComplete == false)
         {
             if (startLerp == false)
             {
+                xRot = 90f;
+                yRot = 90f;
+
                 startLerp = true;
-                StartCoroutine(LerpToPosition(0.5f));
+                StartCoroutine(LerpToPosition(0.6f));
             }
             rootPos_lerp = new Vector3(Unit.UnitProperties.Root.position.x,
                                     Unit.UnitProperties.Root.position.y + 1,
                                     Unit.UnitProperties.Root.position.z);
-            Unit.UnitProperties.thisTransform.position = Vector3.Lerp(Unit.UnitProperties.thisTransform.position, rootPos_lerp, Time.deltaTime * 7);
+            Unit.UnitProperties.thisTransform.position = Vector3.Lerp(Unit.UnitProperties.thisTransform.position, rootPos_lerp, Time.deltaTime * 11);
         }
         if (lerpComplete)
         {
@@ -133,8 +139,8 @@ public class UnitController : MonoBehaviour
         }
 
         var rot = new Quaternion();
-        rot.eulerAngles = new Vector3(Unit.UnitProperties.Root.eulerAngles.x + 90,  //90
-                                    Unit.UnitProperties.Root.eulerAngles.y - 90,   //180
+        rot.eulerAngles = new Vector3(Unit.UnitProperties.Root.eulerAngles.x + xRot,  //90
+                                    Unit.UnitProperties.Root.eulerAngles.y - yRot,   //180
                                     Unit.UnitProperties.Root.eulerAngles.z);
         transform.rotation = Quaternion.Slerp(Unit.UnitProperties.thisTransform.rotation, rot, Time.deltaTime * 10);
     }

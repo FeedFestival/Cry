@@ -14,6 +14,8 @@ public class LadderAnimation : MonoBehaviour {
     public void Initialize(Ladder ladder)
     {
         Ladder = ladder;
+
+        SetupAnimations();
     }
 
     // After the user click somewhere this is gonna get called to play the pivot animation.
@@ -21,16 +23,16 @@ public class LadderAnimation : MonoBehaviour {
     {
         CurrentAction = action;
 
-        var txtObject = "Ladder|";
-
         if (action.LadderAnimation == LadderAnimations.Climb_Exit_To_Level2_Top)
             action.ExitAction = true;
+        else if (action.LadderAnimation == LadderAnimations.GetOn_From_Level2_Top)
+            Ladder.LadderAnimator[LadderAnimations.GetOn_From_Level2_Top.ToString()].speed = 1f;
         else if (action.LadderAnimation == LadderAnimations.ClimbDown_Exit_To_Bottom)
             action.ExitAction = true;
         else if (action.LadderAnimation == LadderAnimations.Jump_Exit_To_Bottom)
             action.ExitAction = true;
 
-        Play(txtObject + action.LadderAnimation);
+        Play(action.LadderAnimation.ToString());
     }
 
     private void Play(string animationString)
@@ -44,14 +46,35 @@ public class LadderAnimation : MonoBehaviour {
 
         StartCoroutine(WaitForEndOfAnimation(animationLenght));
     }
+
     IEnumerator WaitForEndOfAnimation(float animTime, bool endEvent = true)
     {
         yield return new WaitForSeconds(animTime);
 
+        if (CurrentAction.IsLastAction)
+            Ladder.LadderAnimator.Stop();
+
         if (CurrentAction.ExitAction)
+        {
+            Ladder.LadderAnimator.Stop();
             Ladder.SceneManager.PlayerStats.UnitActionHandler.ExitCurentAction();
-        else 
+        }
+        else
+        {
             // Play Next Animation in the List
             Ladder.SceneManager.PlayerStats.Ladder.LadderActionHandler.PlayActionAnimation();
+        }
+    }
+
+    void SetupAnimations()
+    {
+        Ladder.LadderAnimator[LadderAnimations.GetOn_From_Bottom.ToString()].wrapMode = WrapMode.PingPong;
+        Ladder.LadderAnimator[LadderAnimations.Climb_From_Level1_To_Level2.ToString()].wrapMode = WrapMode.PingPong;
+        Ladder.LadderAnimator[LadderAnimations.Climb_Exit_To_Level2_Top.ToString()].wrapMode = WrapMode.PingPong;
+
+        Ladder.LadderAnimator[LadderAnimations.GetOn_From_Level2_Top.ToString()].wrapMode = WrapMode.PingPong;
+        Ladder.LadderAnimator[LadderAnimations.Jump_Exit_To_Bottom.ToString()].wrapMode = WrapMode.PingPong;
+
+        Ladder.LadderAnimator[LadderAnimations.ClimbDown_Exit_To_Bottom.ToString()].wrapMode = WrapMode.PingPong;
     }
 }

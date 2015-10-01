@@ -130,7 +130,8 @@ public class LedgeInputTrigger : MonoBehaviour
         }
         else
         {
-            Ledge.StartPointPosition = (UI_WallClimb_Top_Position - new Vector3(0, 0, 0.6f));
+
+            Ledge.StartPointPosition = (UI_WallClimb_Top_Position - new Vector3(0, 0, 0.8f));
         }
 
         Ledge.Ledge_Animator = Ledge_GameObject.GetComponent<Animation>();
@@ -142,6 +143,13 @@ public class LedgeInputTrigger : MonoBehaviour
             {
                 Ledge.Root = child;
             }
+        }
+
+        // CUSTOM
+        if (Ledge.LedgeStartPoint == LedgeStartPoint.Top)
+        {
+            Ledge.Ledge_Animator.Play(WallClimb_Animations.WallClimbDown_2Metters.ToString());
+            Ledge.Ledge_Animator[WallClimb_Animations.WallClimbDown_2Metters.ToString()].speed = 0;
         }
 
         Ledge.SceneManager.PlayerStats.UnitActionHandler.SetAction(this.gameObject, ActionType.LedgeClimb);

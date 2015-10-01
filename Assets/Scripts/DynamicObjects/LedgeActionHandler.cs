@@ -23,13 +23,14 @@ public class LedgeActionHandler : MonoBehaviour
         {
             case LedgeStartPoint.Bottom:
 
-                Unit.UnitActionAnimation.PlayAnimation(WallClimb_Animations.WallClimb_2Metters.ToString());
+                Unit.UnitActionAnimation.PlaySingleAnimation(WallClimb_Animations.WallClimb_2Metters.ToString());
                 Play(WallClimb_Animations.WallClimb_2Metters.ToString());
                 break;
 
             case LedgeStartPoint.Top:
 
-                Unit.UnitActionAnimation.PlayAnimation(WallClimb_Animations.WallClimbDown_2Metters.ToString());
+                Unit.UnitActionAnimation.PlaySingleAnimation(WallClimb_Animations.WallClimbDown_2Metters.ToString());
+                Ledge.Ledge_Animator[WallClimb_Animations.WallClimbDown_2Metters.ToString()].speed = 1; // CUSTOM
                 Play(WallClimb_Animations.WallClimbDown_2Metters.ToString());
                 break;
 

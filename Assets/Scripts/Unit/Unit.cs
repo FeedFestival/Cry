@@ -98,10 +98,6 @@ public class Unit : MonoBehaviour
         if (UnitActionHandler)
             UnitActionHandler.Initialize(this);
 
-        UnitActionAnimation = this.GetComponent<UnitActionAnimation>();
-        if (UnitActionAnimation)
-            UnitActionAnimation.Initialize(this);
-
         UnitProperties = this.GetComponent<UnitProperties>();
         if (UnitProperties)
             UnitProperties.Initialize(this);
@@ -110,25 +106,15 @@ public class Unit : MonoBehaviour
         if (UnitBasicAnimation)
             UnitBasicAnimation.Initialize(this);
 
-        SetupAnimations();
-        
+        UnitActionAnimation = this.GetComponent<UnitActionAnimation>();
+        if (UnitActionAnimation)
+            UnitActionAnimation.Initialize(this);
+
         UnitController.StopMoving();
     }
 
     public void SetTeam(bool controlledByAI = false)
     {
         UnitProperties.AIControlled = controlledByAI;
-        //UnitBaseAI = this.GetComponent<BaseAI>();
-
-        //this.Tag = "Enemy"; // HARD_CODED
-    }
-
-    void SetupAnimations()
-    {
-        UnitAnimator[UnitPrimaryState.Idle.ToString()].wrapMode = WrapMode.Loop;
-        UnitAnimator[UnitPrimaryState.Walk.ToString()].wrapMode = WrapMode.Loop;
-
-        UnitAnimator[WallClimb_Animations.WallClimb_2Metters.ToString()].wrapMode = WrapMode.PingPong;
-        UnitAnimator[WallClimb_Animations.WallClimbDown_2Metters.ToString()].wrapMode = WrapMode.PingPong;
     }
 }

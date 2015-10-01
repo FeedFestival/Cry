@@ -188,8 +188,8 @@ public class UnitActionHandler : MonoBehaviour
         {
             case ActionType.Ladder:
 
-                Unit.Ladder = null;
                 Unit.Ladder.LadderActionHandler.LadderPath = null;
+                Unit.Ladder = null;
                 break;
 
             case ActionType.ChairClimb:

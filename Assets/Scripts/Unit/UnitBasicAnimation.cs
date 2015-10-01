@@ -10,6 +10,13 @@ public class UnitBasicAnimation : MonoBehaviour
     public void Initialize(Unit unit)
     {
         Unit = unit;
+
+        SetupAnimations();
+    }
+
+    public void PlayIdle()
+    {
+        Unit.UnitAnimator.Play(Unit.UnitProperties.ArmatureName + UnitPrimaryState.Idle);
     }
 
     public void GoWalk()
@@ -19,5 +26,11 @@ public class UnitBasicAnimation : MonoBehaviour
     public void GoIdle()
     {
         Unit.UnitAnimator.CrossFade(Unit.UnitProperties.ArmatureName + UnitPrimaryState.Idle);
+    }
+
+    void SetupAnimations()
+    {
+        Unit.UnitAnimator[UnitPrimaryState.Idle.ToString()].wrapMode = WrapMode.Loop;
+        Unit.UnitAnimator[UnitPrimaryState.Walk.ToString()].wrapMode = WrapMode.Loop;
     }
 }
