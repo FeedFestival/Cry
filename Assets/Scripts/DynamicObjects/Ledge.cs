@@ -35,6 +35,12 @@ public class Ledge : MonoBehaviour
         //SceneManager = sceneManager;
         thisTransform = this.transform;
 
+        var liftUpPosition = new Vector3(0,0.01f,0);
+        var forwardLiftUp = new Vector3(0, 0, 0.01f);
+
+        thisTransform.position = thisTransform.position + liftUpPosition;
+        thisTransform.position = thisTransform.position + forwardLiftUp;
+
         thisWallClimb_Name = "[" + thisTransform.position.x + "," + thisTransform.position.y + "," + thisTransform.position.z + "]";
 
         LedgeInputTrigger = thisTransform.GetComponent<LedgeInputTrigger>();

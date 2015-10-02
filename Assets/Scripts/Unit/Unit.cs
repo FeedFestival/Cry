@@ -73,6 +73,7 @@ public class Unit : MonoBehaviour
     public Ladder Ladder;
     public Chair Chair;
     public Ledge Ledge;
+    public Table Table;
 
     // Use this for initialization
     public void Initialize(SceneManager sceneManager)

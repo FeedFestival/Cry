@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 71c41a6437b1eb34da34931d258b3ee1
-timeCreated: 1443698000
+guid: 424521165e9fd6344ad040575d4703f0
+timeCreated: 1443783491
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -88,16 +88,24 @@ ModelImporter:
     7400000: Default Take
     7400002: Climb_Exit_To_Level2_Top
     7400004: Climb_From_Level1_To_Level2
-    7400006: ClimbDown_Exit_To_Bottom
-    7400008: ClimbDown_From_Level2_To_Level1
-    7400010: GetOn_From_Bottom
-    7400012: GetOn_From_Level2_Top
-    7400014: Idle
-    7400016: Idle_Ladder
-    7400018: Jump_Exit_To_Bottom
-    7400020: Walk
-    7400022: WallClimb_2Metters
-    7400024: WallClimbDown_2Metters
+    7400006: Climb_Table
+    7400008: ClimbDown_Exit_To_Bottom
+    7400010: ClimbDown_From_Level2_To_Level1
+    7400012: ClimbDown_Table
+    7400014: DropTable_FromBack
+    7400016: GetOn_From_Bottom
+    7400018: GetOn_From_Level2_Top
+    7400020: Idle
+    7400022: Idle_Ladder
+    7400024: Idle_Table
+    7400026: Jump_Exit_To_Bottom
+    7400028: LiftTable_FromBack
+    7400030: Move_Table
+    7400032: Rotate_Table_Left
+    7400034: Rotate_Table_Right
+    7400036: Walk
+    7400038: WallClimb_2Metters
+    7400040: WallClimbDown_2Metters
     9500000: //RootNode
     11100000: //RootNode
     13700000: MC_Body
@@ -111,7 +119,7 @@ ModelImporter:
     bakeSimulation: 0
     optimizeGameObjects: 0
     motionNodeName: 
-    animationCompression: 0
+    animationCompression: 1
     animationRotationError: .5
     animationPositionError: .5
     animationScaleError: .5

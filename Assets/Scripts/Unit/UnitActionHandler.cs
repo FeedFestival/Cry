@@ -64,6 +64,16 @@ public class UnitActionHandler : MonoBehaviour
                 SetPathToStartPoint();
 
                 break;
+            case ActionType.TableClimb:
+
+                curentActionType = actionType;
+
+                if (!Unit.Table)
+                    Unit.Table = worldObject.GetComponent<Table>();
+
+                SetPathToStartPoint();
+
+                break;
             default:
                 break;
         }
@@ -130,6 +140,13 @@ public class UnitActionHandler : MonoBehaviour
                 this.Unit.UnitController.SetPathToTarget(Unit.Ledge.StartPointPosition);
                 
                 break;
+            case ActionType.TableClimb:
+
+                this.Unit.UnitActionInMind = UnitActionInMind.ClimbingTable;
+
+                this.Unit.UnitController.SetPathToTarget(Unit.Table.StartPointPosition);
+
+                break;
             default:
                 break;
         }
@@ -168,6 +185,16 @@ public class UnitActionHandler : MonoBehaviour
                 Unit.UnitProperties.Root = Unit.Ledge.Root;
 
                 Unit.Ledge.LedgeActionHandler.PlayActionAnimation(Unit);
+
+                break;
+
+            case ActionType.TableClimb:
+
+                Unit.UnitActionState = UnitActionState.ClimbingTable;
+
+                Unit.UnitProperties.Root = Unit.Table.StaticRoot;
+
+                Unit.Table.TableActionHandler.PlayActionAnimation(Unit);
 
                 break;
 

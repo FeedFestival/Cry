@@ -49,7 +49,7 @@ public class CameraControl : MonoBehaviour
             var desiredPosition = new Vector3(thisTransform.position.x,
                                                 SceneManager.PlayerStats.UnitProperties.thisTransform.position.y + YDistanceFromPlayer,
                                                 thisTransform.position.z);
-            thisTransform.position = Vector3.Lerp(thisTransform.position, desiredPosition, Time.deltaTime * 1.7f);
+            thisTransform.position = Vector3.Lerp(thisTransform.position, desiredPosition, Time.deltaTime * 2f);
         }
         if (!Input.GetKey(KeyCode.Space))
         {
@@ -64,12 +64,12 @@ public class CameraControl : MonoBehaviour
 
     private bool CheckYDistance()
     {
-        if (SceneManager.PlayerStats != null && SceneManager.PlayerStats.UnitPrimaryState != UnitPrimaryState.Idle)
+        var distance = Mathf.Round((SceneManager.PlayerStats.UnitProperties.thisTransform.position.y + YDistanceFromPlayer) * 1000f) / 1000f;
+        var cameraCurrentPosition = Mathf.Round((thisTransform.position.y) * 1000f) / 1000f;
+        if (distance != cameraCurrentPosition)
         {
-            var distance = Mathf.Round((SceneManager.PlayerStats.UnitProperties.thisTransform.position.y + YDistanceFromPlayer) * 1000f) / 1000f;
-            var cameraCurrentPosition = Mathf.Round((thisTransform.position.y) * 1000f) / 1000f;
-            if (distance != cameraCurrentPosition)
-                return true;
+            //Debug.Log("Camera is wrong.");
+            return true;
         }
         return false;
     }

@@ -13,6 +13,7 @@ public class LedgeInputTrigger : MonoBehaviour
     private Vector3 thisWallCLimb_Rotation;
 
     private float Ypos;
+    private float startPointYPos;
     private float groundYPos;
 
     [HideInInspector]
@@ -21,18 +22,20 @@ public class LedgeInputTrigger : MonoBehaviour
     // UI
     private GameObject UI_WallClimb;
     private GameObject UI_WallClimbDown;
-    
-    private RaycastHit Hit;
 
     private Vector3 lastPosition = new Vector3();
 
     public void Initialize(Ledge ledge)
     {
         Ledge = ledge;
+    }
 
+    void OnMouseEnter()
+    {
         thisWallCLimb_Rotation = new Vector3(270, Ledge.thisTransform.eulerAngles.y, 0);
 
         Ypos = Ledge.thisTransform.position.y;
+        startPointYPos = Ypos - 2f;
 
         switch (Ledge.LedgeType)
         {
@@ -48,17 +51,14 @@ public class LedgeInputTrigger : MonoBehaviour
             default:
                 break;
         }
-    }
 
-    void OnMouseEnter()
-    {
         CalculateLedgeCursor();
     }
 
     void OnMouseOver()
     {
         if (Ledge.LedgeStartPoint != LedgeStartPoint.OutOfReach && Ledge.SceneManager.PlayerStats.UnitPrimaryState != UnitPrimaryState.Busy
-            && (Ledge.SceneManager.PlayerStats.UnitActionInMind == UnitActionInMind.None 
+            && (Ledge.SceneManager.PlayerStats.UnitActionInMind == UnitActionInMind.None
                 || Ledge.SceneManager.PlayerStats.UnitActionInMind == UnitActionInMind.ClimbingWall)
             )
         {
@@ -79,11 +79,9 @@ public class LedgeInputTrigger : MonoBehaviour
 
     void CalculateLedgeCursor()
     {
-        float[] values = new float[2];
-        values[(int)LedgeStartPoint.Bottom] = groundYPos;
-        values[(int)LedgeStartPoint.Top] = Ypos;
+        var UnitYPos = Ledge.SceneManager.PlayerStats.UnitProperties.thisTransform.position.y - 1;
 
-        Ledge.LedgeStartPoint = (LedgeStartPoint)Logic.GetClosestYPos(Ledge.SceneManager.PlayerStats.UnitProperties.thisTransform.position.y - 1, values, 0.9f);
+        Ledge.LedgeStartPoint = (LedgeStartPoint)Logic.GetClosestYPos(UnitYPos, startPointYPos, Ypos);
 
         switch (Ledge.LedgeStartPoint)
         {
@@ -157,62 +155,31 @@ public class LedgeInputTrigger : MonoBehaviour
 
     void CalculateStartPoint()
     {
-        Ray Ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(Ray, out Hit, 100))
-        {
-            Hit.point = new Vector3(Mathf.Round(Hit.point.x * 100f) / 100f, Mathf.Round(Hit.point.y * 100f) / 100f, Mathf.Round(Hit.point.z * 100f) / 100f);
-            if (lastPosition != Hit.point)
-            {
-                lastPosition = Hit.point;
+        lastPosition = Logic.GetEdgePosition(lastPosition, Ledge.thisTransform.forward, Ledge.thisTransform.position.y, Ypos);
 
-                if (Hit.point.y == Ledge.thisTransform.position.y)
-                {
-                    var _UILinePosition = new Vector3(Hit.point.x, Ypos, Hit.point.z);
-
-                    var One_meterInFront = (Vector3)(Ledge.thisTransform.forward + _UILinePosition);
-                    var One_meterInFront_Half_metterDown = One_meterInFront + new Vector3(0, -0.5f, 0);
-                    var Half_metterDown = _UILinePosition + new Vector3(0, -0.5f, 0);
-
-                    RaycastHit hit;
-                    if (Physics.Raycast(new Ray(One_meterInFront_Half_metterDown, (Half_metterDown - One_meterInFront_Half_metterDown)), out hit, 10))
-                    {
-                        ShowLine(hit);
-                    }
-                }
-                else
-                {
-                    ShowLine(Hit);
-                }
-            }
-        }
+        ShowLine(lastPosition);
     }
 
-    private void ShowLine(RaycastHit hit)
+    private void ShowLine(Vector3 position)
     {
-        UI_WallClimb_Top_Position = new Vector3(hit.point.x, Ypos, hit.point.z);
-        UI_WallClimb_Bottom_Position = new Vector3(hit.point.x, groundYPos, hit.point.z);
+        UI_WallClimb_Top_Position = new Vector3(position.x, Ypos, position.z);
+        UI_WallClimb_Bottom_Position = new Vector3(position.x, groundYPos, position.z);
 
         if (Ledge.LedgeStartPoint == LedgeStartPoint.Bottom)
         {
             if (UI_WallClimb == null)
             {
-                UI_WallClimb = GameObject.Instantiate(Resources.Load("Prefabs/UI/WallClimb"), UI_WallClimb_Top_Position, Quaternion.identity) as GameObject;
-
-                UI_WallClimb.name = "WallClimb" + Ledge.thisWallClimb_Name;
-                UI_WallClimb.transform.eulerAngles = thisWallCLimb_Rotation;
+                UI_WallClimb = Logic.InstantiateEdgeUI(UI_WallClimb_Top_Position,thisWallCLimb_Rotation, Vector3.zero, "WallClimb" + Ledge.thisWallClimb_Name);
             }
-            UI_WallClimb.transform.position = UI_WallClimb_Top_Position;
+                UI_WallClimb.transform.position = UI_WallClimb_Top_Position;
         }
         else
         {
             if (UI_WallClimbDown == null)
             {
-                UI_WallClimbDown = GameObject.Instantiate(Resources.Load("Prefabs/UI/WallClimbDown"), UI_WallClimb_Bottom_Position, Quaternion.identity) as GameObject;
-
-                UI_WallClimbDown.name = "WallClimbDown" + Ledge.thisWallClimb_Name;
-                UI_WallClimbDown.transform.eulerAngles = thisWallCLimb_Rotation;
+                UI_WallClimbDown = Logic.InstantiateEdgeUI(UI_WallClimb_Bottom_Position, thisWallCLimb_Rotation, Vector3.zero, "WallClimbDown" + Ledge.thisWallClimb_Name);
             }
-            UI_WallClimbDown.transform.position = UI_WallClimb_Bottom_Position;
+                UI_WallClimbDown.transform.position = UI_WallClimb_Bottom_Position;
         }
     }
 }

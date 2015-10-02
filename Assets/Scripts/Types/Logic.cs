@@ -28,11 +28,11 @@ namespace Assets.Scripts.Types
 
     public enum UnitActionState
     {
-        None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3
+        None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3, ClimbingTable = 4
     }
     public enum UnitActionInMind
     {
-        None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3
+        None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3, ClimbingTable = 4
     }
 
     public enum UnitFeetState
@@ -44,7 +44,7 @@ namespace Assets.Scripts.Types
 
     public enum ActionType
     {
-        None = 0, Ladder = 1, ChairClimb = 2, ChairGrab = 3, LedgeClimb = 4
+        None = 0, Ladder = 1, ChairClimb = 2, ChairGrab = 3, LedgeClimb = 4, TableClimb = 5
     }
 
     #region Chair
@@ -122,6 +122,28 @@ namespace Assets.Scripts.Types
 
     #endregion
 
+    #region Table
+
+    public enum TableEdge
+    {
+        Table_Side_Collider = 0,
+        Table_Side_Collider_L = 1,
+        Table_End_Collider = 2,
+        Table_End_Collider_F = 3
+    }
+
+    public enum TableStartPoint
+    {
+        Bottom = 0, Top = 1, OutOfReach = 2
+    }
+
+    public enum TableAnimations
+    {
+        Climb_Table = 0, ClimbDown_Table = 1
+    }
+
+    #endregion
+
     public static class Logic
     {
         public static int GetSmallestDistance(float[] distances)
@@ -149,27 +171,74 @@ namespace Assets.Scripts.Types
             return smallestIndex;
         }
 
-        public static int GetClosestYPos(float unitYPos, float[] values, float threshold = 0.5f)
+        public static int GetClosestYPos(float UnitYPos, float groundYPos, float Ypos)
         {
-            int returnValue = 2;
-            if (values.Length > 2)
-            {
+            int returnValue = 0;
 
+            if (Mathf.Round(UnitYPos - 0.5f) < Mathf.Round(groundYPos) || Mathf.Round(UnitYPos) > Mathf.Round(Ypos + 0.5f))
+            {
+                return 2;   // OutOfReach
+            }
+
+            var middlePosY = groundYPos + ((Ypos - groundYPos) / 2);
+
+            if (UnitYPos < middlePosY)
+            {
+                returnValue = 0;
             }
             else
             {
-                if (Mathf.Round(unitYPos - threshold) <= Mathf.Round(values[0]) && Mathf.Round(unitYPos + threshold) >= Mathf.Round(values[0])
-                    )
+                returnValue = 1;
+            }
+
+            return returnValue;
+        }
+
+        public static Vector3 GetEdgePosition(Vector3 lastPosition, Vector3 forward, float Ypos_compare, float Ypos)
+        {
+            RaycastHit Hit;
+            Ray Ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(Ray, out Hit, 100))
+            {
+                Hit.point = new Vector3(Mathf.Round(Hit.point.x * 100f) / 100f, Mathf.Round(Hit.point.y * 100f) / 100f, Mathf.Round(Hit.point.z * 100f) / 100f);
+                if (lastPosition != Hit.point)
                 {
-                    returnValue = 0;
-                }
-                if (Mathf.Round(unitYPos - threshold) <= Mathf.Round(values[1]) && Mathf.Round(unitYPos + threshold) >= Mathf.Round(values[1])
-                    )
-                {
-                    returnValue = 1;
+                    lastPosition = Hit.point;
+
+                    if (Mathf.Round(Hit.point.y) == Mathf.Round(Ypos_compare))
+                    {
+                        var _UILinePosition = new Vector3(Hit.point.x, Ypos, Hit.point.z);
+
+                        var One_meterInFront = (Vector3)(forward + _UILinePosition);
+                        var One_meterInFront_Half_metterDown = One_meterInFront + new Vector3(0, -0.5f, 0);
+                        var Half_metterDown = _UILinePosition + new Vector3(0, -0.5f, 0);
+
+                        RaycastHit hit;
+                        if (Physics.Raycast(new Ray(One_meterInFront_Half_metterDown, (Half_metterDown - One_meterInFront_Half_metterDown)), out hit, 10))
+                        {
+                            return hit.point;
+                        }
+                    }
+                    else
+                    {
+                        return Hit.point;
+                    }
                 }
             }
-            return returnValue;
+            return Vector3.zero;
+        }
+
+        public static GameObject InstantiateEdgeUI(Vector3 position,Vector3 rotation, Vector3 scale, string name)
+        {
+            var _object = GameObject.Instantiate(Resources.Load("Prefabs/UI/WallClimb"), position, Quaternion.identity) as GameObject;
+
+            _object.name = name;
+            _object.transform.eulerAngles = rotation;
+
+            if (scale != Vector3.zero)
+                _object.transform.localScale = scale;
+
+            return _object;
         }
     }
 }
