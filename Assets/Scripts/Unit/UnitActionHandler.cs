@@ -74,6 +74,16 @@ public class UnitActionHandler : MonoBehaviour
                 SetPathToStartPoint();
 
                 break;
+            case ActionType.GrabTable:
+
+                curentActionType = actionType;
+
+                if (!Unit.Table)
+                    Unit.Table = worldObject.GetComponent<Table>();
+
+                SetPathToStartPoint();
+
+                break;
             default:
                 break;
         }
@@ -147,6 +157,23 @@ public class UnitActionHandler : MonoBehaviour
                 this.Unit.UnitController.SetPathToTarget(Unit.Table.StartPointPosition);
 
                 break;
+            case ActionType.GrabTable:
+
+                this.Unit.UnitActionInMind = UnitActionInMind.MovingTable;
+
+                switch (Unit.Table.TableActionStartPoint)
+	            {
+                    case TableActionStartPoint.Table_StartPos_Forward:
+                        this.Unit.UnitController.SetPathToTarget(Unit.Table.Table_StartPos_Forward);
+                        break;
+                    case TableActionStartPoint.Table_StartPos_Back:
+                        this.Unit.UnitController.SetPathToTarget(Unit.Table.Table_StartPos_Back);
+                        break;
+                    default:
+                        break;
+	            }
+
+                break;
             default:
                 break;
         }
@@ -191,11 +218,23 @@ public class UnitActionHandler : MonoBehaviour
             case ActionType.TableClimb:
 
                 Unit.UnitActionState = UnitActionState.ClimbingTable;
+                Unit.Table.TableState = TableState.ToBeClimbed;
 
                 Unit.UnitProperties.Root = Unit.Table.StaticRoot;
 
                 Unit.Table.TableActionHandler.PlayActionAnimation(Unit);
 
+                break;
+
+            case ActionType.GrabTable:
+
+                Unit.PlayerActionInMind = PlayerActionInMind.MovingTable;
+                Unit.UnitActionState = UnitActionState.MovingTable;
+                Unit.Table.TableState = TableState.ToBeMoved;
+
+                Unit.UnitProperties.Root = Unit.Table.StaticRoot;
+
+                Unit.Table.TableActionHandler.PlayActionAnimation(Unit);
                 break;
 
             default:
@@ -228,6 +267,16 @@ public class UnitActionHandler : MonoBehaviour
 
                 Unit.Ledge.ResetLedgeAction();
                 Unit.Ledge = null;
+                break;
+
+            case ActionType.GrabTable:
+
+                Unit.SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
+                Unit.PlayerActionInMind = PlayerActionInMind.Moving;
+
+                //Unit.Ledge.ResetLedgeAction();
+                Unit.Table = null;
+
                 break;
 
             default:

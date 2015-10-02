@@ -9,6 +9,7 @@ public class CameraCursor : MonoBehaviour {
      * - Its parameters are diferent cursor textures.
      * - The function its called from the object in question that senses the 'hover'.
      */
+    private CameraControl CameraControl;
 
     [HideInInspector]
     public CursorType lastCursor = CursorType.Default;
@@ -36,8 +37,10 @@ public class CameraCursor : MonoBehaviour {
     int cursorSizeX = 88;   // 48
     int cursorSizeY = 111;
 
-    public void Initialize()
+    public void Initialize(CameraControl cameraControl)
     {
+        CameraControl = cameraControl;
+
         Cursor.visible = false;
 
         defaultCursor = Resources.Load("Cursor/_Cursor") as Texture2D;
@@ -59,27 +62,30 @@ public class CameraCursor : MonoBehaviour {
 
     public void ChangeCursor(CursorType cursorType)
     {
-        if (lastCursor != cursorType)
+        if (CameraControl.SceneManager.PlayerStats.PlayerActionInMind != PlayerActionInMind.UseAbility)
         {
-            lastCursor = cursorType;
-
-            switch (cursorType)
+            if (lastCursor != cursorType)
             {
-                case CursorType.Default:
-                    curentCursor = defaultCursor;
-                    break;
-                case CursorType.Ladder_Up:
-                    curentCursor = Ladder_Up_Cursor;
-                    break;
-                case CursorType.Ladder_Down:
-                    curentCursor = Ladder_Down_Cursor;
-                    break;
-                case CursorType.Grab:
-                    curentCursor = Grab_Cursor;
-                    break;
-                default:
-                    curentCursor = defaultCursor;
-                    break;
+                lastCursor = cursorType;
+
+                switch (cursorType)
+                {
+                    case CursorType.Default:
+                        curentCursor = defaultCursor;
+                        break;
+                    case CursorType.Ladder_Up:
+                        curentCursor = Ladder_Up_Cursor;
+                        break;
+                    case CursorType.Ladder_Down:
+                        curentCursor = Ladder_Down_Cursor;
+                        break;
+                    case CursorType.Grab:
+                        curentCursor = Grab_Cursor;
+                        break;
+                    default:
+                        curentCursor = defaultCursor;
+                        break;
+                }
             }
         }
     }

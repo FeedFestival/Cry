@@ -23,7 +23,12 @@ public class Table : MonoBehaviour
     [HideInInspector]
     public Vector3 Table_RotationBack;
     [HideInInspector]
-    public Vector3 Table_RotationForward;   
+    public Vector3 Table_RotationForward;
+
+    [HideInInspector]
+    public Vector3 Table_StartPos_Forward;
+    [HideInInspector]
+    public Vector3 Table_StartPos_Back;
 
     [HideInInspector]
     public Vector3 StartPointPosition;
@@ -34,17 +39,24 @@ public class Table : MonoBehaviour
     [HideInInspector]
     public Animation TableStaticAnimator;
 
-    [HideInInspector]
+    //[HideInInspector]
     public Transform Root;
-    [HideInInspector]
+    //[HideInInspector]
     public Transform StaticRoot;
 
     //  Action variables
     [HideInInspector]
     public TableActionHandler TableActionHandler;
 
+    [HideInInspector]
+    public TableAnimation TableAnimation;
+
+    public TableState TableState;
+
     public TableStartPoint TableStartPoint;
     public TableEdge TableStartPoint_Edge;
+
+    public TableActionStartPoint TableActionStartPoint;
 
     // Use this for initialization
     void Start()
@@ -72,6 +84,13 @@ public class Table : MonoBehaviour
                     break;
                 case "Table_RotationForward":
                     Table_RotationForward = child.transform.position;
+                    break;
+
+                case "Table_StartPos_Forward":
+                    Table_StartPos_Forward = child.transform.position;
+                    break;
+                case "Table_StartPos_Back":
+                    Table_StartPos_Back = child.transform.position;
                     break;
 
                 case "Table_End_Collider_F":
@@ -117,6 +136,10 @@ public class Table : MonoBehaviour
         TableActionHandler = this.GetComponent<TableActionHandler>();
         if (TableActionHandler)
             TableActionHandler.Initialize(this);
+
+        TableAnimation = this.GetComponent<TableAnimation>();
+        if (TableAnimation)
+            TableAnimation.Initialize(this);
 
         thisTableClimb_Name = "[" + thisTransform.position.x + "," + thisTransform.position.y + "," + thisTransform.position.z + "]";
 	}

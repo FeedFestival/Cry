@@ -18,6 +18,8 @@ public class CameraControl : MonoBehaviour
     public CameraCursor CameraCursor;
     [HideInInspector]
     public CameraView CameraView;
+    [HideInInspector]
+    KeyboardInput KeyboardInput;
 
     [HideInInspector]
     public float YDistanceFromPlayer;
@@ -31,10 +33,13 @@ public class CameraControl : MonoBehaviour
         SceneManager = sceneManager;
 
         CameraCursor = GetComponent<CameraCursor>();
-        CameraCursor.Initialize();
+        CameraCursor.Initialize(this);
 
         CameraView = GetComponent<CameraView>();
         CameraView.Initialize(this);
+
+        KeyboardInput = GetComponent<KeyboardInput>();
+        KeyboardInput.Initialize(this);
 
         //  Props
         YDistanceFromPlayer = 18f;

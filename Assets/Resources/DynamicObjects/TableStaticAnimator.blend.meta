@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 08a39ec2885c0634ba051fbdc9015857
-timeCreated: 1443785806
+guid: 64896091c251c564dae090496cab8ca7
+timeCreated: 1443821228
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -19,6 +19,8 @@ ModelImporter:
     7400000: Default Take
     7400002: Climb_Table
     7400004: ClimbDown_Table
+    7400006: DropTable_FromBack
+    7400008: LiftTable_FromBack
     9500000: //RootNode
     11100000: //RootNode
     13700000: TableStatic

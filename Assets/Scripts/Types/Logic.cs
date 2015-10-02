@@ -21,6 +21,11 @@ namespace Assets.Scripts.Types
 
     #region Unit [State]
 
+    public enum PlayerActionInMind
+    {
+        Moving = 0, UseAbility = 1, MovingTable = 2
+    }
+
     public enum UnitPrimaryState
     {
         Idle = 0, Walk = 1, Busy = 2
@@ -28,11 +33,11 @@ namespace Assets.Scripts.Types
 
     public enum UnitActionState
     {
-        None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3, ClimbingTable = 4
+        None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3, ClimbingTable = 4, MovingTable = 5
     }
     public enum UnitActionInMind
     {
-        None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3, ClimbingTable = 4
+        None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3, ClimbingTable = 4, MovingTable = 5
     }
 
     public enum UnitFeetState
@@ -44,7 +49,7 @@ namespace Assets.Scripts.Types
 
     public enum ActionType
     {
-        None = 0, Ladder = 1, ChairClimb = 2, ChairGrab = 3, LedgeClimb = 4, TableClimb = 5
+        None = 0, Ladder = 1, ChairClimb = 2, ChairGrab = 3, LedgeClimb = 4, TableClimb = 5, GrabTable = 6
     }
 
     #region Chair
@@ -124,6 +129,11 @@ namespace Assets.Scripts.Types
 
     #region Table
 
+    public enum TableState
+    {
+        ToBeClimbed = 0,UnitOn = 1,ToBeMoved = 2
+    }
+
     public enum TableEdge
     {
         Table_Side_Collider = 0,
@@ -139,7 +149,21 @@ namespace Assets.Scripts.Types
 
     public enum TableAnimations
     {
-        Climb_Table = 0, ClimbDown_Table = 1
+        Climb_Table = 0, ClimbDown_Table = 1,
+
+        LiftTable_FromBack = 2,
+        Idle_Table = 3,
+        DropTable_FromBack = 4,
+
+        Move_Table = 5,
+
+        Rotate_Table_Left = 6,
+        Rotate_Table_Right = 7
+    }
+
+    public enum TableActionStartPoint
+    {
+        Table_StartPos_Forward = 0, Table_StartPos_Back = 1
     }
 
     #endregion

@@ -68,6 +68,11 @@ public class MapInputTrigger : MonoBehaviour
                     SceneManager.PlayerStats.UnitController.GoToTarget();
                 }
             }
+            if (SceneManager.PlayerStats.PlayerActionInMind == PlayerActionInMind.UseAbility)
+            {
+                SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
+                SceneManager.PlayerStats.PlayerActionInMind = PlayerActionInMind.Moving;
+            }
         }
     }
     void OnMouseExit()

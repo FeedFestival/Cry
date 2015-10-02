@@ -18,6 +18,8 @@ public class Unit : MonoBehaviour
     [Header("Unit States")]
     //  --------------------------------------------------------------------------------
 
+    public PlayerActionInMind PlayerActionInMind;
+
     public UnitPrimaryState UnitPrimaryState;
 
     public UnitActionState _unitActionState;
