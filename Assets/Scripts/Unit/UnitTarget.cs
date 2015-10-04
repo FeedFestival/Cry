@@ -26,25 +26,25 @@ public class UnitTarget : MonoBehaviour
     {
         if (this.Unit)
         {
-            if (this.Unit.UnitPrimaryState == UnitPrimaryState.Busy)
+            if (this.Unit.UnitPrimaryState == UnitPrimaryState.Busy && this.Unit.UnitFeetState != UnitFeetState.OnTable)
             {
                 if (debug)
                     Debug.Log("Unit is busy with an action and doesnt care about its path target (sad face)");
+                return;
             }
-            else
+
+            if (debug)
+                Debug.Log(foreignObjectHit.transform.gameObject.tag + " = " + this.Unit.UnitProperties.Tag + " ; "
+                        + foreignObjectHit.transform.gameObject.name + " = " + this.Unit.UnitProperties.FeetCollider.name);
+
+            //  When the feet reach the target we stop the unit.
+            if (foreignObjectHit.transform.gameObject.tag == this.Unit.UnitProperties.Tag
+                && foreignObjectHit.transform.gameObject.name == this.Unit.UnitProperties.FeetCollider.name)
             {
-                if (debug)
-                    Debug.Log(foreignObjectHit.transform.gameObject.tag + " = " + this.Unit.UnitProperties.Tag + " ; "
-                            + foreignObjectHit.transform.gameObject.name + " = " + this.Unit.UnitProperties.FeetCollider.name);
+                this.Unit.UnitController.StopMoving();
 
-                //  When the feet reach the target we stop the unit.
-                if (foreignObjectHit.transform.gameObject.tag == this.Unit.UnitProperties.Tag 
-                    && foreignObjectHit.transform.gameObject.name == this.Unit.UnitProperties.FeetCollider.name)
-                {
-                    this.Unit.UnitController.StopMoving();
-
-                }
             }
+
         }
     }
 

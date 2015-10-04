@@ -152,7 +152,7 @@ public class UnitActionHandler : MonoBehaviour
                 break;
             case ActionType.TableClimb:
 
-                this.Unit.UnitActionInMind = UnitActionInMind.ClimbingTable;
+                this.Unit.UnitActionInMind = UnitActionInMind.ClimbTable;
 
                 this.Unit.UnitController.SetPathToTarget(Unit.Table.StartPointPosition);
 
@@ -218,7 +218,7 @@ public class UnitActionHandler : MonoBehaviour
             case ActionType.TableClimb:
 
                 Unit.UnitActionState = UnitActionState.ClimbingTable;
-                Unit.Table.TableState = TableState.ToBeClimbed;
+                Unit.UnitActionInMind = UnitActionInMind.ClimbTable;
 
                 Unit.UnitProperties.Root = Unit.Table.StaticRoot;
 
@@ -230,7 +230,7 @@ public class UnitActionHandler : MonoBehaviour
 
                 Unit.PlayerActionInMind = PlayerActionInMind.MovingTable;
                 Unit.UnitActionState = UnitActionState.MovingTable;
-                Unit.Table.TableState = TableState.ToBeMoved;
+                Unit.UnitActionInMind = UnitActionInMind.MovingTable;
 
                 Unit.UnitProperties.Root = Unit.Table.StaticRoot;
 
@@ -269,12 +269,19 @@ public class UnitActionHandler : MonoBehaviour
                 Unit.Ledge = null;
                 break;
 
+            case ActionType.TableClimb:
+
+                Unit.Table.TableState = TableState.Static;
+                Unit.Table.TableStaticAnimator.transform.localPosition = Vector3.zero;
+                break;
+
             case ActionType.GrabTable:
 
                 Unit.SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
                 Unit.PlayerActionInMind = PlayerActionInMind.Moving;
 
-                //Unit.Ledge.ResetLedgeAction();
+                Unit.Table.TableState = TableState.Static;
+
                 Unit.Table = null;
 
                 break;
@@ -284,6 +291,5 @@ public class UnitActionHandler : MonoBehaviour
         }
 
         curentActionType = ActionType.None;
-        
     }
 }

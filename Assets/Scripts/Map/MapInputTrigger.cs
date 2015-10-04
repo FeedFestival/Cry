@@ -47,6 +47,10 @@ public class MapInputTrigger : MonoBehaviour
                         SceneManager.PlayerStats.Ladder.LadderActionHandler.SetAction(LadderTriggerInput.Bottom);
                     }
                 }
+                else if (SceneManager.PlayerStats.UnitActionState == UnitActionState.MovingTable)
+                {
+
+                }
             }
             else
             {

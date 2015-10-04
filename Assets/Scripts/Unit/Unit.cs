@@ -43,7 +43,7 @@ public class Unit : MonoBehaviour
                     this.UnitFeetState = UnitFeetState.OnChair;
                     break;
                 case UnitActionState.ClimbingWall:
-                    
+                    this.UnitFeetState = UnitFeetState.InAir;
                     break;
                 default:
                     break;

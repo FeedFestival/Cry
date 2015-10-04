@@ -24,7 +24,8 @@ public class KeyboardInput : MonoBehaviour
             }
             else if (CameraControl.SceneManager.PlayerStats.PlayerActionInMind == PlayerActionInMind.MovingTable)
             {
-                CameraControl.SceneManager.PlayerStats.Table.TableActionHandler.PlayActionAnimation(TableAnimations.DropTable_FromBack);
+                CameraControl.SceneManager.PlayerStats.UnitActionInMind = UnitActionInMind.DropTable;
+                CameraControl.SceneManager.PlayerStats.Table.TableActionHandler.PlayActionAnimation();
             }
         }
     }

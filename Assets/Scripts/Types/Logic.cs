@@ -37,12 +37,13 @@ namespace Assets.Scripts.Types
     }
     public enum UnitActionInMind
     {
-        None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3, ClimbingTable = 4, MovingTable = 5
+        None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3,
+        ClimbTable = 4, ClimbDownTable = 5, MovingTable = 6, DropTable = 7
     }
 
     public enum UnitFeetState
     {
-        OnGround = 0, OnStairs = 1, OnChair = 2, OnLadder = 3
+        OnGround = 0, OnStairs = 1, OnChair = 2, OnLadder = 3, OnTable = 4, InAir = 11
     }
 
     #endregion
@@ -131,7 +132,7 @@ namespace Assets.Scripts.Types
 
     public enum TableState
     {
-        ToBeClimbed = 0,UnitOn = 1,ToBeMoved = 2
+        Static = 0, Moving = 1
     }
 
     public enum TableEdge
@@ -139,7 +140,9 @@ namespace Assets.Scripts.Types
         Table_Side_Collider = 0,
         Table_Side_Collider_L = 1,
         Table_End_Collider = 2,
-        Table_End_Collider_F = 3
+        Table_End_Collider_F = 3,
+
+        Table_Top_Collider = 4
     }
 
     public enum TableStartPoint
@@ -220,39 +223,36 @@ namespace Assets.Scripts.Types
 
         public static Vector3 GetEdgePosition(Vector3 lastPosition, Vector3 forward, float Ypos_compare, float Ypos)
         {
-            RaycastHit Hit;
-            Ray Ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(Ray, out Hit, 100))
+            var hitPoint = GetPointHitAtMousePosition();
+
+            hitPoint = new Vector3(Mathf.Round(hitPoint.x * 100f) / 100f, Mathf.Round(hitPoint.y * 100f) / 100f, Mathf.Round(hitPoint.z * 100f) / 100f);
+            if (lastPosition != hitPoint)
             {
-                Hit.point = new Vector3(Mathf.Round(Hit.point.x * 100f) / 100f, Mathf.Round(Hit.point.y * 100f) / 100f, Mathf.Round(Hit.point.z * 100f) / 100f);
-                if (lastPosition != Hit.point)
+                lastPosition = hitPoint;
+
+                if (Mathf.Round(hitPoint.y) == Mathf.Round(Ypos_compare))
                 {
-                    lastPosition = Hit.point;
+                    var _UILinePosition = new Vector3(hitPoint.x, Ypos, hitPoint.z);
 
-                    if (Mathf.Round(Hit.point.y) == Mathf.Round(Ypos_compare))
+                    var One_meterInFront = (Vector3)(forward + _UILinePosition);
+                    var One_meterInFront_Half_metterDown = One_meterInFront + new Vector3(0, -0.5f, 0);
+                    var Half_metterDown = _UILinePosition + new Vector3(0, -0.5f, 0);
+
+                    RaycastHit hit;
+                    if (Physics.Raycast(new Ray(One_meterInFront_Half_metterDown, (Half_metterDown - One_meterInFront_Half_metterDown)), out hit, 10))
                     {
-                        var _UILinePosition = new Vector3(Hit.point.x, Ypos, Hit.point.z);
-
-                        var One_meterInFront = (Vector3)(forward + _UILinePosition);
-                        var One_meterInFront_Half_metterDown = One_meterInFront + new Vector3(0, -0.5f, 0);
-                        var Half_metterDown = _UILinePosition + new Vector3(0, -0.5f, 0);
-
-                        RaycastHit hit;
-                        if (Physics.Raycast(new Ray(One_meterInFront_Half_metterDown, (Half_metterDown - One_meterInFront_Half_metterDown)), out hit, 10))
-                        {
-                            return hit.point;
-                        }
+                        return hit.point;
                     }
-                    else
-                    {
-                        return Hit.point;
-                    }
+                }
+                else
+                {
+                    return hitPoint;
                 }
             }
             return Vector3.zero;
         }
 
-        public static GameObject InstantiateEdgeUI(Vector3 position,Vector3 rotation, Vector3 scale, string name)
+        public static GameObject InstantiateEdgeUI(Vector3 position, Vector3 rotation, Vector3 scale, string name)
         {
             var _object = GameObject.Instantiate(Resources.Load("Prefabs/UI/WallClimb"), position, Quaternion.identity) as GameObject;
 
@@ -263,6 +263,27 @@ namespace Assets.Scripts.Types
                 _object.transform.localScale = scale;
 
             return _object;
+        }
+
+        public static Vector3 GetDirection(Vector3 v_From, Vector3 v_To)
+        {
+            return v_To - v_From;
+        }
+
+        public static Quaternion SmoothLook(Quaternion rotation, Vector3 newDirection, float speed)
+        {
+            return Quaternion.Lerp(rotation, Quaternion.LookRotation(newDirection), Time.deltaTime * speed);
+        }
+
+        public static Vector3 GetPointHitAtMousePosition()
+        {
+            RaycastHit Hit;
+            Ray Ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(Ray, out Hit, 100))
+            {
+                return Hit.point;
+            }
+            return Vector3.zero;
         }
     }
 }

@@ -17,38 +17,53 @@ public class UnitController : MonoBehaviour
 
     public void StopMoving(bool targetReached = true)
     {
-        if (debuging)
-            Debug.Log("Reaching (Unit action in mind = " + Unit.UnitActionInMind + ")");
-
-        Unit.AIPath.stopMoving();
-
-        if (targetReached)
+        if (Unit.UnitFeetState == UnitFeetState.OnGround)
         {
-            //  If we finish the journey
-            //      - And an action is set in mind
-            //      - And the Unit is not busy with another action.
-            //  --> That means we must fire the Action in mind and exit.
-            if (Unit.UnitActionInMind != UnitActionInMind.None && Unit.UnitPrimaryState != UnitPrimaryState.Busy)
+            if (debuging)
+                Debug.Log("Reaching (Unit action in mind = " + Unit.UnitActionInMind + ")");
+
+            Unit.AIPath.stopMoving();
+
+            if (targetReached)
             {
-                Unit.UnitActionHandler.StartAction();
+                //  If we finish the journey
+                //      - And an action is set in mind
+                //      - And the Unit is not busy with another action.
+                //  --> That means we must fire the Action in mind and exit.
+                if (Unit.UnitActionInMind != UnitActionInMind.None && Unit.UnitPrimaryState != UnitPrimaryState.Busy)
+                {
+                    Unit.UnitActionHandler.StartAction();
 
-                return;
+                    return;
+                }
+
+                //  If we finish the journey
+                //      - And for some reason the unit is Busy - dont go into Idle.
+                if (Unit.UnitPrimaryState != UnitPrimaryState.Busy)
+                {
+                    Unit.UnitPrimaryState = UnitPrimaryState.Idle;
+                    Unit.UnitBasicAnimation.GoIdle();
+                }
             }
-
-            //  If we finish the journey
-            //      - And for some reason the unit is Busy - dont go into Idle.
-            if (Unit.UnitPrimaryState != UnitPrimaryState.Busy)
+            else
             {
                 Unit.UnitPrimaryState = UnitPrimaryState.Idle;
                 Unit.UnitBasicAnimation.GoIdle();
+
+                Unit.UnitProperties.thisUnitTarget.thisTransform.position = Unit.UnitProperties.thisTransform.position;
             }
         }
-        else
+        else if (Unit.UnitFeetState == UnitFeetState.OnTable)
         {
-            Unit.UnitPrimaryState = UnitPrimaryState.Idle;
+            OnTable_Move = false;
             Unit.UnitBasicAnimation.GoIdle();
 
-            Unit.UnitProperties.thisUnitTarget.thisTransform.position = Unit.UnitProperties.thisTransform.position;
+            if (Unit.UnitActionInMind == UnitActionInMind.ClimbDownTable)
+            {
+                Unit.UnitFeetState = UnitFeetState.OnGround;
+                
+                Unit.Table.TableActionHandler.PlayActionAnimation();
+            }
         }
     }
 
@@ -67,17 +82,29 @@ public class UnitController : MonoBehaviour
 
     public void SetPathToTarget(Vector3 targetVector)
     {
-        Unit.UnitProperties.thisUnitTarget.transform.position = targetVector;
-        this.GoToTarget();
+        if (Unit.UnitFeetState == UnitFeetState.OnGround)
+        {
+            Unit.UnitProperties.thisUnitTarget.transform.position = targetVector;
+            this.GoToTarget();
+        }
+        else if (Unit.UnitFeetState == UnitFeetState.OnTable)
+        {
+            Unit.UnitProperties.thisUnitTarget.transform.position = targetVector;
+
+            OnTable_targetVector = targetVector + new Vector3(0, 1, 0);
+
+            Unit.UnitBasicAnimation.GoWalk();
+            OnTable_Move = true;
+        }
     }
-
-    bool startLerp;
-    bool lerpComplete;
-
-    Vector3 rootPos_lerp = new Vector3();
 
     void Update()
     {
+        if (Unit.UnitFeetState == UnitFeetState.OnTable)
+        {
+            MoveOnTable();
+            return;
+        }
         if (Unit != null && Unit.UnitProperties.ControllerFollowRoot)
         {
             FollowRoot();
@@ -85,33 +112,34 @@ public class UnitController : MonoBehaviour
 
         if (Unit.UnitPrimaryState == UnitPrimaryState.Walk)
         {
-            var pos = Unit.UnitProperties.FeetCollider.transform.position;
-
-            var posDown = new Vector3(pos.x, pos.y - 2f, pos.z);
-
-            var direction = posDown - pos;
-
-            if (debuging)
-                Debug.DrawLine(pos, (pos + direction));
-
-            Ray Ray = new Ray(pos, direction);
-            RaycastHit Hit;
-            if (Physics.Raycast(Ray, out Hit, 100))
-            {
-                if (Hit.transform.tag == "Map")
-                {
-                    if (debuging)
-                        Debug.DrawLine(pos, (pos + direction), Color.red);
-                    Unit.UnitProperties.thisTransform.position = new Vector3(Unit.UnitProperties.thisTransform.position.x,
-                                                                            Hit.point.y + 1f,
-                                                                            Unit.UnitProperties.thisTransform.position.z);
-                }
-            }
+            KeepOnGround();
         }
     }
 
-    public float xRot;
-    public float yRot;
+    bool OnTable_Move;
+    Vector3 OnTable_targetVector;
+
+    void MoveOnTable()
+    {
+        if (OnTable_Move)
+        {
+            Unit.UnitProperties.thisTransform.position = Vector3.Lerp(Unit.UnitProperties.thisTransform.position,
+                                                                        OnTable_targetVector,
+                                                                        Time.deltaTime * Unit.UnitProperties.MovementSpeed);
+
+            Unit.UnitProperties.thisTransform.rotation = Logic.SmoothLook(Unit.UnitProperties.thisTransform.rotation,
+                Logic.GetDirection(Unit.UnitProperties.thisTransform.position, OnTable_targetVector),
+                7f);
+        }
+    }
+
+    bool startLerp;
+    bool lerpComplete;
+
+    Vector3 rootPos_lerp = new Vector3();
+
+    float xRot;
+    float yRot;
 
     void FollowRoot()
     {
@@ -158,5 +186,31 @@ public class UnitController : MonoBehaviour
     {
         yield return new WaitForSeconds(lerpTime);
         lerpComplete = true;
+    }
+
+    void KeepOnGround()
+    {
+        var pos = Unit.UnitProperties.FeetCollider.transform.position;
+
+        var posDown = new Vector3(pos.x, pos.y - 2f, pos.z);
+
+        var direction = posDown - pos;
+
+        if (debuging)
+            Debug.DrawLine(pos, (pos + direction));
+
+        Ray Ray = new Ray(pos, direction);
+        RaycastHit Hit;
+        if (Physics.Raycast(Ray, out Hit, 100))
+        {
+            if (Hit.transform.tag == "Map")
+            {
+                if (debuging)
+                    Debug.DrawLine(pos, (pos + direction), Color.red);
+                Unit.UnitProperties.thisTransform.position = new Vector3(Unit.UnitProperties.thisTransform.position.x,
+                                                                        Hit.point.y + 1f,
+                                                                        Unit.UnitProperties.thisTransform.position.z);
+            }
+        }
     }
 }

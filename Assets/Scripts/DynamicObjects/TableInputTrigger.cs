@@ -18,6 +18,7 @@ public class TableInputTrigger : MonoBehaviour
     private Vector3 UI_TableClimb_Top_Position;
 
     private Vector3 thisTableCLimb_Rotation;
+    private Vector3 thisTableCLimbDown_Rotation;
 
     private GameObject UI_TableClimb;
     private GameObject UI_TableClimbDown;
@@ -35,65 +36,78 @@ public class TableInputTrigger : MonoBehaviour
         thisTransform = this.transform;
         thisTableCLimb_Rotation = thisTransform.eulerAngles;
         thisTableCLimb_Rotation.Set(270, thisTableCLimb_Rotation.y, thisTableCLimb_Rotation.z);
+        thisTableCLimbDown_Rotation = thisTransform.eulerAngles;
+        thisTableCLimbDown_Rotation.Set(270, thisTableCLimbDown_Rotation.y + 180, thisTableCLimbDown_Rotation.z);
 
         groundYPos = Table.thisTransform.position.y;
         Ypos = Table.thisTransform.position.y + 1f;
 
         if (Table.SceneManager.PlayerStats.PlayerActionInMind != PlayerActionInMind.UseAbility)
             CalculateTableCursor();
-        else
-            CalculateStartPoint();
     }
 
     void OnMouseOver()
     {
-        if (Table.SceneManager.PlayerStats.PlayerActionInMind != PlayerActionInMind.UseAbility)
+        if (TableEdge == TableEdge.Table_Top_Collider)
         {
-            CalculateStartPoint();
-
             if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
             {
-                Table.StartPointPosition = UI_TableClimb_Bottom_Position + (thisTransform.forward / 2);
-                Table.TableStartPoint_Edge = this.TableEdge;
-
-                switch (TableEdge)
-                {
-                    case TableEdge.Table_Side_Collider:
-
-                        Table.TableStaticAnimator.transform.position = UI_TableClimb_Bottom_Position - (thisTransform.forward / 2);
-                        Table.TableStaticAnimator.transform.eulerAngles = Table.thisTransform.eulerAngles + new Vector3(0, 180, 0);
-                        break;
-
-                    case TableEdge.Table_Side_Collider_L:
-
-                        Table.TableStaticAnimator.transform.position = UI_TableClimb_Bottom_Position - (thisTransform.forward / 2);
-                        Table.TableStaticAnimator.transform.eulerAngles = Table.thisTransform.eulerAngles;
-                        break;
-
-                    case TableEdge.Table_End_Collider:
-
-                        Table.TableStaticAnimator.transform.position = Table.TableStaticAnimator.transform.position - (Table.thisTransform.forward / 2);
-                        Table.TableStaticAnimator.transform.eulerAngles = Table.thisTransform.eulerAngles + new Vector3(0, -90, 0);
-                        break;
-
-                    case TableEdge.Table_End_Collider_F:
-
-                        Table.TableStaticAnimator.transform.position = Table.TableStaticAnimator.transform.position + (Table.thisTransform.forward / 2);
-                        Table.TableStaticAnimator.transform.eulerAngles = Table.thisTransform.eulerAngles + new Vector3(0, 90, 0);
-                        break;
-
-                    default:
-                        break;
-                }
-
-                Table.SceneManager.PlayerStats.UnitActionHandler.SetAction(Table.thisTransform.gameObject, ActionType.TableClimb);
+                var pos = Logic.GetPointHitAtMousePosition();
+                if (pos != Vector3.zero)
+                    Table.SceneManager.PlayerStats.UnitController.SetPathToTarget(pos);
             }
         }
         else
         {
-            if (Input.GetMouseButtonDown((int)MouseInput.LeftClick))
+            if (Table.SceneManager.PlayerStats.PlayerActionInMind == PlayerActionInMind.UseAbility)
             {
-                Table.SceneManager.PlayerStats.UnitActionHandler.SetAction(Table.thisTransform.gameObject, ActionType.GrabTable);
+                if (Table.SceneManager.CameraControl.CameraCursor.lastCursor == CursorType.Grab)
+                {
+                    ResetUI();
+                    if (Input.GetMouseButtonDown((int)MouseInput.LeftClick))
+                    {
+                        CalculateStartPoint();
+                        Table.SceneManager.PlayerStats.UnitActionHandler.SetAction(Table.thisTransform.gameObject, ActionType.GrabTable);
+                    }
+                }
+            }
+            else
+            {
+                CalculateStartPoint();  // If OnTop also calculates ExitPoint
+
+                if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
+                {
+                    if (Table.SceneManager.PlayerStats.UnitFeetState == UnitFeetState.OnTable)
+                    {
+                        if (TableEdge == TableEdge.Table_Side_Collider || TableEdge == TableEdge.Table_Side_Collider_L)
+                        {
+                            Table.StartPointPosition = UI_TableClimb_Top_Position - (thisTransform.forward / 2);
+                        }
+                        else if (TableEdge == TableEdge.Table_End_Collider)
+                        {
+                            Table.StartPointPosition = Table.Table_BackExit;
+                        }
+                        else
+                        {
+                            Table.StartPointPosition = Table.Table_ForwardExit;
+                        }
+                        PlaceAnimator();
+                        CalculateRotationPoint();
+
+                        Table.TableActionHandler.Unit.UnitActionInMind = UnitActionInMind.ClimbDownTable;
+
+                        Table.SceneManager.PlayerStats.UnitController.SetPathToTarget(Table.StartPointPosition);
+                    }
+                    else
+                    {
+                        Table.StartPointPosition = UI_TableClimb_Bottom_Position + (thisTransform.forward / 2);
+
+                        PlaceAnimator();
+                        CalculateRotationPoint();
+
+                        Table.SceneManager.PlayerStats.UnitActionHandler.SetAction(Table.thisTransform.gameObject, ActionType.TableClimb);
+                    }
+                }
             }
         }
     }
@@ -125,9 +139,8 @@ public class TableInputTrigger : MonoBehaviour
         }
     }
 
-    Vector3 lastPosition;
-
-    void CalculateStartPoint()
+    private Vector3 lastPosition;
+    private void CalculateStartPoint()
     {
         if (Table.SceneManager.PlayerStats.PlayerActionInMind != PlayerActionInMind.UseAbility)
         {
@@ -135,7 +148,8 @@ public class TableInputTrigger : MonoBehaviour
             {
                 lastPosition = Logic.GetEdgePosition(lastPosition, thisTransform.forward, Ypos, Ypos);
 
-                ShowLine(lastPosition);
+                if (lastPosition != Vector3.zero)
+                    ShowLine(lastPosition);
             }
             else
             {
@@ -154,12 +168,67 @@ public class TableInputTrigger : MonoBehaviour
 
         }
     }
+    private void CalculateRotationPoint()
+    {
+        switch (TableEdge)
+        {
+            case TableEdge.Table_Side_Collider:
+
+                Table.TableStaticAnimator.transform.eulerAngles = Table.thisTransform.eulerAngles + new Vector3(0, 180, 0);
+                break;
+
+            case TableEdge.Table_Side_Collider_L:
+
+                Table.TableStaticAnimator.transform.eulerAngles = Table.thisTransform.eulerAngles;
+                break;
+
+            case TableEdge.Table_End_Collider:
+
+                Table.TableStaticAnimator.transform.eulerAngles = Table.thisTransform.eulerAngles + new Vector3(0, -90, 0);
+                break;
+
+            case TableEdge.Table_End_Collider_F:
+
+                Table.TableStaticAnimator.transform.eulerAngles = Table.thisTransform.eulerAngles + new Vector3(0, 90, 0);
+                break;
+
+            default:
+                break;
+        }
+    }
+    private void PlaceAnimator()
+    {
+        switch (TableEdge)
+        {
+            case TableEdge.Table_Side_Collider:
+
+                Table.TableStaticAnimator.transform.position = UI_TableClimb_Bottom_Position - (thisTransform.forward / 2);
+                break;
+
+            case TableEdge.Table_Side_Collider_L:
+
+                Table.TableStaticAnimator.transform.position = UI_TableClimb_Bottom_Position - (thisTransform.forward / 2);
+                break;
+
+            case TableEdge.Table_End_Collider:
+
+                Table.TableStaticAnimator.transform.position = Table.TableStaticAnimator.transform.position - (Table.thisTransform.forward / 2);
+                break;
+
+            case TableEdge.Table_End_Collider_F:
+
+                Table.TableStaticAnimator.transform.position = Table.TableStaticAnimator.transform.position + (Table.thisTransform.forward / 2);
+                break;
+
+            default:
+                break;
+        }
+    }
 
     private void ShowLine(Vector3 pos)
     {
         UI_TableClimb_Top_Position = new Vector3(pos.x, Ypos, pos.z);
         UI_TableClimb_Bottom_Position = new Vector3(pos.x, groundYPos, pos.z);
-
         if (Table.TableStartPoint == TableStartPoint.Bottom)
         {
             if (UI_TableClimb == null)
@@ -172,7 +241,7 @@ public class TableInputTrigger : MonoBehaviour
         {
             if (UI_TableClimbDown == null)
             {
-                UI_TableClimbDown = Logic.InstantiateEdgeUI(UI_TableClimb_Bottom_Position, thisTableCLimb_Rotation, new Vector3(0.32f, 0.8f, 0.8f), "TableClimbDown" + Table.thisTableClimb_Name);
+                UI_TableClimbDown = Logic.InstantiateEdgeUI(UI_TableClimb_Bottom_Position, thisTableCLimbDown_Rotation, new Vector3(0.32f, 0.8f, 0.8f), "TableClimbDown" + Table.thisTableClimb_Name);
             }
             UI_TableClimbDown.transform.position = UI_TableClimb_Bottom_Position;
         }

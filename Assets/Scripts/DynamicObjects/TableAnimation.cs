@@ -12,8 +12,6 @@ public class TableAnimation : MonoBehaviour {
         Table = table;
 	}
 
-    public bool exitMoveTableAction;
-
     public void PlayStatic(TableAnimations animation)
     {
         Table.TableStaticAnimator.CrossFade(animation.ToString());
@@ -25,11 +23,6 @@ public class TableAnimation : MonoBehaviour {
 
     public void Play(TableAnimations animation)
     {
-        exitMoveTableAction = false;
-
-        if (animation == TableAnimations.DropTable_FromBack)
-            exitMoveTableAction = true;
-
         Table.TableAnimator.CrossFade(animation.ToString());
 
         PlayStatic(animation);
@@ -43,7 +36,23 @@ public class TableAnimation : MonoBehaviour {
     {
         yield return new WaitForSeconds(animTime);
 
-        if (exitMoveTableAction)
-            Table.TableActionHandler.ExitMovingTableAction();
+        if (Table.TableActionHandler.Unit.UnitActionInMind == UnitActionInMind.DropTable)
+        {
+            Table.TableActionHandler.Unit.UnitActionHandler.ExitCurentAction();
+        }
+        else if (Table.TableActionHandler.Unit.UnitActionInMind == UnitActionInMind.ClimbDownTable)
+        {
+            Table.TableActionHandler.Unit.UnitActionHandler.ExitCurentAction();
+        }
+        else if (Table.TableActionHandler.Unit.UnitActionInMind == UnitActionInMind.ClimbTable)
+        {
+            Table.TableActionHandler.Unit.UnitFeetState = UnitFeetState.OnTable;
+            Table.Table_Top_Collider.gameObject.SetActive(true);
+            Table.TableStaticAnimator.transform.localPosition = Vector3.zero;
+        }
+        else if (Table.TableActionHandler.Unit.UnitActionInMind == UnitActionInMind.MovingTable)    // QUESTIONABLE PLACE
+        {
+            Table.TableState = TableState.Moving;
+        }
     }
 }

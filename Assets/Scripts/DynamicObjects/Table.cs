@@ -39,19 +39,54 @@ public class Table : MonoBehaviour
     [HideInInspector]
     public Animation TableStaticAnimator;
 
-    //[HideInInspector]
+    [HideInInspector]
     public Transform Root;
-    //[HideInInspector]
+    [HideInInspector]
     public Transform StaticRoot;
+
+    // TableState.ToBeClimbed
+    [HideInInspector]
+    public TableInputTrigger Table_Top_Collider;
+
+    private TableInputTrigger Table_End_Collider_F;
+    private TableInputTrigger Table_End_Collider;
+    private TableInputTrigger Table_Side_Collider;
+    private TableInputTrigger Table_Side_Collider_L;
 
     //  Action variables
     [HideInInspector]
     public TableActionHandler TableActionHandler;
-
     [HideInInspector]
     public TableAnimation TableAnimation;
 
-    public TableState TableState;
+    private TableState _TableState;
+    public TableState TableState
+    {
+        get
+        {
+            return _TableState;
+        }
+        set
+        {
+            _TableState = value;
+            if (_TableState == TableState.Static)
+            {
+                Table_Top_Collider.gameObject.SetActive(false);
+                Table_End_Collider_F.gameObject.SetActive(true);
+                Table_End_Collider.gameObject.SetActive(true);
+                Table_Side_Collider.gameObject.SetActive(true);
+                Table_Side_Collider_L.gameObject.SetActive(true);
+            }
+            else
+            {
+                Table_Top_Collider.gameObject.SetActive(false);
+                Table_End_Collider_F.gameObject.SetActive(false);
+                Table_End_Collider.gameObject.SetActive(false);
+                Table_Side_Collider.gameObject.SetActive(false);
+                Table_Side_Collider_L.gameObject.SetActive(false);
+            }
+        }
+    }
 
     public TableStartPoint TableStartPoint;
     public TableEdge TableStartPoint_Edge;
@@ -72,9 +107,6 @@ public class Table : MonoBehaviour
                 case "Table_BackExit":
                     Table_BackExit = child.transform.position;
                     break;
-                case "Table_CenterExit":
-                    Table_CenterExit = child.transform.position;
-                    break;
                 case "Table_ForwardExit":
                     Table_ForwardExit = child.transform.position;
                     break;
@@ -93,21 +125,30 @@ public class Table : MonoBehaviour
                     Table_StartPos_Back = child.transform.position;
                     break;
 
+                case "Table_Top_Collider":
+                    child.gameObject.AddComponent<TableInputTrigger>();
+                    Table_Top_Collider = child.gameObject.GetComponent<TableInputTrigger>();
+                    Table_Top_Collider.Initialize(this, TableEdge.Table_Top_Collider);
+                    break;
                 case "Table_End_Collider_F":
                     child.gameObject.AddComponent<TableInputTrigger>();
-                    child.gameObject.GetComponent<TableInputTrigger>().Initialize(this,TableEdge.Table_End_Collider_F);
+                    Table_End_Collider_F = child.gameObject.GetComponent<TableInputTrigger>();
+                    Table_End_Collider_F.Initialize(this, TableEdge.Table_End_Collider_F);
                     break;
                 case "Table_End_Collider":
                     child.gameObject.AddComponent<TableInputTrigger>();
-                    child.gameObject.GetComponent<TableInputTrigger>().Initialize(this, TableEdge.Table_End_Collider);
+                    Table_End_Collider = child.gameObject.GetComponent<TableInputTrigger>();
+                    Table_End_Collider.Initialize(this, TableEdge.Table_End_Collider);
                     break;
                 case "Table_Side_Collider":
                     child.gameObject.AddComponent<TableInputTrigger>();
-                    child.gameObject.GetComponent<TableInputTrigger>().Initialize(this, TableEdge.Table_Side_Collider);
+                    Table_Side_Collider = child.gameObject.GetComponent<TableInputTrigger>();
+                    Table_Side_Collider.Initialize(this, TableEdge.Table_Side_Collider);
                     break;
                 case "Table_Side_Collider_L":
                     child.gameObject.AddComponent<TableInputTrigger>();
-                    child.gameObject.GetComponent<TableInputTrigger>().Initialize(this, TableEdge.Table_Side_Collider_L);
+                    Table_Side_Collider_L = child.gameObject.GetComponent<TableInputTrigger>();
+                    Table_Side_Collider_L.Initialize(this, TableEdge.Table_Side_Collider_L);
                     break;
 
                 case "TableAnimator":
@@ -141,6 +182,10 @@ public class Table : MonoBehaviour
         if (TableAnimation)
             TableAnimation.Initialize(this);
 
+        TableState = TableState.Static;
+
         thisTableClimb_Name = "[" + thisTransform.position.x + "," + thisTransform.position.y + "," + thisTransform.position.z + "]";
-	}
+    }
+
+
 }
