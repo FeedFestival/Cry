@@ -64,6 +64,11 @@ public class UnitController : MonoBehaviour
                 
                 Unit.Table.TableActionHandler.PlayActionAnimation();
             }
+            else if (Unit.UnitActionInMind == UnitActionInMind.ClimbingWall)
+            {
+                Unit.UnitActionHandler.StartAction();
+                return;
+            }
         }
     }
 
@@ -125,7 +130,7 @@ public class UnitController : MonoBehaviour
         {
             Unit.UnitProperties.thisTransform.position = Vector3.Lerp(Unit.UnitProperties.thisTransform.position,
                                                                         OnTable_targetVector,
-                                                                        Time.deltaTime * Unit.UnitProperties.MovementSpeed);
+                                                                        Time.deltaTime * 3);
 
             Unit.UnitProperties.thisTransform.rotation = Logic.SmoothLook(Unit.UnitProperties.thisTransform.rotation,
                 Logic.GetDirection(Unit.UnitProperties.thisTransform.position, OnTable_targetVector),

@@ -34,41 +34,59 @@ public class LedgeInputTrigger : MonoBehaviour
     {
         thisWallCLimb_Rotation = new Vector3(270, Ledge.thisTransform.eulerAngles.y, 0);
 
-        Ypos = Ledge.thisTransform.position.y;
-        startPointYPos = Ypos - 2f;
+        Ypos = Ledge.thisTransform.position.y - 0.01f;
+        groundYPos = Ypos - 2f;
 
-        switch (Ledge.LedgeType)
-        {
-            case LedgeType.TwoMetters:
-                groundYPos = Ypos - 2f;
-                break;
-            case LedgeType.ThreeMetters:
-                groundYPos = Ypos - 3f;
-                break;
-            case LedgeType.FourMetters:
-                groundYPos = Ypos - 4f;
-                break;
-            default:
-                break;
-        }
+        //switch (Ledge.LedgeType)
+        //{
+        //    case LedgeType.TwoMetters:
+        //        groundYPos = Ypos - 2.0f;
+        //        break;
+        //    case LedgeType.ThreeMetters:
+        //        groundYPos = Ypos - 3.0f;
+        //        break;
+        //    case LedgeType.FourMetters:
+        //        groundYPos = Ypos - 4.0f;
+        //        break;
+        //    default:
+        //        break;
+        //}
 
         CalculateLedgeCursor();
     }
 
     void OnMouseOver()
     {
-        if (Ledge.LedgeStartPoint != LedgeStartPoint.OutOfReach && Ledge.SceneManager.PlayerStats.UnitPrimaryState != UnitPrimaryState.Busy
-            && (Ledge.SceneManager.PlayerStats.UnitActionInMind == UnitActionInMind.None
-                || Ledge.SceneManager.PlayerStats.UnitActionInMind == UnitActionInMind.ClimbingWall)
-            )
+        if (Ledge.LedgeStartPoint != LedgeStartPoint.OutOfReach)
         {
-            CalculateStartPoint();
-
-            if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
+            if (Ledge.SceneManager.PlayerStats.UnitPrimaryState != UnitPrimaryState.Busy)
             {
-                Ledge.ResetLedgeAction();
-                SetAction();
+                if (Ledge.SceneManager.PlayerStats.UnitActionInMind == UnitActionInMind.None
+                    || Ledge.SceneManager.PlayerStats.UnitActionInMind == UnitActionInMind.ClimbingWall)
+                {
+                    CalculateStartPoint();
+
+                    if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
+                    {
+                        Ledge.ResetLedgeAction();
+                        SetAction();
+                    }
+                }
             }
+            else if (Ledge.SceneManager.PlayerStats.UnitActionState == UnitActionState.ClimbingTable)
+            {
+                if (Ledge.LedgeStartPoint == LedgeStartPoint.Bottom)
+                {
+                    CalculateStartPoint();
+
+                    if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
+                    {
+                        Ledge.ResetLedgeAction();
+                        SetAction();
+                    }
+                }
+            }
+
         }
     }
 
@@ -81,7 +99,7 @@ public class LedgeInputTrigger : MonoBehaviour
     {
         var UnitYPos = Ledge.SceneManager.PlayerStats.UnitProperties.thisTransform.position.y - 1;
 
-        Ledge.LedgeStartPoint = (LedgeStartPoint)Logic.GetClosestYPos(UnitYPos, startPointYPos, Ypos);
+        Ledge.LedgeStartPoint = (LedgeStartPoint)Logic.GetClosestYPos(UnitYPos, groundYPos, Ypos);
 
         switch (Ledge.LedgeStartPoint)
         {
@@ -156,8 +174,8 @@ public class LedgeInputTrigger : MonoBehaviour
     void CalculateStartPoint()
     {
         lastPosition = Logic.GetEdgePosition(lastPosition, Ledge.thisTransform.forward, Ledge.thisTransform.position.y, Ypos);
-
-        ShowLine(lastPosition);
+        if (lastPosition != Vector3.zero)
+            ShowLine(lastPosition);
     }
 
     private void ShowLine(Vector3 position)
@@ -169,9 +187,9 @@ public class LedgeInputTrigger : MonoBehaviour
         {
             if (UI_WallClimb == null)
             {
-                UI_WallClimb = Logic.InstantiateEdgeUI(UI_WallClimb_Top_Position,thisWallCLimb_Rotation, Vector3.zero, "WallClimb" + Ledge.thisWallClimb_Name);
+                UI_WallClimb = Logic.InstantiateEdgeUI(UI_WallClimb_Top_Position, thisWallCLimb_Rotation, Vector3.zero, "WallClimb" + Ledge.thisWallClimb_Name);
             }
-                UI_WallClimb.transform.position = UI_WallClimb_Top_Position;
+            UI_WallClimb.transform.position = UI_WallClimb_Top_Position;
         }
         else
         {
@@ -179,7 +197,7 @@ public class LedgeInputTrigger : MonoBehaviour
             {
                 UI_WallClimbDown = Logic.InstantiateEdgeUI(UI_WallClimb_Bottom_Position, thisWallCLimb_Rotation, Vector3.zero, "WallClimbDown" + Ledge.thisWallClimb_Name);
             }
-                UI_WallClimbDown.transform.position = UI_WallClimb_Bottom_Position;
+            UI_WallClimbDown.transform.position = UI_WallClimb_Bottom_Position;
         }
     }
 }

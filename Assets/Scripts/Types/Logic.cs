@@ -202,7 +202,7 @@ namespace Assets.Scripts.Types
         {
             int returnValue = 0;
 
-            if (Mathf.Round(UnitYPos - 0.5f) < Mathf.Round(groundYPos) || Mathf.Round(UnitYPos) > Mathf.Round(Ypos + 0.5f))
+            if (UnitYPos < groundYPos || UnitYPos > Ypos + 0.5f)
             {
                 return 2;   // OutOfReach
             }
