@@ -42,7 +42,7 @@ public class LadderAnimation : MonoBehaviour {
         float animationLenght = Ladder.LadderAnimator[animationString].length;
 
         if (debug)
-            Debug.Log("an (Unit) - " + animationString + " , length = " + animationLenght);
+            Debug.Log("an (Player) - " + animationString + " , length = " + animationLenght);
 
         StartCoroutine(WaitForEndOfAnimation(animationLenght));
     }
@@ -57,12 +57,12 @@ public class LadderAnimation : MonoBehaviour {
         if (CurrentAction.ExitAction)
         {
             Ladder.LadderAnimator.Stop();
-            Ladder.SceneManager.PlayerStats.UnitActionHandler.ExitCurentAction();
+            GlobalData.Player.UnitActionHandler.ExitCurentAction();
         }
         else
         {
             // Play Next Animation in the List
-            Ladder.SceneManager.PlayerStats.Ladder.LadderActionHandler.PlayActionAnimation();
+            GlobalData.Player.Ladder.LadderActionHandler.PlayActionAnimation();
         }
     }
 

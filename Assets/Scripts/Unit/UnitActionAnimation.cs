@@ -89,7 +89,7 @@ public class UnitActionAnimation : MonoBehaviour
         Unit.UnitAnimator[LadderAnimations.GetOn_From_Level2_Top.ToString()].wrapMode = WrapMode.PingPong;
         Unit.UnitAnimator[LadderAnimations.Jump_Exit_To_Bottom.ToString()].wrapMode = WrapMode.PingPong;
 
-        //Unit.UnitAnimator[LadderAnimations.ClimbDown_From_Level1_To_Bottom.ToString()].wrapMode = WrapMode.PingPong;
+        //Player.UnitAnimator[LadderAnimations.ClimbDown_From_Level1_To_Bottom.ToString()].wrapMode = WrapMode.PingPong;
         Unit.UnitAnimator[LadderAnimations.ClimbDown_Exit_To_Bottom.ToString()].wrapMode = WrapMode.PingPong;
     }
 }

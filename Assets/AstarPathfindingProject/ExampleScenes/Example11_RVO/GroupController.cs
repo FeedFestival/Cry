@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Pathfinding.RVO;
 using Pathfinding.RVO.Sampled;
 
-/** RVO Example Scene Unit Controller.
+/** RVO Example Scene Player Controller.
  * Controls AIs and camera in the RVO example scene.
  */
 public class GroupController : MonoBehaviour {

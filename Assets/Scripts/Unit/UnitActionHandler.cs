@@ -191,7 +191,7 @@ public class UnitActionHandler : MonoBehaviour
                 Unit.UnitActionState = UnitActionState.ClimbingLadder;
                 Unit.Ladder.LadderActionHandler.CalculateLadderCursor();   // DOUBLE_CHECK
 
-                //  This also sets the Unit to follow the pivot of the ladder to be guided throut the animation
+                //  This also sets the Player to follow the pivot of the ladder to be guided throut the animation
                 Unit.UnitProperties.Root = Unit.Ladder.Root;
 
                 Unit.Ladder.LadderActionHandler.PlayActionAnimation();
@@ -207,11 +207,21 @@ public class UnitActionHandler : MonoBehaviour
 
             case ActionType.LedgeClimb:
 
+                if (Unit.Table)
+                {
+                    Unit.Table.TableActionHandler.Unit = null;
+                    Unit.Table.TableStartPoint = TableStartPoint.OutOfReach;
+                    Unit.Table = null;
+                }
+
+                Unit.Ledge.Unit = Unit;
+                Unit.Ledge.ResetUI();
+
                 Unit.UnitActionState = UnitActionState.ClimbingWall;
 
                 Unit.UnitProperties.Root = Unit.Ledge.Root;
 
-                Unit.Ledge.LedgeActionHandler.PlayActionAnimation(Unit);
+                Unit.Ledge.LedgeActionHandler.PlayActionAnimation();
 
                 break;
 
@@ -273,11 +283,12 @@ public class UnitActionHandler : MonoBehaviour
 
                 Unit.Table.TableState = TableState.Static;
                 Unit.Table.TableStaticAnimator.transform.localPosition = Vector3.zero;
+                Unit.Table = null;
                 break;
 
             case ActionType.GrabTable:
 
-                Unit.SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
+                GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
                 Unit.PlayerActionInMind = PlayerActionInMind.Moving;
 
                 Unit.Table.TableState = TableState.Static;

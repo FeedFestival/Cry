@@ -5,8 +5,6 @@ using Assets.Scripts.Types;
 
 public class CameraView : MonoBehaviour
 {
-    private CameraControl CameraControl;
-
     void Awake()
     {
         // set the desired aspect ratio (the values in this example are
@@ -54,10 +52,10 @@ public class CameraView : MonoBehaviour
         Application.targetFrameRate = 60;
     }
 
-    public void Initialize(CameraControl cameraControl)
-    {
-        CameraControl = cameraControl;
-    }
+    //public void Initialize(CameraControl cameraControl)
+    //{
+    //    CameraControl = cameraControl;
+    //}
 
     void Update()
     {

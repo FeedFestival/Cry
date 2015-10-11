@@ -6,55 +6,49 @@ public class MapInputTrigger : MonoBehaviour
 {
     public bool debug = false;
 
-    private SceneManager SceneManager;
-
-    public void Initialize(SceneManager sceneManager)
-    {
-        SceneManager = sceneManager;
-    }
-
     void OnMouseEnter()
     {
-        if (SceneManager)
+        if (GlobalData.Player.UnitPrimaryState == UnitPrimaryState.Busy)
         {
-            if (SceneManager.PlayerStats.UnitPrimaryState == UnitPrimaryState.Busy)
+            if (GlobalData.Player.UnitActionState == UnitActionState.ClimbingLadder)
             {
-                if (SceneManager.PlayerStats.UnitActionState == UnitActionState.ClimbingLadder)
-                {
-                    SceneManager.PlayerStats.Ladder.LadderActionHandler.CalculateLadderCursor();
-                }
-            }
-            else
-            {
-                SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
+                GlobalData.Player.Ladder.LadderActionHandler.CalculateLadderCursor();
             }
         }
+        else
+        {
+            GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
+        }
+
     }
     void OnMouseOver()
     {
         if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
         {
-            if (SceneManager.PlayerStats.UnitPrimaryState == UnitPrimaryState.Busy)
+            if (GlobalData.Player.UnitPrimaryState == UnitPrimaryState.Busy)
             {
-                if (SceneManager.PlayerStats.UnitActionState == UnitActionState.ClimbingLadder)
+                if (GlobalData.Player.UnitActionState == UnitActionState.ClimbingLadder)
                 {
-                    if (SceneManager.CameraControl.CameraCursor.lastCursor == CursorType.Ladder_Up)
+                    if (GlobalData.CameraControl.CameraCursor.lastCursor == CursorType.Ladder_Up)
                     {
-                        SceneManager.PlayerStats.Ladder.LadderActionHandler.SetAction(LadderTriggerInput.Level2_Top);
+                        GlobalData.Player.Ladder.LadderActionHandler.SetAction(LadderTriggerInput.Level2_Top);
                     }
                     else
                     {
-                        SceneManager.PlayerStats.Ladder.LadderActionHandler.SetAction(LadderTriggerInput.Bottom);
+                        GlobalData.Player.Ladder.LadderActionHandler.SetAction(LadderTriggerInput.Bottom);
                     }
                 }
-                else if (SceneManager.PlayerStats.UnitActionState == UnitActionState.MovingTable)
+                else if (GlobalData.Player.UnitActionState == UnitActionState.MovingTable)
                 {
 
                 }
             }
             else
             {
-                var Target = SceneManager.PlayerStats.UnitProperties.thisUnitTarget.thisTransform;
+                // This is canceling the actions.
+                GlobalData.Player.UnitActionInMind = UnitActionInMind.None;
+
+                var Target = GlobalData.Player.UnitProperties.thisUnitTarget.thisTransform;
 
                 RaycastHit hit;
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -69,18 +63,18 @@ public class MapInputTrigger : MonoBehaviour
                     if (debug)
                         Debug.Log("target_move to this pos : " + Target.position);
 
-                    SceneManager.PlayerStats.UnitController.GoToTarget();
+                    GlobalData.Player.UnitController.GoToTarget();
                 }
             }
-            if (SceneManager.PlayerStats.PlayerActionInMind == PlayerActionInMind.UseAbility)
+            if (GlobalData.Player.PlayerActionInMind == PlayerActionInMind.UseAbility)
             {
-                SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
-                SceneManager.PlayerStats.PlayerActionInMind = PlayerActionInMind.Moving;
+                GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
+                GlobalData.Player.PlayerActionInMind = PlayerActionInMind.Moving;
             }
         }
     }
     void OnMouseExit()
     {
-        SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
+        GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
     }
 }

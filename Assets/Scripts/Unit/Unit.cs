@@ -6,16 +6,16 @@ public class Unit : MonoBehaviour
 {
     /*
         This script is the component manager of the unit it sits on.
-     * - it holds the big SceneManager script that holds the world, and many component script that are about 'this' Unit.
+     * - it holds the big SceneManager script that holds the world, and many component script that are about 'this' Player.
      * - It also holds the Base Stats of the unit, like : HitPoints, AtackSpeed, MovementSpeed ...
-     * - It also initializes the components and its dependencies on 'this' Unit.
+     * - It also initializes the components and its dependencies on 'this' Player.
      */
 
     [Header("Just for development")]
     //  --------------------------------------------------------------------------------
-    public SceneManager SceneManager;
+    //public SceneManager SceneManager;
 
-    [Header("Unit States")]
+    [Header("Player States")]
     //  --------------------------------------------------------------------------------
 
     public PlayerActionInMind PlayerActionInMind;
@@ -77,11 +77,15 @@ public class Unit : MonoBehaviour
     public Ledge Ledge;
     public Table Table;
 
-    // Use this for initialization
-    public void Initialize(SceneManager sceneManager)
+    void Awake()
     {
-        SceneManager = sceneManager;
+        GlobalData.Player = this;
+        Initialize();
+    }
 
+    // Use this for initialization
+    public void Initialize()
+    {
         // State Initialization
         UnitPrimaryState = UnitPrimaryState.Idle;
 
@@ -119,5 +123,10 @@ public class Unit : MonoBehaviour
     public void SetTeam(bool controlledByAI = false)
     {
         UnitProperties.AIControlled = controlledByAI;
+    }
+
+    public void ActivateTarget(bool value)
+    {
+        UnitProperties.thisUnitTarget.gameObject.SetActive(value);
     }
 }

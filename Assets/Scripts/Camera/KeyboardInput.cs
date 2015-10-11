@@ -17,15 +17,15 @@ public class KeyboardInput : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
-            if (CameraControl.SceneManager.PlayerStats.PlayerActionInMind == PlayerActionInMind.Moving)
+            if (GlobalData.Player.PlayerActionInMind == PlayerActionInMind.Moving)
             {
                 CameraControl.CameraCursor.ChangeCursor(CursorType.Grab);
-                CameraControl.SceneManager.PlayerStats.PlayerActionInMind = PlayerActionInMind.UseAbility;
+                GlobalData.Player.PlayerActionInMind = PlayerActionInMind.UseAbility;
             }
-            else if (CameraControl.SceneManager.PlayerStats.PlayerActionInMind == PlayerActionInMind.MovingTable)
+            else if (GlobalData.Player.PlayerActionInMind == PlayerActionInMind.MovingTable)
             {
-                CameraControl.SceneManager.PlayerStats.UnitActionInMind = UnitActionInMind.DropTable;
-                CameraControl.SceneManager.PlayerStats.Table.TableActionHandler.PlayActionAnimation();
+                GlobalData.Player.UnitActionInMind = UnitActionInMind.DropTable;
+                GlobalData.Player.Table.TableActionHandler.PlayActionAnimation();
             }
         }
     }

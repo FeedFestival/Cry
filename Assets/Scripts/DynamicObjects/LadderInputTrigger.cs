@@ -28,6 +28,6 @@ public class LadderInputTrigger : MonoBehaviour
     }
     void OnMouseExit()
     {
-        this.Ladder.SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
+        GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
     }
 }

@@ -25,7 +25,7 @@ public class LadderActionHandler : MonoBehaviour
 
         this.LadderGameObject = ladderGameObject;
 
-        this.Unit = this.Ladder.SceneManager.PlayerStats;  // HARD_CODED
+        this.Unit = GlobalData.Player;  // HARD_CODED
 
         LadderActionType = ActionType.Ladder;
     }
@@ -72,9 +72,9 @@ public class LadderActionHandler : MonoBehaviour
         {
             CalculateStartPoint();
             if (Ladder.LadderStartPoint == LadderStartPoint.Bottom)
-                this.Ladder.SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Ladder_Up);
+                GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Ladder_Up);
             else
-                this.Ladder.SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Ladder_Down);
+                GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Ladder_Down);
 
             return;
         }
@@ -89,11 +89,11 @@ public class LadderActionHandler : MonoBehaviour
 
                 if (AimCircle_YPosition < unitPosition)
                 {
-                    this.Ladder.SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Ladder_Down);
+                    GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Ladder_Down);
                 }
                 else
                 {
-                    this.Ladder.SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Ladder_Up);
+                    GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Ladder_Up);
                 }
             }
         }

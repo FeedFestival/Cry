@@ -4,8 +4,6 @@ using Assets.Scripts.Types;
 
 public class Chair : MonoBehaviour
 {
-    public SceneManager SceneManager;
-
     [HideInInspector]
     public ChairActionHandler ChairActionHandler;
     [HideInInspector]

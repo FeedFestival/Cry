@@ -9,8 +9,6 @@ public class CameraCursor : MonoBehaviour {
      * - Its parameters are diferent cursor textures.
      * - The function its called from the object in question that senses the 'hover'.
      */
-    private CameraControl CameraControl;
-
     [HideInInspector]
     public CursorType lastCursor = CursorType.Default;
 
@@ -19,6 +17,8 @@ public class CameraCursor : MonoBehaviour {
     // Normal Cursor
     [HideInInspector]
     public Texture2D defaultCursor;
+    [HideInInspector]
+    public Texture2D no_Cursor;
 
     // DoorCursr
     [HideInInspector]
@@ -37,12 +37,11 @@ public class CameraCursor : MonoBehaviour {
     int cursorSizeX = 88;   // 48
     int cursorSizeY = 111;
 
-    public void Initialize(CameraControl cameraControl)
+    public void Initialize()
     {
-        CameraControl = cameraControl;
-
         Cursor.visible = false;
 
+        no_Cursor = new Texture2D(1,1);
         defaultCursor = Resources.Load("Cursor/_Cursor") as Texture2D;
         Grab_Cursor = Resources.Load("Cursor/Cursor_Hand") as Texture2D;
         Door_Cursor = Resources.Load("Cursor/Cursor_Door") as Texture2D;
@@ -56,13 +55,16 @@ public class CameraCursor : MonoBehaviour {
 
     void OnGUI()
     {
-        GUI.DrawTexture(new Rect(Event.current.mousePosition.x - cursorSizeX / 2, Event.current.mousePosition.y - cursorSizeY / 2, cursorSizeX, cursorSizeY)
-                        , curentCursor);
+        if (lastCursor != CursorType.None)
+        {
+            GUI.DrawTexture(new Rect(Event.current.mousePosition.x - cursorSizeX / 2, Event.current.mousePosition.y - cursorSizeY / 2, cursorSizeX, cursorSizeY)
+                            , curentCursor);
+        }
     }
 
     public void ChangeCursor(CursorType cursorType)
     {
-        if (CameraControl.SceneManager.PlayerStats.PlayerActionInMind != PlayerActionInMind.UseAbility)
+        if (GlobalData.Player.PlayerActionInMind != PlayerActionInMind.UseAbility)
         {
             if (lastCursor != cursorType)
             {
@@ -81,6 +83,9 @@ public class CameraCursor : MonoBehaviour {
                         break;
                     case CursorType.Grab:
                         curentCursor = Grab_Cursor;
+                        break;
+                    case CursorType.None:
+                        curentCursor = no_Cursor;
                         break;
                     default:
                         curentCursor = defaultCursor;

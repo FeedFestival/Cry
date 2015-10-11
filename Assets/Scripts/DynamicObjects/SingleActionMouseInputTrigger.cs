@@ -4,9 +4,6 @@ using Assets.Scripts.Types;
 
 public class SingleActionMouseInputTrigger : MonoBehaviour
 {
-    [HideInInspector]
-    private SceneManager SceneManager;
-
     #region Use this for initialization
 
     [HideInInspector]
@@ -15,7 +12,6 @@ public class SingleActionMouseInputTrigger : MonoBehaviour
     public void Initialize(ChairActionHandler chairActionHandler)
     {
         this.ChairActionHandler = chairActionHandler;
-        this.SceneManager = ChairActionHandler.Chair.SceneManager;
     }
 
     #endregion
@@ -27,12 +23,12 @@ public class SingleActionMouseInputTrigger : MonoBehaviour
         {
             this.SetActionOnParent();
         }
-        this.SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Grab);
+        GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Grab);
     }
     void OnMouseExit()
     {
         this.HighlightParentObject(false);
-        this.SceneManager.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
+        GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
     }
 
     //  Events

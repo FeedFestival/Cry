@@ -29,7 +29,7 @@ public class UnitTarget : MonoBehaviour
             if (this.Unit.UnitPrimaryState == UnitPrimaryState.Busy && this.Unit.UnitFeetState != UnitFeetState.OnTable)
             {
                 if (debug)
-                    Debug.Log("Unit is busy with an action and doesnt care about its path target (sad face)");
+                    Debug.Log("Player is busy with an action and doesnt care about its path target (sad face)");
                 return;
             }
 
@@ -55,7 +55,7 @@ public class UnitTarget : MonoBehaviour
             if (this.Unit.UnitPrimaryState == UnitPrimaryState.Busy)
             {
                 if (debug)
-                    Debug.Log("Unit is busy with an action and doesnt care about its path target (sad face)");
+                    Debug.Log("Player is busy with an action and doesnt care about its path target (sad face)");
             }
             else
             {

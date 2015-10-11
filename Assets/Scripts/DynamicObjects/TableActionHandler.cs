@@ -23,6 +23,7 @@ public class TableActionHandler : MonoBehaviour
         {
             case TableState.Static:
 
+                Table.ResetUI();
                 switch (Unit.UnitActionInMind)
                 {
                     case UnitActionInMind.ClimbTable:

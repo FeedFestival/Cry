@@ -10,16 +10,19 @@ namespace Assets.Scripts.Types
 
     public enum CursorType
     {
-        Default = 0, Ladder_Up = 1, Ladder_Down = 2, Grab = 3
+        None = 11, Default = 0, Ladder_Up = 1, Ladder_Down = 2, Grab = 3
     }
     public enum MouseInput
     {
         LeftClick = 0, RightClick = 1
     }
-
+    public enum CircleActionState
+    {
+        None, Unavailable, Available, Activate
+    }
     #endregion
 
-    #region Unit [State]
+    #region Player [State]
 
     public enum PlayerActionInMind
     {

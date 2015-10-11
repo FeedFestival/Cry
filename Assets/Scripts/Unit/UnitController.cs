@@ -20,7 +20,7 @@ public class UnitController : MonoBehaviour
         if (Unit.UnitFeetState == UnitFeetState.OnGround)
         {
             if (debuging)
-                Debug.Log("Reaching (Unit action in mind = " + Unit.UnitActionInMind + ")");
+                Debug.Log("Reaching (Player action in mind = " + Unit.UnitActionInMind + ")");
 
             Unit.AIPath.stopMoving();
 
@@ -28,12 +28,13 @@ public class UnitController : MonoBehaviour
             {
                 //  If we finish the journey
                 //      - And an action is set in mind
-                //      - And the Unit is not busy with another action.
+                //      - And the Player is not busy with another action.
                 //  --> That means we must fire the Action in mind and exit.
                 if (Unit.UnitActionInMind != UnitActionInMind.None && Unit.UnitPrimaryState != UnitPrimaryState.Busy)
                 {
                     Unit.UnitActionHandler.StartAction();
 
+                    Unit.ActivateTarget(false);
                     return;
                 }
 
@@ -52,6 +53,8 @@ public class UnitController : MonoBehaviour
 
                 Unit.UnitProperties.thisUnitTarget.thisTransform.position = Unit.UnitProperties.thisTransform.position;
             }
+
+            Unit.ActivateTarget(false);
         }
         else if (Unit.UnitFeetState == UnitFeetState.OnTable)
         {
@@ -67,9 +70,12 @@ public class UnitController : MonoBehaviour
             else if (Unit.UnitActionInMind == UnitActionInMind.ClimbingWall)
             {
                 Unit.UnitActionHandler.StartAction();
+
+                Unit.ActivateTarget(false);
                 return;
             }
         }
+        Unit.ActivateTarget(false);
     }
 
     public void ResumeMoving()
@@ -81,6 +87,8 @@ public class UnitController : MonoBehaviour
 
     public void GoToTarget()
     {
+        Unit.ActivateTarget(true);
+
         ResumeMoving();
         Unit.AIPath.SearchPath();
     }
@@ -94,6 +102,8 @@ public class UnitController : MonoBehaviour
         }
         else if (Unit.UnitFeetState == UnitFeetState.OnTable)
         {
+            Unit.ActivateTarget(true);
+
             Unit.UnitProperties.thisUnitTarget.transform.position = targetVector;
 
             OnTable_targetVector = targetVector + new Vector3(0, 1, 0);

@@ -4,8 +4,6 @@ using Assets.Scripts.Types;
 
 public class Table : MonoBehaviour
 {
-    public SceneManager SceneManager;
-
     [HideInInspector]
     public string thisTableClimb_Name;
 
@@ -32,6 +30,12 @@ public class Table : MonoBehaviour
 
     [HideInInspector]
     public Vector3 StartPointPosition;
+
+    // UI
+    [HideInInspector]
+    public GameObject UI_TableClimb;
+    [HideInInspector]
+    public GameObject UI_TableClimbDown;
 
     //  Animator
     [HideInInspector]
@@ -187,5 +191,17 @@ public class Table : MonoBehaviour
         thisTableClimb_Name = "[" + thisTransform.position.x + "," + thisTransform.position.y + "," + thisTransform.position.z + "]";
     }
 
-
+    public void ResetUI()
+    {
+        if (UI_TableClimb != null)
+        {
+            Destroy(UI_TableClimb);
+            UI_TableClimb = null;
+        }
+        if (UI_TableClimbDown != null)
+        {
+            Destroy(UI_TableClimbDown);
+            UI_TableClimbDown = null;
+        }
+    }
 }

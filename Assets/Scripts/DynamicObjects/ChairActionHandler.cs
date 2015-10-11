@@ -19,8 +19,8 @@ public class ChairActionHandler : MonoBehaviour
     public void Initialize(Chair chair)
     {
         this.Chair = chair;
-        this.Unit = Chair.SceneManager.PlayerStats;
-        UnitActionHandler = Chair.SceneManager.PlayerStats.UnitActionHandler;
+        this.Unit = GlobalData.Player;
+        UnitActionHandler = GlobalData.Player.UnitActionHandler;
         ChairActionType = ActionType.ChairClimb;
     }
 
@@ -33,7 +33,7 @@ public class ChairActionHandler : MonoBehaviour
         distancesChair[(int)ChairStartPoint.Left] = Vector3.Distance(playerPos, this.Unit.Chair.StartPoint_Left.position);
         distancesChair[(int)ChairStartPoint.Right] = Vector3.Distance(playerPos, this.Unit.Chair.StartPoint_Right.position);
 
-        //distances[(int)ChairStartPoint.Back] = Vector3.Distance(playerPos, Unit.Chair.StartPoint_Back.position);
+        //distances[(int)ChairStartPoint.Back] = Vector3.Distance(playerPos, Player.Chair.StartPoint_Back.position);
 
         return (ChairStartPoint)Logic.GetSmallestDistance(distancesChair);
     }
@@ -52,7 +52,7 @@ public class ChairActionHandler : MonoBehaviour
     }
     public void SetAction(int triggerId)
     {
-        if (Chair.SceneManager.PlayerStats.UnitActionState == UnitActionState.None)
+        if (GlobalData.Player.UnitActionState == UnitActionState.None)
         {
             UnitActionHandler.SetAction(this.gameObject, ChairActionType);
         }

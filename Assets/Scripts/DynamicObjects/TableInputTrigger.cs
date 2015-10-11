@@ -20,10 +20,6 @@ public class TableInputTrigger : MonoBehaviour
     private Vector3 thisTableCLimb_Rotation;
     private Vector3 thisTableCLimbDown_Rotation;
 
-    private GameObject UI_TableClimb;
-    private GameObject UI_TableClimbDown;
-
-
     public void Initialize(Table table, TableEdge tableEdge)
     {
         Table = table;
@@ -42,7 +38,7 @@ public class TableInputTrigger : MonoBehaviour
         groundYPos = Table.thisTransform.position.y;
         Ypos = Table.thisTransform.position.y + 1f;
 
-        if (Table.SceneManager.PlayerStats.PlayerActionInMind != PlayerActionInMind.UseAbility)
+        if (GlobalData.Player.PlayerActionInMind != PlayerActionInMind.UseAbility)
             CalculateTableCursor();
     }
 
@@ -54,30 +50,33 @@ public class TableInputTrigger : MonoBehaviour
             {
                 var pos = Logic.GetPointHitAtMousePosition();
                 if (pos != Vector3.zero)
-                    Table.SceneManager.PlayerStats.UnitController.SetPathToTarget(pos);
+                    GlobalData.Player.UnitController.SetPathToTarget(pos);
             }
         }
         else
         {
-            if (Table.SceneManager.PlayerStats.PlayerActionInMind == PlayerActionInMind.UseAbility)
+            if (GlobalData.Player.PlayerActionInMind == PlayerActionInMind.UseAbility)
             {
-                if (Table.SceneManager.CameraControl.CameraCursor.lastCursor == CursorType.Grab)
+                if (GlobalData.CameraControl.CameraCursor.lastCursor == CursorType.Grab)
                 {
-                    ResetUI();
+                    Table.ResetUI();
                     if (Input.GetMouseButtonDown((int)MouseInput.LeftClick))
                     {
                         CalculateStartPoint();
-                        Table.SceneManager.PlayerStats.UnitActionHandler.SetAction(Table.thisTransform.gameObject, ActionType.GrabTable);
+                        GlobalData.Player.UnitActionHandler.SetAction(Table.thisTransform.gameObject, ActionType.GrabTable);
                     }
                 }
             }
             else
             {
-                CalculateStartPoint();  // If OnTop also calculates ExitPoint
+                if ((GlobalData.Player.UnitPrimaryState == UnitPrimaryState.Idle 
+                    || GlobalData.Player.UnitPrimaryState == UnitPrimaryState.Walk)
+                    || (GlobalData.Player.UnitActionState == UnitActionState.ClimbingTable && GlobalData.Player.UnitFeetState == UnitFeetState.OnTable))
+                    CalculateStartPoint();  // If OnTop also calculates ExitPoint
 
                 if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
                 {
-                    if (Table.SceneManager.PlayerStats.UnitFeetState == UnitFeetState.OnTable)
+                    if (GlobalData.Player.UnitFeetState == UnitFeetState.OnTable)
                     {
                         if (TableEdge == TableEdge.Table_Side_Collider || TableEdge == TableEdge.Table_Side_Collider_L)
                         {
@@ -96,16 +95,16 @@ public class TableInputTrigger : MonoBehaviour
 
                         Table.TableActionHandler.Unit.UnitActionInMind = UnitActionInMind.ClimbDownTable;
 
-                        Table.SceneManager.PlayerStats.UnitController.SetPathToTarget(Table.StartPointPosition);
+                        GlobalData.Player.UnitController.SetPathToTarget(Table.StartPointPosition);
                     }
-                    else
+                    else // if UnitFeetState.OnGround
                     {
                         Table.StartPointPosition = UI_TableClimb_Bottom_Position + (thisTransform.forward / 2);
 
                         PlaceAnimator();
                         CalculateRotationPoint();
 
-                        Table.SceneManager.PlayerStats.UnitActionHandler.SetAction(Table.thisTransform.gameObject, ActionType.TableClimb);
+                        GlobalData.Player.UnitActionHandler.SetAction(Table.thisTransform.gameObject, ActionType.TableClimb);
                     }
                 }
             }
@@ -114,12 +113,12 @@ public class TableInputTrigger : MonoBehaviour
 
     void OnMouseExit()
     {
-        ResetUI();
+        Table.ResetUI();
     }
 
     void CalculateTableCursor()
     {
-        var UnitYPos = Table.SceneManager.PlayerStats.UnitProperties.thisTransform.position.y - 1;
+        var UnitYPos = GlobalData.Player.UnitProperties.thisTransform.position.y - 1;
 
         Table.TableStartPoint = (TableStartPoint)Logic.GetClosestYPos(UnitYPos, groundYPos, Ypos);
 
@@ -142,7 +141,7 @@ public class TableInputTrigger : MonoBehaviour
     private Vector3 lastPosition;
     private void CalculateStartPoint()
     {
-        if (Table.SceneManager.PlayerStats.PlayerActionInMind != PlayerActionInMind.UseAbility)
+        if (GlobalData.Player.PlayerActionInMind != PlayerActionInMind.UseAbility)
         {
             if (TableEdge == TableEdge.Table_Side_Collider || TableEdge == TableEdge.Table_Side_Collider_L)
             {
@@ -158,7 +157,7 @@ public class TableInputTrigger : MonoBehaviour
         }
         else
         {
-            var playerPos = Table.SceneManager.PlayerStats.UnitProperties.thisTransform.position;
+            var playerPos = GlobalData.Player.UnitProperties.thisTransform.position;
 
             float[] distances = new float[2];
             distances[(int)TableActionStartPoint.Table_StartPos_Forward] = Vector3.Distance(playerPos, Table.Table_StartPos_Forward);
@@ -231,33 +230,19 @@ public class TableInputTrigger : MonoBehaviour
         UI_TableClimb_Bottom_Position = new Vector3(pos.x, groundYPos, pos.z);
         if (Table.TableStartPoint == TableStartPoint.Bottom)
         {
-            if (UI_TableClimb == null)
+            if (Table.UI_TableClimb == null)
             {
-                UI_TableClimb = Logic.InstantiateEdgeUI(UI_TableClimb_Bottom_Position, thisTableCLimb_Rotation, new Vector3(0.32f, 0.8f, 0.8f), "TableClimb" + Table.thisTableClimb_Name);
+                Table.UI_TableClimb = Logic.InstantiateEdgeUI(UI_TableClimb_Bottom_Position, thisTableCLimb_Rotation, new Vector3(0.32f, 0.8f, 0.8f), "TableClimb" + Table.thisTableClimb_Name);
             }
-            UI_TableClimb.transform.position = UI_TableClimb_Top_Position;
+            Table.UI_TableClimb.transform.position = UI_TableClimb_Top_Position;
         }
         else
         {
-            if (UI_TableClimbDown == null)
+            if (Table.UI_TableClimbDown == null)
             {
-                UI_TableClimbDown = Logic.InstantiateEdgeUI(UI_TableClimb_Bottom_Position, thisTableCLimbDown_Rotation, new Vector3(0.32f, 0.8f, 0.8f), "TableClimbDown" + Table.thisTableClimb_Name);
+                Table.UI_TableClimbDown = Logic.InstantiateEdgeUI(UI_TableClimb_Bottom_Position, thisTableCLimbDown_Rotation, new Vector3(0.32f, 0.8f, 0.8f), "TableClimbDown" + Table.thisTableClimb_Name);
             }
-            UI_TableClimbDown.transform.position = UI_TableClimb_Bottom_Position;
-        }
-    }
-
-    public void ResetUI()
-    {
-        if (UI_TableClimb != null)
-        {
-            Destroy(UI_TableClimb);
-            UI_TableClimb = null;
-        }
-        if (UI_TableClimbDown != null)
-        {
-            Destroy(UI_TableClimbDown);
-            UI_TableClimbDown = null;
+            Table.UI_TableClimbDown.transform.position = UI_TableClimb_Bottom_Position;
         }
     }
 }

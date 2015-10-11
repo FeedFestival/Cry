@@ -9,9 +9,6 @@ public class CameraControl : MonoBehaviour
      * -    It handles the panning of the camera.
      * -    It sets the Right Click events.
      */
-    [HideInInspector]
-    public SceneManager SceneManager { get; set; }
-
     public bool debug;
 
     [HideInInspector]
@@ -27,16 +24,20 @@ public class CameraControl : MonoBehaviour
     [HideInInspector]
     public Transform thisTransform;
 
-    public void Initialize(SceneManager sceneManager)
+    void Awake()
+    {
+        GlobalData.CameraControl = this;
+        Initialize();
+    }
+
+    public void Initialize()
     {
         //  Scripts initialization
-        SceneManager = sceneManager;
-
         CameraCursor = GetComponent<CameraCursor>();
-        CameraCursor.Initialize(this);
+        CameraCursor.Initialize();
 
         CameraView = GetComponent<CameraView>();
-        CameraView.Initialize(this);
+        //CameraView.Initialize(this);
 
         KeyboardInput = GetComponent<KeyboardInput>();
         KeyboardInput.Initialize(this);
@@ -52,7 +53,7 @@ public class CameraControl : MonoBehaviour
         if (CheckYDistance())
         {
             var desiredPosition = new Vector3(thisTransform.position.x,
-                                                SceneManager.PlayerStats.UnitProperties.thisTransform.position.y + YDistanceFromPlayer,
+                                                GlobalData.Player.UnitProperties.thisTransform.position.y + YDistanceFromPlayer,
                                                 thisTransform.position.z);
             thisTransform.position = Vector3.Lerp(thisTransform.position, desiredPosition, Time.deltaTime * 2f);
         }
@@ -69,7 +70,8 @@ public class CameraControl : MonoBehaviour
 
     private bool CheckYDistance()
     {
-        var distance = Mathf.Round((SceneManager.PlayerStats.UnitProperties.thisTransform.position.y + YDistanceFromPlayer) * 1000f) / 1000f;
+        
+        var distance = Mathf.Round((GlobalData.Player.UnitProperties.thisTransform.position.y + YDistanceFromPlayer) * 1000f) / 1000f;
         var cameraCurrentPosition = Mathf.Round((thisTransform.position.y) * 1000f) / 1000f;
         if (distance != cameraCurrentPosition)
         {

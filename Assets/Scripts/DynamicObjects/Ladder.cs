@@ -6,8 +6,6 @@ public class Ladder : MonoBehaviour {
 
     public bool debuging;
 
-    public SceneManager SceneManager;
-
     [HideInInspector]
     public LadderActionHandler LadderActionHandler;
     [HideInInspector]
