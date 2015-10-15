@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets.Scripts.Types;
+using System;
 
 public class LedgeActionHandler : MonoBehaviour
 {
     private Ledge Ledge;
+
+    private Vector3 _lastCirclePosition = new Vector3();
 
     // Use this for initialization
     public void Initialize(Ledge ledge)
@@ -23,38 +26,86 @@ public class LedgeActionHandler : MonoBehaviour
 
         Ledge.LedgeStartPoint = (LedgeStartPoint)Logic.GetClosestYPos(UnitYPos, Ledge.Bottom_YPos, Ledge.Ypos);
 
-        if (Ledge.LedgeStartPoint != LedgeStartPoint.OutOfReach)
-            GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.None);
-
-        Ledge.LedgeActionHandler.CalculateCircleAction_State();
+        if (Ledge.LedgeStartPoint == LedgeStartPoint.OutOfReach)
+        {
+            Ledge.CircleActionState = CircleActionState.None;
+            Ledge.UI_CircleAction.Hide();
+        }
     }
 
-    public void CalculateCircleAction_State()
+    public void CalculateCircleAction_Point()
     {
-        if (Ledge.UI_CircleAction.thisTransform)
+        var hitPosition = Logic.GetEdgePosition(Ledge.CircleAction_Position, Ledge.thisTransform.forward, Ledge.thisTransform.position.y, Ledge.Ypos);
+        if (_lastCirclePosition != hitPosition && hitPosition != Vector3.zero)
         {
-            if (Ledge.Unit)
+            _lastCirclePosition = hitPosition;
+
+            Ledge.CircleAction_Position = new Vector3(hitPosition.x, Ledge.Ypos, hitPosition.z);
+
+            if (Ledge.LedgeStartPoint == LedgeStartPoint.Top)
             {
-                Ledge.UI_CircleAction.ChangeState(CircleActionState.None);
+                CalculateBottomPoint(Ledge.CircleAction_Position);
             }
-            else if (Ledge.LedgeStartPoint == LedgeStartPoint.OutOfReach)
+            else if (Ledge.LedgeStartPoint == LedgeStartPoint.Bottom)
             {
-                Ledge.UI_CircleAction.ChangeState(CircleActionState.None);
+                if (GlobalData.Player.UnitFeetState == UnitFeetState.OnTable || GlobalData.Player.UnitFeetState == UnitFeetState.OnGround)
+                    CalculateBottomPoint(Ledge.CircleAction_Position);
             }
             else
             {
-                Ledge.UI_CircleAction.ChangeState(CircleActionState.Available);
+                return;
             }
-            Ledge.UI_CircleAction.thisTransform.position = Ledge.thisTransform.position;
+            Ledge.UI_CircleAction.thisTransform.position = Ledge.CircleAction_Position;
+            Ledge.UI_EdgeLine.enabled = true;
         }
     }
-    public void CalculateCircleAction_Point()
+
+    public void CalculateBottomPoint(Vector3 circlePosition)
     {
-        Ledge.CircleAction_Position = Logic.GetEdgePosition(Ledge.CircleAction_Position, Ledge.thisTransform.forward, Ledge.thisTransform.position.y, Ledge.Ypos);
-        if (Ledge.CircleAction_Position != Vector3.zero)
+        var distanceThreshold = 1.5f;
+
+        var pos1 = Ledge.CircleAction_Position + (Ledge.thisTransform.forward / distanceThreshold);
+
+        var _bottom_Position = new Vector3(Ledge.CircleAction_Position.x, Ledge.Bottom_YPos - 0.5f, Ledge.CircleAction_Position.z);
+        var pos2 = _bottom_Position + (Ledge.thisTransform.forward / distanceThreshold);
+
+        var direction = Logic.GetDirection(pos1, pos2);
+
+        RaycastHit hit;
+        if (Physics.Raycast(new Ray(pos1, direction), out hit, 2.5f))
         {
-            Ledge.UI_CircleAction.thisTransform.position = new Vector3(Ledge.CircleAction_Position.x, Ledge.Ypos, Ledge.CircleAction_Position.z);
-            Ledge.UI_EdgeLine.enabled = true;
+            Debug.DrawRay(pos1, direction);
+            if (hit.transform.gameObject.tag == "Table")
+            {
+                Ledge.LedgeBottomPoint = LedgeBottomPoint.Table;
+                Ledge.Table = hit.transform.parent.transform.GetComponent<Table>();
+
+                Ledge.CircleActionState = CircleActionState.Available;
+                Ledge.UI_CircleAction.GoAvailable();
+            }
+            else if (hit.transform.gameObject.tag == "Map")
+            {
+                Ledge.LedgeBottomPoint = LedgeBottomPoint.Map;
+                Ledge.CircleActionState = CircleActionState.Available;
+                Ledge.UI_CircleAction.GoAvailable();
+            }
+            else if (hit.transform.gameObject.tag == "Player") // We should avoid player collider // FOR_NOW
+            {
+                Ledge.CircleActionState = CircleActionState.Available;
+                Ledge.UI_CircleAction.GoAvailable();
+            }
+            else
+            {
+                Ledge.LedgeBottomPoint = LedgeBottomPoint.Impediment;
+                Ledge.CircleActionState = CircleActionState.Unavailable;
+                Ledge.UI_CircleAction.GoUnavailable();
+            }
+        }
+        else
+        {
+            Ledge.LedgeBottomPoint = LedgeBottomPoint.Nothing;
+            Ledge.CircleActionState = CircleActionState.Unavailable;
+            Ledge.UI_CircleAction.GoUnavailable();
         }
     }
 
@@ -63,7 +114,6 @@ public class LedgeActionHandler : MonoBehaviour
         Ledge.ResetLedgeAction();
 
         var _bottom_Position = new Vector3(Ledge.CircleAction_Position.x, Ledge.Bottom_YPos, Ledge.CircleAction_Position.z);
-        var _top_Position = new Vector3(Ledge.CircleAction_Position.x, Ledge.Ypos, Ledge.CircleAction_Position.z);
 
         if (Ledge.LedgeStartPoint == LedgeStartPoint.Bottom)
         {
@@ -71,12 +121,11 @@ public class LedgeActionHandler : MonoBehaviour
         }
         else
         {
-            Ledge.StartPointPosition = (_top_Position - new Vector3(0, 0, 0.8f));
+            Ledge.StartPointPosition = (Ledge.CircleAction_Position - new Vector3(0, 0, 0.8f));
         }
 
         CreateAnimator(_bottom_Position);
     }
-
     private void CreateAnimator(Vector3 bottom_Pos)
     {
         Ledge.Ledge_GameObject = GameObject.Instantiate(Resources.Load("Prefabs/Ledge"), bottom_Pos, Quaternion.identity) as GameObject;
@@ -116,7 +165,9 @@ public class LedgeActionHandler : MonoBehaviour
 
                 Ledge.Unit.UnitActionAnimation.PlaySingleAnimation(WallClimb_Animations.WallClimbDown_2Metters.ToString());
                 Ledge.Ledge_Animator[WallClimb_Animations.WallClimbDown_2Metters.ToString()].speed = 1; // CUSTOM
+
                 Ledge.LedgeAnimation.Play(WallClimb_Animations.WallClimbDown_2Metters.ToString());
+                
                 break;
 
             default:

@@ -18,7 +18,7 @@ namespace Assets.Scripts.Types
     }
     public enum CircleActionState
     {
-        None, Unavailable, Available, Activate
+        None, Unavailable, ShowAvailable, Available
     }
     #endregion
 
@@ -122,6 +122,11 @@ namespace Assets.Scripts.Types
     public enum LedgeStartPoint
     {
         Bottom = 0, Top = 1, OutOfReach = 2
+    }
+
+    public enum LedgeBottomPoint
+    {
+        Map = 0, Table = 1, Impediment = 2, Nothing = 3
     }
 
     public enum WallClimb_Animations

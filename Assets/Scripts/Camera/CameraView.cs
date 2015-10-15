@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEditor;
+//using UnityEditor;
 using System.Collections;
 using Assets.Scripts.Types;
 
@@ -59,8 +59,8 @@ public class CameraView : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-            EditorApplication.isPaused = !EditorApplication.isPaused;
+        //if (Input.GetKeyDown(KeyCode.P))
+        //    EditorApplication.isPaused = !EditorApplication.isPaused;
     }
 
     void OnGUI()

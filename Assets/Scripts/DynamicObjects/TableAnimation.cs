@@ -36,21 +36,19 @@ public class TableAnimation : MonoBehaviour {
     {
         yield return new WaitForSeconds(animTime);
 
-        if (Table.TableActionHandler.Unit.UnitActionInMind == UnitActionInMind.DropTable)
+        if (Table.Unit.UnitActionInMind == UnitActionInMind.DropTable)
         {
-            Table.TableActionHandler.Unit.UnitActionHandler.ExitCurentAction();
+            Table.Unit.UnitActionHandler.ExitCurentAction();
         }
-        else if (Table.TableActionHandler.Unit.UnitActionInMind == UnitActionInMind.ClimbDownTable)
+        else if (Table.Unit.UnitActionInMind == UnitActionInMind.ClimbDownTable)
         {
-            Table.TableActionHandler.Unit.UnitActionHandler.ExitCurentAction();
+            Table.Unit.UnitActionHandler.ExitCurentAction();
         }
-        else if (Table.TableActionHandler.Unit.UnitActionInMind == UnitActionInMind.ClimbTable)
+        else if (Table.Unit.UnitActionInMind == UnitActionInMind.ClimbTable)
         {
-            Table.TableActionHandler.Unit.UnitFeetState = UnitFeetState.OnTable;
-            Table.Table_Top_Collider.gameObject.SetActive(true);
-            Table.TableStaticAnimator.transform.localPosition = Vector3.zero;
+            Table.SetUnitOnTable();
         }
-        else if (Table.TableActionHandler.Unit.UnitActionInMind == UnitActionInMind.MovingTable)    // QUESTIONABLE PLACE
+        else if (Table.Unit.UnitActionInMind == UnitActionInMind.MovingTable)    // QUESTIONABLE PLACE
         {
             Table.TableState = TableState.Moving;
         }

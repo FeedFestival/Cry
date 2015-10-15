@@ -93,7 +93,7 @@ public class TableInputTrigger : MonoBehaviour
                         PlaceAnimator();
                         CalculateRotationPoint();
 
-                        Table.TableActionHandler.Unit.UnitActionInMind = UnitActionInMind.ClimbDownTable;
+                        Table.Unit.UnitActionInMind = UnitActionInMind.ClimbDownTable;
 
                         GlobalData.Player.UnitController.SetPathToTarget(Table.StartPointPosition);
                     }

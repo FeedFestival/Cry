@@ -209,7 +209,7 @@ public class UnitActionHandler : MonoBehaviour
 
                 if (Unit.Table)
                 {
-                    Unit.Table.TableActionHandler.Unit = null;
+                    Unit.Table.Unit = null;
                     Unit.Table.TableStartPoint = TableStartPoint.OutOfReach;
                     Unit.Table = null;
                 }

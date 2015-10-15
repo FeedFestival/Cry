@@ -97,6 +97,8 @@ public class Table : MonoBehaviour
 
     public TableActionStartPoint TableActionStartPoint;
 
+    public Unit Unit;
+
     // Use this for initialization
     void Start()
     {
@@ -189,6 +191,23 @@ public class Table : MonoBehaviour
         TableState = TableState.Static;
 
         thisTableClimb_Name = "[" + thisTransform.position.x + "," + thisTransform.position.y + "," + thisTransform.position.z + "]";
+    }
+
+    public void SetUnitOnTable()
+    {
+        if (!Unit.Table)
+            Unit.Table = this;
+
+        Unit.UnitPrimaryState = UnitPrimaryState.Busy;
+
+        Unit.UnitActionState = UnitActionState.ClimbingTable;
+        Unit.UnitActionInMind = UnitActionInMind.ClimbTable;
+
+        Unit.UnitProperties.Root = StaticRoot;
+
+        Unit.UnitFeetState = UnitFeetState.OnTable;
+        Table_Top_Collider.gameObject.SetActive(true);
+        TableStaticAnimator.transform.localPosition = Vector3.zero;
     }
 
     public void ResetUI()

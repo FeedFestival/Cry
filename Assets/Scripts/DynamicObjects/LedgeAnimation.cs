@@ -33,6 +33,16 @@ public class LedgeAnimation : MonoBehaviour
     IEnumerator WaitForEndOfAnimation(float animTime)
     {
         yield return new WaitForSeconds(animTime);
-        Ledge.Unit.UnitActionHandler.ExitCurentAction();
+
+        if (Ledge.LedgeBottomPoint == LedgeBottomPoint.Table)
+        {
+            Ledge.Table.Unit = Ledge.Unit;
+            Ledge.Unit.UnitActionHandler.ExitCurentAction();
+            Ledge.Table.SetUnitOnTable();
+        }
+        else
+        {
+            Ledge.Unit.UnitActionHandler.ExitCurentAction();
+        }
     }
 }

@@ -18,6 +18,31 @@ public class Ledge : MonoBehaviour
 
     public LedgeType LedgeType;
     public LedgeStartPoint LedgeStartPoint;
+    public LedgeBottomPoint LedgeBottomPoint;
+
+    private CircleActionState _circleActionState;
+    public CircleActionState CircleActionState
+    {
+        get
+        {
+            return _circleActionState;
+        }
+        set 
+        {
+            _circleActionState = value;
+            if (_circleActionState == CircleActionState.Available)
+            {
+                GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.None);
+            }
+            else if (_circleActionState == CircleActionState.None)
+            {
+                GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
+            }
+        }
+    }
+
+    [HideInInspector]
+    public Table Table;
 
     // transforms
     [HideInInspector]
@@ -54,7 +79,7 @@ public class Ledge : MonoBehaviour
     {
         thisTransform = this.transform;
 
-        var liftUpPosition = new Vector3(0,0.01f,0);
+        var liftUpPosition = new Vector3(0, 0.01f, 0);
         var forwardLiftUp = new Vector3(0, 0, 0.01f);
 
         thisTransform.position = thisTransform.position + liftUpPosition;
@@ -83,8 +108,9 @@ public class Ledge : MonoBehaviour
                     UI_EdgeLine = child.transform.gameObject.GetComponent<MeshRenderer>();
                     break;
 
-                case "UI_CircleAction":
+                case "UI_ActionCircle":
                     UI_CircleAction = child.transform.GetComponent<CircleAction>();
+                    UI_CircleAction.Initialize(this);
                     break;
                 default:
                     break;
@@ -98,17 +124,21 @@ public class Ledge : MonoBehaviour
         Unit = null;
         Ledge_Animator = null;
         Destroy(Ledge_GameObject);
-        LedgeActionHandler.CalculateCircleAction_State();
+        CloseActionCircle();
     }
 
     public void ResetUI()
     {
-        if (GlobalData.CameraControl)
-            GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
         if (UI_EdgeLine != null)
         {
-            LedgeActionHandler.CalculateCircleAction_State();
+            CloseActionCircle();
             UI_EdgeLine.enabled = false;
         }
+    }
+
+    public void CloseActionCircle()
+    {
+        CircleActionState = CircleActionState.Unavailable;
+        UI_CircleAction.GoUnavailable();
     }
 }

@@ -29,9 +29,12 @@ public class LedgeInputTrigger : MonoBehaviour
 
                     if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
                     {
-                        Ledge.LedgeActionHandler.CreateStartPosition();
+                        if (Ledge.UI_CircleAction.CircleActionState == CircleActionState.Available)
+                        {
+                            Ledge.LedgeActionHandler.CreateStartPosition();
 
-                        GlobalData.Player.UnitActionHandler.SetAction(Ledge.thisTransform.gameObject, ActionType.LedgeClimb);
+                            GlobalData.Player.UnitActionHandler.SetAction(Ledge.thisTransform.gameObject, ActionType.LedgeClimb);
+                        }
                     }
                 }
             }
@@ -43,9 +46,12 @@ public class LedgeInputTrigger : MonoBehaviour
 
                     if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
                     {
-                        Ledge.LedgeActionHandler.CreateStartPosition();
+                        if (Ledge.UI_CircleAction.CircleActionState == CircleActionState.Available)
+                        {
+                            Ledge.LedgeActionHandler.CreateStartPosition();
 
-                        GlobalData.Player.UnitActionHandler.SetAction(Ledge.thisTransform.gameObject, ActionType.LedgeClimb);
+                            GlobalData.Player.UnitActionHandler.SetAction(Ledge.thisTransform.gameObject, ActionType.LedgeClimb);
+                        }
                     }
                 }
             }

@@ -4,9 +4,7 @@ using Assets.Scripts.Types;
 
 public class TableActionHandler : MonoBehaviour
 {
-
     private Table Table;
-    public Unit Unit;
 
     // Use this for initialization
     public void Initialize(Table table)
@@ -16,25 +14,25 @@ public class TableActionHandler : MonoBehaviour
 
     public void PlayActionAnimation(Unit unit = null)
     {
-        if (Unit == null)
-            Unit = unit;
+        if (Table.Unit == null)
+            Table.Unit = unit;
 
         switch (Table.TableState)
         {
             case TableState.Static:
 
                 Table.ResetUI();
-                switch (Unit.UnitActionInMind)
+                switch (Table.Unit.UnitActionInMind)
                 {
                     case UnitActionInMind.ClimbTable:
 
-                        Unit.UnitActionAnimation.PlaySingleAnimation(TableAnimations.Climb_Table.ToString());
+                        Table.Unit.UnitActionAnimation.PlaySingleAnimation(TableAnimations.Climb_Table.ToString());
                         Table.TableAnimation.PlayStatic(TableAnimations.Climb_Table);
                         break;
 
                     case UnitActionInMind.ClimbDownTable:
 
-                        Unit.UnitActionAnimation.PlaySingleAnimation(TableAnimations.ClimbDown_Table.ToString());
+                        Table.Unit.UnitActionAnimation.PlaySingleAnimation(TableAnimations.ClimbDown_Table.ToString());
                         Table.TableAnimation.PlayStatic(TableAnimations.ClimbDown_Table);
                         break;
 
@@ -58,7 +56,7 @@ public class TableActionHandler : MonoBehaviour
                                 break;
                         }
 
-                        Unit.UnitActionAnimation.PlaySingleAnimation(TableAnimations.LiftTable_FromBack.ToString());
+                        Table.Unit.UnitActionAnimation.PlaySingleAnimation(TableAnimations.LiftTable_FromBack.ToString());
                         Table.TableAnimation.Play(TableAnimations.LiftTable_FromBack);
 
                         break;
@@ -70,11 +68,11 @@ public class TableActionHandler : MonoBehaviour
 
             case TableState.Moving:
 
-                switch (Unit.UnitActionInMind)
+                switch (Table.Unit.UnitActionInMind)
                 {
                     case UnitActionInMind.DropTable:
 
-                        Unit.UnitActionAnimation.PlaySingleAnimation(TableAnimations.DropTable_FromBack.ToString());
+                        Table.Unit.UnitActionAnimation.PlaySingleAnimation(TableAnimations.DropTable_FromBack.ToString());
                         Table.TableAnimation.Play(TableAnimations.DropTable_FromBack);
                         break;
 
