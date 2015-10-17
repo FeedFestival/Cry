@@ -13,8 +13,28 @@ public class Ledge : MonoBehaviour
     [HideInInspector]
     public Animation Ledge_Animator;
 
+    private Unit _unit;
     [HideInInspector]
-    public Unit Unit;
+    public Unit Unit
+    {
+        get { return _unit; }
+        set
+        {
+            _unit = value;
+            if (_unit)
+            {
+                LedgeState = LedgeState.UnitOn;
+                WallPrimitive.enabled = false;
+            }
+            else
+            {
+                LedgeState = LedgeState.Static;
+                WallPrimitive.enabled = true;
+            }
+        }
+    }
+
+    public LedgeState LedgeState;
 
     public LedgeType LedgeType;
     public LedgeStartPoint LedgeStartPoint;
@@ -65,6 +85,8 @@ public class Ledge : MonoBehaviour
     [HideInInspector]
     public GameObject Ledge_GameObject;
 
+    private MeshCollider WallPrimitive;
+
     // UI
     [HideInInspector]
     public MeshRenderer UI_EdgeLine;
@@ -99,7 +121,7 @@ public class Ledge : MonoBehaviour
             switch (child.gameObject.name)
             {
                 case "WallPrimitive":
-
+                    WallPrimitive = child.transform.GetComponent<MeshCollider>();
                     LedgeInputTrigger = child.transform.GetComponent<LedgeInputTrigger>();
                     LedgeInputTrigger.Initialize(this);
                     break;
@@ -138,6 +160,11 @@ public class Ledge : MonoBehaviour
 
     public void CloseActionCircle()
     {
+        if (CircleActionState == CircleActionState.Unavailable)
+        {
+            UI_CircleAction.Hide();
+            return;
+        }
         CircleActionState = CircleActionState.Unavailable;
         UI_CircleAction.GoUnavailable();
     }

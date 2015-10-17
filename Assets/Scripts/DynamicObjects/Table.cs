@@ -210,6 +210,19 @@ public class Table : MonoBehaviour
         TableStaticAnimator.transform.localPosition = Vector3.zero;
     }
 
+    public void ExitTableAction(bool ledgeClimb = false)
+    {
+        if (ledgeClimb)
+        {
+            Unit.UnitActionHandler.ExitSpecificAction(ActionType.TableClimb);
+        } else {
+            Unit.UnitActionHandler.ExitCurentAction();
+        }
+        Unit.Table = null;
+        Unit = null;
+        TableStartPoint = TableStartPoint.OutOfReach;
+    }
+
     public void ResetUI()
     {
         if (UI_TableClimb != null)

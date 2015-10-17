@@ -18,8 +18,8 @@ public class CircleAction : MonoBehaviour
 
     float framesPerSecond;
 
-    int endIndex;
-    int index;
+    public int endIndex;
+    public int index;
     bool forward;
 
     // Posible Parents
@@ -61,29 +61,54 @@ public class CircleAction : MonoBehaviour
     private IEnumerator Play()
     {
         isPlaying = true;
+        while (GetStopCondition())
+        {
+            ChangeIndex();
+
+            yield return new WaitForSeconds(1f / framesPerSecond);
+        }
+        EndInstruction();
+    }
+    private bool GetStopCondition()
+    {
         if (forward)
         {
-            while (index < endIndex)
-            {
+            if (index < endIndex)
+                return true;
+            return false;
+        }
+        else
+        {
+            if (index >= endIndex)
+                return true;
+            return false;
+        }
+    }
+    private void ChangeIndex()
+    {
+        if (forward)
+        {
+            if (index < endIndex)
                 SpriteRenderer.sprite = sprites[index];
-                index++;
-
-                yield return new WaitForSeconds(1f / framesPerSecond);
-            }
-            isPlaying = false;
+            index++;
+        }
+        else
+        {
+            if (index > endIndex)
+                SpriteRenderer.sprite = sprites[index];
+            index--;
+        }
+    }
+    private void EndInstruction()
+    {
+        isPlaying = false;
+        if (forward)
+        {
             if (CircleActionState == CircleActionState.Available)
                 SpriteRenderer.sprite = active;
         }
         else
         {
-            while (index >= endIndex)
-            {
-                SpriteRenderer.sprite = sprites[index];
-                index--;
-
-                yield return new WaitForSeconds(1f / framesPerSecond);
-            }
-            isPlaying = false;
             Hide();
         }
     }
@@ -104,7 +129,7 @@ public class CircleAction : MonoBehaviour
 
             SpriteRenderer.enabled = true;
 
-            endIndex = 11;
+            endIndex = 10;
             index = 0;
             forward = true;
             framesPerSecond = 30.0f;
@@ -121,7 +146,7 @@ public class CircleAction : MonoBehaviour
 
                 SpriteRenderer.enabled = true;
 
-                endIndex = 11;
+                endIndex = 10;
                 index = 0;
                 forward = true;
                 framesPerSecond = 60.0f;
@@ -137,11 +162,21 @@ public class CircleAction : MonoBehaviour
 
             SpriteRenderer.enabled = true;
 
-            endIndex = 0;
-            index = 10;
-            forward = false;
-            framesPerSecond = 30.0f;
-            StartCoroutine(Play());
+            if (isPlaying)
+            {
+                // Continue animation
+                endIndex = 0;
+                forward = false;
+            }
+            else
+            {
+                endIndex = 0;
+                index = 10;
+                forward = false;
+
+                framesPerSecond = 30.0f;
+                StartCoroutine(Play());
+            }
         }
         CircleActionState = CircleActionState.Unavailable;
     }

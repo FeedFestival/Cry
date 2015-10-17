@@ -38,11 +38,11 @@ public class TableAnimation : MonoBehaviour {
 
         if (Table.Unit.UnitActionInMind == UnitActionInMind.DropTable)
         {
-            Table.Unit.UnitActionHandler.ExitCurentAction();
+            Table.ExitTableAction();
         }
         else if (Table.Unit.UnitActionInMind == UnitActionInMind.ClimbDownTable)
         {
-            Table.Unit.UnitActionHandler.ExitCurentAction();
+            Table.ExitTableAction();
         }
         else if (Table.Unit.UnitActionInMind == UnitActionInMind.ClimbTable)
         {

@@ -119,6 +119,11 @@ namespace Assets.Scripts.Types
         HidePoint = 1, TwoMetters = 2, ThreeMetters = 3, FourMetters = 4
     }
 
+    public enum LedgeState
+    {
+        Static = 0, UnitOn = 1
+    }
+
     public enum LedgeStartPoint
     {
         Bottom = 0, Top = 1, OutOfReach = 2

@@ -209,9 +209,7 @@ public class UnitActionHandler : MonoBehaviour
 
                 if (Unit.Table)
                 {
-                    Unit.Table.Unit = null;
-                    Unit.Table.TableStartPoint = TableStartPoint.OutOfReach;
-                    Unit.Table = null;
+                    Unit.Table.ExitTableAction(true);
                 }
 
                 Unit.Ledge.Unit = Unit;
@@ -302,5 +300,52 @@ public class UnitActionHandler : MonoBehaviour
         }
 
         curentActionType = ActionType.None;
+    }
+
+    public void ExitSpecificAction(ActionType action)
+    {
+        Unit.UnitController.ExitAction();
+
+        switch (action)
+        {
+            case ActionType.Ladder:
+
+                Unit.Ladder.LadderActionHandler.LadderPath = null;
+                Unit.Ladder = null;
+                break;
+
+            case ActionType.ChairClimb:
+
+                Unit.Chair = null;
+                break;
+
+            case ActionType.LedgeClimb:
+
+                Unit.Ledge.ResetLedgeAction();
+                Debug.Log("ntra");
+                Unit.Ledge = null;
+                break;
+
+            case ActionType.TableClimb:
+
+                Unit.Table.TableState = TableState.Static;
+                Unit.Table.TableStaticAnimator.transform.localPosition = Vector3.zero;
+                Unit.Table = null;
+                break;
+
+            case ActionType.GrabTable:
+
+                GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
+                Unit.PlayerActionInMind = PlayerActionInMind.Moving;
+
+                Unit.Table.TableState = TableState.Static;
+
+                Unit.Table = null;
+
+                break;
+
+            default:
+                break;
+        }
     }
 }

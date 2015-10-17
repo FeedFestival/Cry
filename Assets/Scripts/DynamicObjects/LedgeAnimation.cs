@@ -34,7 +34,7 @@ public class LedgeAnimation : MonoBehaviour
     {
         yield return new WaitForSeconds(animTime);
 
-        if (Ledge.LedgeBottomPoint == LedgeBottomPoint.Table)
+        if (Ledge.LedgeBottomPoint == LedgeBottomPoint.Table && Ledge.LedgeStartPoint == LedgeStartPoint.Top)
         {
             Ledge.Table.Unit = Ledge.Unit;
             Ledge.Unit.UnitActionHandler.ExitCurentAction();
