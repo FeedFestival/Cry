@@ -16,6 +16,10 @@ namespace Assets.Scripts.Types
     {
         LeftClick = 0, RightClick = 1
     }
+    public enum ColliderMouseState
+    {
+        Out = 0, Hover = 1
+    }
     public enum CircleActionState
     {
         None, Unavailable, ShowAvailable, Available

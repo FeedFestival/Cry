@@ -146,34 +146,21 @@ public class UnitActionHandler : MonoBehaviour
             case ActionType.LedgeClimb:
 
                 this.Unit.UnitActionInMind = UnitActionInMind.ClimbingWall;
-
                 this.Unit.UnitController.SetPathToTarget(Unit.Ledge.StartPointPosition);
-                
                 break;
+
             case ActionType.TableClimb:
 
                 this.Unit.UnitActionInMind = UnitActionInMind.ClimbTable;
-
-                this.Unit.UnitController.SetPathToTarget(Unit.Table.StartPointPosition);
-
+                this.Unit.UnitController.SetPathToTarget(Unit.Table.TableProperties.StartPointPosition);
                 break;
+
             case ActionType.GrabTable:
 
                 this.Unit.UnitActionInMind = UnitActionInMind.MovingTable;
-
-                switch (Unit.Table.TableActionStartPoint)
-	            {
-                    case TableActionStartPoint.Table_StartPos_Forward:
-                        this.Unit.UnitController.SetPathToTarget(Unit.Table.Table_StartPos_Forward);
-                        break;
-                    case TableActionStartPoint.Table_StartPos_Back:
-                        this.Unit.UnitController.SetPathToTarget(Unit.Table.Table_StartPos_Back);
-                        break;
-                    default:
-                        break;
-	            }
-
+                this.Unit.UnitController.SetPathToTarget(Unit.Table.TableProperties.StartPointPosition);
                 break;
+
             default:
                 break;
         }
@@ -228,7 +215,7 @@ public class UnitActionHandler : MonoBehaviour
                 Unit.UnitActionState = UnitActionState.ClimbingTable;
                 Unit.UnitActionInMind = UnitActionInMind.ClimbTable;
 
-                Unit.UnitProperties.Root = Unit.Table.StaticRoot;
+                Unit.UnitProperties.Root = Unit.Table.TableProperties.StaticRoot;
 
                 Unit.Table.TableActionHandler.PlayActionAnimation(Unit);
 
@@ -240,7 +227,7 @@ public class UnitActionHandler : MonoBehaviour
                 Unit.UnitActionState = UnitActionState.MovingTable;
                 Unit.UnitActionInMind = UnitActionInMind.MovingTable;
 
-                Unit.UnitProperties.Root = Unit.Table.StaticRoot;
+                Unit.UnitProperties.Root = Unit.Table.TableProperties.StaticRoot;
 
                 Unit.Table.TableActionHandler.PlayActionAnimation(Unit);
                 break;

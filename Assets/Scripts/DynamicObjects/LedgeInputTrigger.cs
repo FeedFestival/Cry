@@ -30,7 +30,7 @@ public class LedgeInputTrigger : MonoBehaviour
                     if (GlobalData.Player.UnitActionInMind == UnitActionInMind.None
                         || GlobalData.Player.UnitActionInMind == UnitActionInMind.ClimbingWall)
                     {
-                        Ledge.LedgeActionHandler.CalculateCircleAction_Point();
+                        Ledge.LedgeActionHandler.CalculateCircleActionPoint();
 
                         if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
                         {
@@ -47,7 +47,7 @@ public class LedgeInputTrigger : MonoBehaviour
                 {
                     if (Ledge.LedgeStartPoint == LedgeStartPoint.Bottom)
                     {
-                        Ledge.LedgeActionHandler.CalculateCircleAction_Point();
+                        Ledge.LedgeActionHandler.CalculateCircleActionPoint();
 
                         if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
                         {

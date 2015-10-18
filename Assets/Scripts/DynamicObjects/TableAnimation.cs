@@ -6,6 +6,8 @@ public class TableAnimation : MonoBehaviour {
 
     Table Table;
 
+    private bool playingTwoAnimators;
+
 	// Use this for initialization
     public void Initialize(Table table)
     {
@@ -18,11 +20,14 @@ public class TableAnimation : MonoBehaviour {
 
         float animationLenght = Table.TableStaticAnimator[animation.ToString()].length;
 
-        StartCoroutine(WaitForEndOfAnimation(animationLenght));
+        if (playingTwoAnimators == false)
+            StartCoroutine(WaitForEndOfAnimation(animationLenght));
     }
 
     public void Play(TableAnimations animation)
     {
+        playingTwoAnimators = true;
+
         Table.TableAnimator.CrossFade(animation.ToString());
 
         PlayStatic(animation);
@@ -52,5 +57,6 @@ public class TableAnimation : MonoBehaviour {
         {
             Table.TableState = TableState.Moving;
         }
+        playingTwoAnimators = false;
     }
 }

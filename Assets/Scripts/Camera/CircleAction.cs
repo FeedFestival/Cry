@@ -25,11 +25,18 @@ public class CircleAction : MonoBehaviour
     // Posible Parents
     [HideInInspector]
     public Ledge Ledge;
+    [HideInInspector]
+    public Table Table;
 
     // Use this for initialization
     public void Initialize(Ledge ledge)
     {
         Ledge = ledge;
+        Start();
+    }
+    public void Initialize(Table table)
+    {
+        Table = table;
         Start();
     }
 
@@ -194,5 +201,7 @@ public class CircleAction : MonoBehaviour
     {
         if (Ledge)
             Ledge.CircleActionState = CircleActionState;
+        if (Table)
+            Table.CircleActionState = CircleActionState;
     }
 }
