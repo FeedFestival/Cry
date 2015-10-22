@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Pathfinding;
 using Assets.Scripts.Types;
 
 public class SceneManager : MonoBehaviour

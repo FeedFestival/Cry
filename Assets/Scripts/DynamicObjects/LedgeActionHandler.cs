@@ -22,7 +22,7 @@ public class LedgeActionHandler : MonoBehaviour
         Ledge.Ypos = Ledge.thisTransform.position.y - 0.01f;
         Ledge.Bottom_YPos = Ledge.Ypos - 2f;
 
-        var UnitYPos = GlobalData.Player.UnitProperties.thisTransform.position.y - 1;
+        var UnitYPos = GlobalData.Player.UnitProperties.thisTransform.position.y;
 
         Ledge.LedgeStartPoint = (LedgeStartPoint)Logic.GetClosestYPos(UnitYPos, Ledge.Bottom_YPos, Ledge.Ypos);
 

@@ -237,13 +237,13 @@ public class UnitActionHandler : MonoBehaviour
         }
     }
 
-    public void ExitCurentAction()
+    public void ExitCurentAction(bool toAnotherAction = false)
     {
         Unit.UnitPrimaryState = UnitPrimaryState.Idle;
         Unit.UnitActionState = UnitActionState.None;
         Unit.UnitActionInMind = UnitActionInMind.None;
 
-        Unit.UnitController.ExitAction();
+        Unit.UnitController.ExitAction(toAnotherAction);
 
         switch (curentActionType)
         {

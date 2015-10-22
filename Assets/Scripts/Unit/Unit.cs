@@ -53,8 +53,8 @@ public class Unit : MonoBehaviour
     public UnitActionInMind UnitActionInMind;
     public UnitFeetState UnitFeetState;
 
-    [HideInInspector]
-    public AIPath AIPath;
+    //[HideInInspector]
+    //public AIPath AIPath;
     [HideInInspector]
     public UnitController UnitController;
     [HideInInspector]
@@ -95,7 +95,7 @@ public class Unit : MonoBehaviour
         UnitFeetState = UnitFeetState.OnGround;
 
         // Scripts initialization
-        AIPath = this.GetComponent<AIPath>();
+        //AIPath = this.GetComponent<AIPath>();
 
         UnitController = this.GetComponent<UnitController>();
         if (UnitController)

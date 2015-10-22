@@ -37,7 +37,7 @@ public class LedgeAnimation : MonoBehaviour
         if (Ledge.LedgeBottomPoint == LedgeBottomPoint.Table && Ledge.LedgeStartPoint == LedgeStartPoint.Top)
         {
             Ledge.Table.Unit = Ledge.Unit;
-            Ledge.Unit.UnitActionHandler.ExitCurentAction();
+            Ledge.Unit.UnitActionHandler.ExitCurentAction(true);
             Ledge.Table.SetUnitOnTable();
         }
         else

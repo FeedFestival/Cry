@@ -10,6 +10,17 @@ public class UnitController : MonoBehaviour
      */
     private Unit Unit;
 
+    public NavMeshAgent NavMeshAgent;
+
+    void Start()
+    {
+        NavMeshAgent = GetComponent<NavMeshAgent>();
+
+        path = new NavMeshPath();
+
+        NavMeshAgent.updateRotation = false;
+    }
+
     public void Initialize(Unit unit)
     {
         Unit = unit;
@@ -22,7 +33,11 @@ public class UnitController : MonoBehaviour
             if (debuging)
                 Debug.Log("Reaching (Player action in mind = " + Unit.UnitActionInMind + ")");
 
-            Unit.AIPath.stopMoving();
+            if (NavMeshAgent && NavMeshAgent.enabled == false)
+            {
+                NavMeshAgent.enabled = true;
+                NavMeshAgent.Stop();
+            }
 
             if (targetReached)
             {
@@ -32,8 +47,8 @@ public class UnitController : MonoBehaviour
                 //  --> That means we must fire the Action in mind and exit.
                 if (Unit.UnitActionInMind != UnitActionInMind.None && Unit.UnitPrimaryState != UnitPrimaryState.Busy)
                 {
+                    NavMeshAgent.enabled = false;
                     Unit.UnitActionHandler.StartAction();
-
                     Unit.ActivateTarget(false);
                     return;
                 }
@@ -78,9 +93,19 @@ public class UnitController : MonoBehaviour
         Unit.ActivateTarget(false);
     }
 
+    int pathElements = 0;
+    NavMeshPath path;
+
+    Vector3 originalPos;
+
     public void ResumeMoving()
     {
-        Unit.AIPath.resumeMoving();
+        if (NavMeshAgent.enabled == false)
+            NavMeshAgent.enabled = true;
+        originalPos = this.transform.position;
+        NavMeshAgent.SetDestination(Unit.UnitProperties.thisUnitTarget.transform.position);
+        NavMeshAgent.Resume();
+
         Unit.UnitPrimaryState = UnitPrimaryState.Walk;
         Unit.UnitBasicAnimation.GoWalk();
     }
@@ -90,7 +115,7 @@ public class UnitController : MonoBehaviour
         Unit.ActivateTarget(true);
 
         ResumeMoving();
-        Unit.AIPath.SearchPath();
+        //Unit.AIPath.SearchPath();
     }
 
     public void SetPathToTarget(Vector3 targetVector)
@@ -106,11 +131,24 @@ public class UnitController : MonoBehaviour
 
             Unit.UnitProperties.thisUnitTarget.transform.position = targetVector;
 
-            OnTable_targetVector = targetVector + new Vector3(0, 1, 0);
+            OnTable_targetVector = targetVector;
 
             Unit.UnitBasicAnimation.GoWalk();
             OnTable_Move = true;
         }
+    }
+
+    Vector3 lastTarget;
+    private bool lerpRotComplete = true;
+    IEnumerator LerpToRotation(float lerpTime)
+    {
+        NavMeshAgent.updateRotation = false;
+        lerpRotComplete = false;
+
+        yield return new WaitForSeconds(lerpTime);
+
+        lerpRotComplete = true;
+        NavMeshAgent.updateRotation = true;
     }
 
     void Update()
@@ -127,7 +165,20 @@ public class UnitController : MonoBehaviour
 
         if (Unit.UnitPrimaryState == UnitPrimaryState.Walk)
         {
-            KeepOnGround();
+            if (lastTarget != NavMeshAgent.steeringTarget)
+            {
+                lastTarget = NavMeshAgent.steeringTarget;
+
+                if (lerpRotComplete == true)
+                    StartCoroutine(LerpToRotation(0.6f));
+            }
+            if (lerpRotComplete == false)
+            {
+                if (lastTarget != Vector3.zero)
+                    Unit.UnitProperties.thisTransform.rotation = Logic.SmoothLook(Unit.UnitProperties.thisTransform.rotation,
+                        Logic.GetDirection(Unit.UnitProperties.thisTransform.position, lastTarget),
+                        11f);
+            }
         }
     }
 
@@ -169,14 +220,14 @@ public class UnitController : MonoBehaviour
                 StartCoroutine(LerpToPosition(0.6f));
             }
             rootPos_lerp = new Vector3(Unit.UnitProperties.Root.position.x,
-                                    Unit.UnitProperties.Root.position.y + 1,
+                                    Unit.UnitProperties.Root.position.y,
                                     Unit.UnitProperties.Root.position.z);
             Unit.UnitProperties.thisTransform.position = Vector3.Lerp(Unit.UnitProperties.thisTransform.position, rootPos_lerp, Time.deltaTime * 11);
         }
         if (lerpComplete)
         {
             var rootPos = new Vector3(Unit.UnitProperties.Root.position.x,
-                                Unit.UnitProperties.Root.position.y + 1,
+                                Unit.UnitProperties.Root.position.y,
                                 Unit.UnitProperties.Root.position.z);
             Unit.UnitProperties.thisTransform.position = rootPos;
         }
@@ -188,13 +239,15 @@ public class UnitController : MonoBehaviour
         transform.rotation = Quaternion.Slerp(Unit.UnitProperties.thisTransform.rotation, rot, Time.deltaTime * 10);
     }
 
-    public void ExitAction()
+    public void ExitAction(bool toAnotherAction = false)
     {
         startLerp = false;
         lerpComplete = false;
 
         Unit.UnitProperties.Root = null;
-        StopMoving();
+
+        if (toAnotherAction == false)
+            StopMoving();
     }
 
     IEnumerator LerpToPosition(float lerpTime)

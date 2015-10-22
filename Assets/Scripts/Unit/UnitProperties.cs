@@ -72,7 +72,7 @@ public class UnitProperties : MonoBehaviour {
         AtackSpeed_Impact = 0.5f;
         AtackSpeed_ParriedOrComplete = 0.5f;
 
-        Unit.AIPath.speed = this.MovementSpeed;
+        //Unit.AIPath.speed = this.MovementSpeed;
 
         // Transforms initialization
 
@@ -107,11 +107,7 @@ public class UnitProperties : MonoBehaviour {
         Unit.UnitAnimator[LadderAnimations.Idle_Ladder.ToString()].wrapMode = WrapMode.Loop;
 
         //  Target initialization
-        if (!thisUnitTarget)
-            Unit.AIPath.setUnitTarget(CreateTarget());
-        else
-            Unit.AIPath.setUnitTarget(thisUnitTarget.transform);
-
+        CreateTarget();
         thisUnitTarget.Initialize(thisTransform.gameObject.name, Unit);
     }
 
