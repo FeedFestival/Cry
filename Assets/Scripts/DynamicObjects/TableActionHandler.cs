@@ -101,7 +101,7 @@ public class TableActionHandler : MonoBehaviour
                 if (_lastCirclePosition != hitPosition && hitPosition != Vector3.zero)
                 {
                     _lastCirclePosition = hitPosition;
-                    _showCircleAction(_lastCirclePosition);
+                    _showCircleAction(_lastCirclePosition, edgeTransform);
                 }
             }
             else
@@ -111,13 +111,13 @@ public class TableActionHandler : MonoBehaviour
                     if (_lastCirclePosition != edgeTransform.position)
                     {
                         _lastCirclePosition = edgeTransform.position;
-                        _showCircleAction(edgeTransform.position);
+                        _showCircleAction(edgeTransform.position, edgeTransform);
                     }
                 }
                 else
                 {
                     _lastCirclePosition = edgeTransform.position;
-                    _showCircleAction(edgeTransform.position);
+                    _showCircleAction(edgeTransform.position, edgeTransform);
                 }
             }
         }
@@ -152,7 +152,7 @@ public class TableActionHandler : MonoBehaviour
                 if (_lastCirclePosition != edgeTransform.position)
                 {
                     _lastCirclePosition = edgeTransform.position;
-                    _showCircleAction(_lastCirclePosition);
+                    _showCircleAction(_lastCirclePosition, edgeTransform);
 
                     if (Table.TableEdge == TableEdge.Table_End_Collider_F)
                         Table.TableActionStartPoint = TableActionStartPoint.Table_StartPos_Forward;
@@ -170,19 +170,19 @@ public class TableActionHandler : MonoBehaviour
 
         Table.TableProperties.CircleAction_Position = new Vector3(pos.x, Table.TableProperties.Ypos, pos.z);
     }
-    void _showCircleAction(Vector3 pos)
+    void _showCircleAction(Vector3 pos, Transform edgeTransform)
     {
         if (Table.TableStartPoint == TableStartPoint.Top)
         {
             _setPositions(pos);
-            CalculateBottomPoint(pos);
+            _calculateBottomPoint(pos, edgeTransform);
         }
         else if (Table.TableStartPoint == TableStartPoint.Bottom)
         {
             if (GlobalData.Player.UnitFeetState == UnitFeetState.OnTable || GlobalData.Player.UnitFeetState == UnitFeetState.OnGround)
             {
                 _setPositions(pos);
-                CalculateBottomPoint(pos);
+                _calculateBottomPoint(pos, edgeTransform);
             }
         }
     }
@@ -222,10 +222,10 @@ public class TableActionHandler : MonoBehaviour
                 Table.TableProperties.StartPointPosition = Table.TableProperties.Animator_BottomPosition + (edgeTransform.forward / 2);
             }
         }
-        PlaceAnimator(edgeTransform);
+        _placeAnimator(edgeTransform);
     }
 
-    public void PlaceAnimator(Transform edgeTransform)
+    void _placeAnimator(Transform edgeTransform)
     {
         switch (Table.TableEdge)
         {
@@ -274,16 +274,16 @@ public class TableActionHandler : MonoBehaviour
         }
     }
 
-    public void CalculateBottomPoint(Vector3 circlePosition)
+    void _calculateBottomPoint(Vector3 circlePosition, Transform edgeTransform)
     {
         var distanceThreshold = 1.5f;
 
-        var pos1 = Table.TableProperties.CircleAction_Position + (Table.TableProperties.thisTransform.forward / distanceThreshold);
+        var pos1 = Table.TableProperties.CircleAction_Position + (edgeTransform.forward / distanceThreshold);
 
         var _bottom_Position = new Vector3(Table.TableProperties.CircleAction_Position.x,
                                             Table.TableProperties.Bottom_YPos - 0.5f,
                                             Table.TableProperties.CircleAction_Position.z);
-        var pos2 = _bottom_Position + (Table.TableProperties.thisTransform.forward / distanceThreshold);
+        var pos2 = _bottom_Position + (edgeTransform.forward / distanceThreshold);
 
         var direction = Logic.GetDirection(pos1, pos2);
 

@@ -51,8 +51,11 @@ public class TableInputTrigger : MonoBehaviour
 
                 if (Input.GetMouseButtonDown((int)MouseInput.LeftClick))
                 {
-                    Table.TableActionHandler.CalculateStartPoint();
-                    GlobalData.Player.UnitActionHandler.SetAction(Table.TableProperties.thisTransform.gameObject, ActionType.GrabTable);
+                    if (Table.UI_CircleAction.CircleActionState == CircleActionState.Available)
+                    {
+                        Table.TableActionHandler.CalculateStartPoint();
+                        GlobalData.Player.UnitActionHandler.SetAction(Table.TableProperties.thisTransform.gameObject, ActionType.GrabTable);
+                    }
                 }
             }
             else
@@ -67,17 +70,20 @@ public class TableInputTrigger : MonoBehaviour
 
                 if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
                 {
-                    Table.TableActionHandler.CalculateStartPoint(thisTransform);
-
-                    if (GlobalData.Player.UnitFeetState == UnitFeetState.OnTable)
+                    if (Table.UI_CircleAction.CircleActionState == CircleActionState.Available)
                     {
-                        Table.Unit.UnitActionInMind = UnitActionInMind.ClimbDownTable;
+                        Table.TableActionHandler.CalculateStartPoint(thisTransform);
 
-                        GlobalData.Player.UnitController.SetPathToTarget(Table.TableProperties.StartPointPosition);
-                    }
-                    else // if UnitFeetState.OnGround
-                    {
-                        GlobalData.Player.UnitActionHandler.SetAction(Table.TableProperties.thisTransform.gameObject, ActionType.TableClimb);
+                        if (GlobalData.Player.UnitFeetState == UnitFeetState.OnTable)
+                        {
+                            Table.Unit.UnitActionInMind = UnitActionInMind.ClimbDownTable;
+
+                            GlobalData.Player.UnitController.SetPathToTarget(Table.TableProperties.StartPointPosition);
+                        }
+                        else // if UnitFeetState.OnGround
+                        {
+                            GlobalData.Player.UnitActionHandler.SetAction(Table.TableProperties.thisTransform.gameObject, ActionType.TableClimb);
+                        }
                     }
                 }
             }
