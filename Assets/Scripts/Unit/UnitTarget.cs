@@ -30,6 +30,12 @@ public class UnitTarget : MonoBehaviour
             {
                 if (debug)
                     Debug.Log("Player is busy with an action and doesnt care about its path target (sad face)");
+
+                if (this.Unit.UnitActionState == UnitActionState.MovingTable)
+                {
+                    this.Unit.Table.TableController.StopTableMovement();
+                }
+
                 return;
             }
 

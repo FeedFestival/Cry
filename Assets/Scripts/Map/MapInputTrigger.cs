@@ -8,7 +8,7 @@ public class MapInputTrigger : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (GlobalData.Player.UnitPrimaryState == UnitPrimaryState.Busy)
+        if (GlobalData.Player != null && GlobalData.Player.UnitPrimaryState == UnitPrimaryState.Busy)
         {
             if (GlobalData.Player.UnitActionState == UnitActionState.ClimbingLadder)
             {
@@ -19,10 +19,19 @@ public class MapInputTrigger : MonoBehaviour
         {
             GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
         }
-
     }
     void OnMouseOver()
     {
+        if (GlobalData.Player != null && GlobalData.Player.UnitActionState == UnitActionState.MovingTable)
+        {
+            var pos = Logic.GetPointHitAtMousePosition();
+            if (pos != Vector3.zero)
+            {
+                if (GlobalData.Player.Table.TableController)
+                    GlobalData.Player.Table.TableController.CalculateAction(pos);
+            }
+        }
+
         if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
         {
             if (GlobalData.Player.UnitPrimaryState == UnitPrimaryState.Busy)
@@ -40,7 +49,12 @@ public class MapInputTrigger : MonoBehaviour
                 }
                 else if (GlobalData.Player.UnitActionState == UnitActionState.MovingTable)
                 {
-
+                    var pos = Logic.GetPointHitAtMousePosition();
+                    if (pos != Vector3.zero)
+                    {
+                        GlobalData.Player.UnitProperties.thisUnitTarget.thisTransform.position = GlobalData.Player.Table.TableController.MoveTable();
+                        GlobalData.Player.ActivateTarget(true);
+                    }
                 }
             }
             else
@@ -48,21 +62,10 @@ public class MapInputTrigger : MonoBehaviour
                 // This is canceling the actions.
                 GlobalData.Player.UnitActionInMind = UnitActionInMind.None;
 
-                var Target = GlobalData.Player.UnitProperties.thisUnitTarget.thisTransform;
-
-                RaycastHit hit;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(ray, out hit, 100))
+                var pos = Logic.GetPointHitAtMousePosition();
+                if (pos != Vector3.zero)
                 {
-                    if (debug)
-                        Debug.Log("Ray launched");
-
-                    Target.position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-
-                    if (debug)
-                        Debug.Log("target_move to this pos : " + Target.position);
-
+                    GlobalData.Player.UnitProperties.thisUnitTarget.thisTransform.position = pos;
                     GlobalData.Player.UnitController.GoToTarget();
                 }
             }
@@ -73,6 +76,7 @@ public class MapInputTrigger : MonoBehaviour
             }
         }
     }
+
     void OnMouseExit()
     {
         GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);

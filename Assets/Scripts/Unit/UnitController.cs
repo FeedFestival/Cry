@@ -16,8 +16,6 @@ public class UnitController : MonoBehaviour
     {
         NavMeshAgent = GetComponent<NavMeshAgent>();
 
-        path = new NavMeshPath();
-
         NavMeshAgent.updateRotation = false;
     }
 
@@ -93,16 +91,10 @@ public class UnitController : MonoBehaviour
         Unit.ActivateTarget(false);
     }
 
-    int pathElements = 0;
-    NavMeshPath path;
-
-    Vector3 originalPos;
-
     public void ResumeMoving()
     {
         if (NavMeshAgent.enabled == false)
             NavMeshAgent.enabled = true;
-        originalPos = this.transform.position;
         NavMeshAgent.SetDestination(Unit.UnitProperties.thisUnitTarget.transform.position);
         NavMeshAgent.Resume();
 

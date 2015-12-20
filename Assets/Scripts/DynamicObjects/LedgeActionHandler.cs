@@ -35,7 +35,8 @@ public class LedgeActionHandler : MonoBehaviour
 
     public void CalculateCircleActionPoint()
     {
-        var hitPosition = Logic.GetEdgePosition(Ledge.CircleAction_Position, Ledge.thisTransform.forward, Ledge.thisTransform.position.y, Ledge.Ypos);
+        var hitPosition = Logic.GetEdgePosition(Ledge.CircleAction_Position,
+                                                Ledge.thisTransform, Ledge.Ypos);
         if (_lastCirclePosition != hitPosition && hitPosition != Vector3.zero)
         {
             _lastCirclePosition = hitPosition;

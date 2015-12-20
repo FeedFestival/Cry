@@ -70,13 +70,15 @@ public class CameraControl : MonoBehaviour
 
     private bool CheckYDistance()
     {
-        
-        var distance = Mathf.Round((GlobalData.Player.UnitProperties.thisTransform.position.y + YDistanceFromPlayer) * 1000f) / 1000f;
-        var cameraCurrentPosition = Mathf.Round((thisTransform.position.y) * 1000f) / 1000f;
-        if (distance != cameraCurrentPosition)
+        if (GlobalData.Player != null)
         {
-            //Debug.Log("Camera is wrong.");
-            return true;
+            var distance = Mathf.Round((GlobalData.Player.UnitProperties.thisTransform.position.y + YDistanceFromPlayer) * 1000f) / 1000f;
+            var cameraCurrentPosition = Mathf.Round((thisTransform.position.y) * 1000f) / 1000f;
+            if (distance != cameraCurrentPosition)
+            {
+                //Debug.Log("Camera is wrong.");
+                return true;
+            }
         }
         return false;
     }

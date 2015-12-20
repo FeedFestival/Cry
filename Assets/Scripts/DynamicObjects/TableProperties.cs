@@ -95,10 +95,10 @@ public class TableProperties : MonoBehaviour
                     Table_ForwardExit = child.transform.position;
                     break;
 
-                case "Table_RotationBack":
+                case "Table_Rotation_Back":
                     Table_RotationBack = child.transform.position;
                     break;
-                case "Table_RotationForward":
+                case "Table_Rotation_Forward":
                     Table_RotationForward = child.transform.position;
                     break;
 

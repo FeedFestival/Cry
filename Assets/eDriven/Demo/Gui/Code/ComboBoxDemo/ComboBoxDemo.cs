@@ -118,7 +118,7 @@ public class ComboBoxDemo : Gui
         HGroup hGroup = new HGroup();
         viewport.AddChild(hGroup);
 
-        //List<object> source = new List<object> {"Failure", "Teaches", "Success", "One", "Two", "Three", "Four", "Five", "Six"};
+        //List<object> breaks = new List<object> {"Failure", "Teaches", "Success", "One", "Two", "Three", "Four", "Five", "Six"};
 
         var factory = new ItemRendererFactory<DefaultItemRenderer>();
 

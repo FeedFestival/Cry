@@ -2,7 +2,8 @@
 using System.Collections;
 using Assets.Scripts.Types;
 
-public class CameraCursor : MonoBehaviour {
+public class CameraCursor : MonoBehaviour
+{
 
     /*
         This script deals with the change of the cursor when hovering certain objects in the scene.
@@ -41,7 +42,7 @@ public class CameraCursor : MonoBehaviour {
     {
         Cursor.visible = false;
 
-        no_Cursor = new Texture2D(1,1);
+        no_Cursor = new Texture2D(1, 1);
         defaultCursor = Resources.Load("Cursor/_Cursor") as Texture2D;
         Grab_Cursor = Resources.Load("Cursor/Cursor_Hand") as Texture2D;
         Door_Cursor = Resources.Load("Cursor/Cursor_Door") as Texture2D;
@@ -64,7 +65,7 @@ public class CameraCursor : MonoBehaviour {
 
     public void ChangeCursor(CursorType cursorType)
     {
-        if (GlobalData.Player.PlayerActionInMind != PlayerActionInMind.UseAbility)
+        if (GlobalData.Player != null && GlobalData.Player.PlayerActionInMind != PlayerActionInMind.UseAbility)
         {
             if (lastCursor != cursorType)
             {

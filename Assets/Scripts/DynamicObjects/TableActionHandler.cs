@@ -95,8 +95,9 @@ public class TableActionHandler : MonoBehaviour
         {
             if (Table.TableEdge == TableEdge.Table_Side_Collider || Table.TableEdge == TableEdge.Table_Side_Collider_L)
             {
-
-                var hitPosition = Logic.GetEdgePosition(Table.TableProperties.CircleAction_Position, edgeTransform.forward, Table.TableProperties.Ypos, Table.TableProperties.Ypos);
+                //var tablePosition = new Vector3(edgeTransform.position.x,)
+                var hitPosition = Logic.GetEdgePosition(Table.TableProperties.CircleAction_Position,
+                                                        edgeTransform, Table.TableProperties.Ypos);
 
                 if (_lastCirclePosition != hitPosition && hitPosition != Vector3.zero)
                 {
@@ -125,7 +126,8 @@ public class TableActionHandler : MonoBehaviour
         {
             if (Table.TableEdge == TableEdge.Table_Side_Collider || Table.TableEdge == TableEdge.Table_Side_Collider_L)
             {
-                var hitPosition = Logic.GetEdgePosition(Table.TableProperties.CircleAction_Position, edgeTransform.forward, Table.TableProperties.Ypos, Table.TableProperties.Ypos);
+                var hitPosition = Logic.GetEdgePosition(Table.TableProperties.CircleAction_Position,
+                                                        edgeTransform, Table.TableProperties.Ypos);
 
                 if (hitPosition != Vector3.zero)
                 {

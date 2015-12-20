@@ -12,6 +12,10 @@ public class Table : MonoBehaviour
     public TableActionHandler TableActionHandler;
     [HideInInspector]
     public TableAnimation TableAnimation;
+    [HideInInspector]
+    public TableController TableController;
+    [HideInInspector]
+    public NavMeshObstacle NavMeshObstacle;
 
     // relations
     public Unit Unit;
@@ -34,18 +38,44 @@ public class Table : MonoBehaviour
         }
         set
         {
+            _TableState = value;
+
             TableProperties.Table_Top_Collider.gameObject.SetActive(false);
             TableProperties.Table_End_Collider_F.gameObject.SetActive(false);
             TableProperties.Table_End_Collider.gameObject.SetActive(false);
             TableProperties.Table_Side_Collider.gameObject.SetActive(false);
             TableProperties.Table_Side_Collider_L.gameObject.SetActive(false);
-            _TableState = value;
+
             if (_TableState == TableState.Static)
             {
+                if (TableController)
+                    TableController.DestroyInstance();
+
                 TableProperties.Table_End_Collider_F.gameObject.SetActive(true);
                 TableProperties.Table_End_Collider.gameObject.SetActive(true);
                 TableProperties.Table_Side_Collider.gameObject.SetActive(true);
                 TableProperties.Table_Side_Collider_L.gameObject.SetActive(true);
+            }
+            else if (_TableState == TableState.Moving)
+            {
+                var position = Vector3.zero;
+                var rotation = Vector3.zero;
+                if (TableEdge == TableEdge.Table_End_Collider_F)
+                {
+                    position = TableProperties.Table_RotationBack;
+                    rotation = TableProperties.thisTransform.eulerAngles;
+                }
+                else
+                {
+                    position = TableProperties.Table_RotationForward;
+
+                    rotation = TableProperties.thisTransform.eulerAngles + new Vector3(0,180,0);
+                }
+
+                var tableControllerPrefab = Resources.Load("Prefabs/TableController") as GameObject;
+                var createdTableController = (GameObject)Instantiate(tableControllerPrefab, position, Quaternion.identity);
+                TableController = createdTableController.GetComponent<TableController>();
+                TableController.Initialize(this,Unit,rotation);
             }
             else
             {
@@ -101,6 +131,8 @@ public class Table : MonoBehaviour
         TableAnimation = this.GetComponent<TableAnimation>();
         if (TableAnimation)
             TableAnimation.Initialize(this);
+
+        NavMeshObstacle = this.GetComponent<NavMeshObstacle>();
 
         TableState = TableState.Static;
 

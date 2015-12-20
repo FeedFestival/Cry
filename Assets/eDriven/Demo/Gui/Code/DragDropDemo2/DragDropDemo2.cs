@@ -97,7 +97,7 @@ public class DragDropDemo2 : Gui
                                 "Drag and Drop Demo 2", 
                                 "Created using eDriven.Gui",
                                 //"Author: Danko Kozar",
-                                "Drag items from the left panel (source)",
+                                "Drag items from the left panel (breaks)",
                                 "Drop them to the right panel (destination)"
                             },
             Callback = delegate(string line) { button.Text = line; }

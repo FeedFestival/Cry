@@ -2,17 +2,18 @@
 using System.Collections;
 using Assets.Scripts.Types;
 
-public class TableAnimation : MonoBehaviour {
+public class TableAnimation : MonoBehaviour
+{
 
     Table Table;
 
     private bool playingTwoAnimators;
 
-	// Use this for initialization
+    // Use this for initialization
     public void Initialize(Table table)
     {
         Table = table;
-	}
+    }
 
     public void PlayStatic(TableAnimations animation)
     {
@@ -35,6 +36,12 @@ public class TableAnimation : MonoBehaviour {
         float animationLenght = Table.TableAnimator[animation.ToString()].length;
 
         StartCoroutine(WaitForEndOfAnimation(animationLenght));
+    }
+
+    public void PlayLoopAction(TableAnimations animation)
+    {
+        Table.TableAnimator[animation.ToString()].wrapMode = WrapMode.Loop;
+        Table.TableAnimator.CrossFade(animation.ToString());
     }
 
     IEnumerator WaitForEndOfAnimation(float animTime)

@@ -34,6 +34,12 @@ public class UnitActionAnimation : MonoBehaviour
         Play(Unit.UnitProperties.ArmatureName + animationString);
     }
 
+    public void PlayLoopAction(string animationString)
+    {
+        Unit.UnitAnimator[animationString].wrapMode = WrapMode.Loop;
+        Unit.UnitAnimator.CrossFade(animationString);
+    }
+
     private void Play(string animationString)
     {
         Unit.UnitAnimator.CrossFade(animationString);

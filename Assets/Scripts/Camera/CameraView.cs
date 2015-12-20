@@ -5,6 +5,7 @@ using Assets.Scripts.Types;
 
 public class CameraView : MonoBehaviour
 {
+    public bool ControlTime = false;
     void Awake()
     {
         // set the desired aspect ratio (the values in this example are
@@ -65,25 +66,33 @@ public class CameraView : MonoBehaviour
 
     void OnGUI()
     {
-        // Make a background box
-        GUI.Box(new Rect(10, 10, 200, 150), "Loader Menu");
-
-        // Make the first button. If it is pressed, Application.Loadlevel (1) will be executed
-        if (GUI.Button(new Rect(20, 40, 100, 20), "TimeScale 0.1"))
+        if (ControlTime)
         {
-            Time.timeScale = 0.1f;
-        }
+            // Make a background box
+            GUI.Box(new Rect(10, 10, 200, 150), "Loader Menu");
 
-        // Make the first button. If it is pressed, Application.Loadlevel (1) will be executed
-        if (GUI.Button(new Rect(20, 60, 100, 20), "TimeScale 0.5"))
-        {
-            Time.timeScale = 0.5f;
-        }
+            // Make the first button. If it is pressed, Application.Loadlevel (1) will be executed
+            if (GUI.Button(new Rect(20, 40, 100, 20), "TimeScale 0.1"))
+            {
+                Time.timeScale = 0.1f;
+            }
 
-        // Make the second button.
-        if (GUI.Button(new Rect(20, 80, 100, 20), "TimeScale 1"))
-        {
-            Time.timeScale = 1;
+            // Make the first button. If it is pressed, Application.Loadlevel (1) will be executed
+            if (GUI.Button(new Rect(20, 60, 100, 20), "TimeScale 0.5"))
+            {
+                Time.timeScale = 0.5f;
+            }
+
+            // Make the second button.
+            if (GUI.Button(new Rect(20, 80, 100, 20), "TimeScale 1"))
+            {
+                Time.timeScale = 1;
+            }
         }
+    }
+
+    public Vector3 GetScreenCoordinates(Vector3 worldPoint)
+    {
+        return this.GetComponent<Camera>().WorldToScreenPoint(worldPoint);
     }
 }

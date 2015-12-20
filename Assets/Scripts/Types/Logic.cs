@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -186,10 +187,30 @@ namespace Assets.Scripts.Types
         Table_StartPos_Forward = 0, Table_StartPos_Back = 1
     }
 
+    public enum TableMovementAction
+    {
+        Move = 0, RotateRight = 1, RotateLeft = 2
+    }
+
     #endregion
+
+    public enum DialogBoxType
+    {
+        RightSideSentence = 0, LeftSide_1LargeSentence = 1, LeftSide_2Sentence = 2, LeftSide_1SmallSentence = 3, LeftSide_1MediumSentence = 4
+    }
+
+    public enum ActorName
+    {
+        John = 0, Father = 1, Mother = 2
+    }
 
     public static class Logic
     {
+        // UI functions
+
+
+        // 3d functions
+
         public static int GetSmallestDistance(float[] distances)
         {
             int smallestIndex = 0;
@@ -219,7 +240,7 @@ namespace Assets.Scripts.Types
         {
             int returnValue = 0;
 
-            if (UnitYPos < groundYPos || UnitYPos > Ypos + 0.5f)
+            if (UnitYPos < (groundYPos - 0.25f) || UnitYPos > (Ypos + 0.25f))
             {
                 return 2;   // OutOfReach
             }
@@ -228,17 +249,17 @@ namespace Assets.Scripts.Types
 
             if (UnitYPos < middlePosY)
             {
-                returnValue = 0;
+                returnValue = 0;    // Bottom
             }
             else
             {
-                returnValue = 1;
+                returnValue = 1;    // Top
             }
 
             return returnValue;
         }
 
-        public static Vector3 GetEdgePosition(Vector3 lastPosition, Vector3 forward, float Ypos_compare, float Ypos)
+        public static Vector3 GetEdgePosition(Vector3 lastPosition, Transform Edge, float Ypos)
         {
             var hitPoint = GetPointHitAtMousePosition();
 
@@ -247,19 +268,52 @@ namespace Assets.Scripts.Types
             {
                 lastPosition = hitPoint;
 
-                if (Mathf.Round(hitPoint.y) == Mathf.Round(Ypos_compare))
+                // If we hit the top side of the edge we need to put the point on the EDGE !
+                if (Mathf.Round(hitPoint.y) == Mathf.Round(Edge.position.y))
                 {
-                    var _UILinePosition = new Vector3(hitPoint.x, Ypos, hitPoint.z);
+                    // A = is where the ray hits
+                    // B = is the Edge point 
+                    // C = is thebackward position of the edge 
+                    // http://mate123.ro/formule-matematice-geometrie-generala/teorema-inaltimii./
 
-                    var One_meterInFront = (Vector3)(forward + _UILinePosition);
-                    var One_meterInFront_Half_metterDown = One_meterInFront + new Vector3(0, -0.5f, 0);
-                    var Half_metterDown = _UILinePosition + new Vector3(0, -0.5f, 0);
+                    Vector3 back = -Edge.forward;
 
-                    RaycastHit hit;
-                    if (Physics.Raycast(new Ray(One_meterInFront_Half_metterDown, (Half_metterDown - One_meterInFront_Half_metterDown)), out hit, 10))
-                    {
-                        return hit.point;
-                    }
+                    var A = new Vector3(hitPoint.x, Ypos, hitPoint.z);
+                    var B = Edge.position;
+                    var C = (Vector3)B + back;
+
+                    var AC = Vector3.Distance(A, C);
+                    var AB = Vector3.Distance(A, B);
+                    var BC = Vector3.Distance(B, C);    // base of the triangle.
+
+                    var s = (AC + AB + BC) / 2.0d;
+                    var Area = Math.Sqrt(s * (s - AC) * (s - AB) * (s - BC));   //  Find the Area using Heron's formula http://socoder.net/?topic=2274
+
+                    var AD = (float)(Area / (BC / 2));    // height    http://www.mathwarehouse.com/geometry/triangles/area/find-height-of-triangle-how-to.php
+
+                    // we use AC and AD and the (angle between AD and DC)
+                    // https://www.mathsisfun.com/algebra/trig-solving-ssa-triangles.html
+
+                    //  Ipotenuza (latura care este opusa unghiuliu de 90 de grade) la patrat este egala cu suma patratelor catetelor
+                    // AC^2 = AD^2 + DC^2   //  Pithagora
+                    var DC = Mathf.Sqrt(Mathf.Pow(AC, 2) - Mathf.Pow(AD, 2));
+
+                    var BD = BC - DC;   //  Lenght from the point to the edge.
+
+                    // we found out how much we want to set the point forward. thats BD
+                    // E is one meter in front for vector A
+                    var E = (Vector3)A + Edge.forward;
+                    var AE = Vector3.Distance(E, A);
+                    // now decrease AE to be the size of BD http://www.teacherschoice.com.au/Maths_Library/Analytical%20Geometry/AnalGeom_3.htm
+                    var k1 = AE - BD;
+                    var x = ((k1 * A.x) + (BD * E.x)) / (k1 + BD);
+                    var y = ((k1 * A.y) + (BD * E.y)) / (k1 + BD);
+                    var z = ((k1 * A.z) + (BD * E.z)) / (k1 + BD);
+
+                    // And we get the point on the edge.
+                    var ThePointOnTheEdge = new Vector3(x, y, z);
+
+                    return ThePointOnTheEdge;
                 }
                 else
                 {
@@ -267,6 +321,29 @@ namespace Assets.Scripts.Types
                 }
             }
             return Vector3.zero;
+        }
+
+        public static Vector3 IncreaseOrDecreaseLine(Vector3 A, Vector3 B, float AB, float AB_desiredLength)
+        {
+            float x, y, z = 0f;
+            if (AB < AB_desiredLength)  // For increase in length
+            {
+                var k1 = AB_desiredLength - AB;
+
+                x = B.x + (B.x - A.x) / AB * k1;
+                y = A.y;
+                z = B.z + (B.z - A.z) / AB * k1;
+            }
+            else
+            {   //  For decreasing the lenght : http://www.teacherschoice.com.au/Maths_Library/Analytical%20Geometry/AnalGeom_3.htm
+
+                var k1 = AB - AB_desiredLength;
+
+                x = ((k1 * A.x) + (AB_desiredLength * B.x)) / (k1 + AB_desiredLength);
+                y = ((k1 * A.y) + (AB_desiredLength * B.y)) / (k1 + AB_desiredLength);
+                z = ((k1 * A.z) + (AB_desiredLength * B.z)) / (k1 + AB_desiredLength);
+            }
+            return new Vector3(x, y, z);
         }
 
         public static GameObject InstantiateEdgeUI(Vector3 position, Vector3 rotation, Vector3 scale, string name)
@@ -298,7 +375,7 @@ namespace Assets.Scripts.Types
             Ray Ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(Ray, out Hit, 100))
             {
-                return Hit.point;
+                return new Vector3(Mathf.Round(Hit.point.x * 100f) / 100f, Mathf.Round(Hit.point.y * 100f) / 100f, Mathf.Round(Hit.point.z * 100f) / 100f);
             }
             return Vector3.zero;
         }
