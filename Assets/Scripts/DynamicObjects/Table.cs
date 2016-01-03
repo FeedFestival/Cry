@@ -62,12 +62,12 @@ public class Table : MonoBehaviour
                 var rotation = Vector3.zero;
                 if (TableEdge == TableEdge.Table_End_Collider_F)
                 {
-                    position = TableProperties.Table_RotationBack;
+                    position = TableProperties.Table_RotationBack.position;
                     rotation = TableProperties.thisTransform.eulerAngles;
                 }
                 else
                 {
-                    position = TableProperties.Table_RotationForward;
+                    position = TableProperties.Table_RotationForward.position;
 
                     rotation = TableProperties.thisTransform.eulerAngles + new Vector3(0,180,0);
                 }

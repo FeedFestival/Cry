@@ -9,10 +9,10 @@ public class Actor : MonoBehaviour
 {
     public ActorName Name;
 
+    public LinePause LinePause;
+
     [HideInInspector]
     public Transform thisTransform;
-    [HideInInspector]
-    public Vector3 screenPosition;
 
     [HideInInspector]
     public Text[] DialogText;
@@ -39,8 +39,6 @@ public class Actor : MonoBehaviour
     void Start()
     {
         thisTransform = this.transform;
-
-        screenPosition = GlobalData.CameraControl.CameraView.GetScreenCoordinates(thisTransform.position);
     }
 
     void Update()
@@ -59,6 +57,9 @@ public class Actor : MonoBehaviour
         GameObject targetPrefab = new GameObject();
 
         targetPrefab = Resources.Load(targetPrefabString) as GameObject;
+
+        if (thisTransform == null)
+            thisTransform = this.transform;
 
         var createdPrefab = (GameObject)Instantiate(targetPrefab, thisTransform.position + new Vector3(0, 1.5f, 0), Quaternion.identity);
 
@@ -175,7 +176,6 @@ public class Actor : MonoBehaviour
                 line = line + "\n";
             }
         }
-
         return line;
     }
 
@@ -247,7 +247,12 @@ public class Actor : MonoBehaviour
                     DialogTextIndex++;
             }
 
-            yield return new WaitForSeconds(timePerWord);
+            if (word.Contains("."))
+                yield return new WaitForSeconds(timePerWord + 0.44f);   // hard coded
+            if (word.Contains(","))
+                yield return new WaitForSeconds(timePerWord + 4.44f);   // hard coded
+            else
+                yield return new WaitForSeconds(timePerWord);
         }
     }
 

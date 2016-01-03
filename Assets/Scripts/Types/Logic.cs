@@ -204,6 +204,53 @@ namespace Assets.Scripts.Types
         John = 0, Father = 1, Mother = 2
     }
 
+    /***********************/
+//        ACTING STUFF
+    /***********************/
+
+    public class ActObject
+    {
+        public bool nextImmediate;
+        public int nextImmediateIndex;
+        public int nextIndex;
+        public bool endPoint;
+
+        public Actor Actor;
+
+        public bool hasAnimation;
+        public string animString;
+        public float animTime;
+
+        public bool hasLine;
+        public string Line;
+        public float lineTime;
+        public DialogBoxType DialogBoxType;
+
+        public float Time;
+
+        public bool hasPauseAfter;
+        public float PauseLength;
+    }
+
+    public enum ActType
+    {
+        Pause, Talk, Animate
+    }
+
+    public enum Talk
+    {
+        Talk1, Talk2, Talk3
+    }
+
+    public enum LinePause 
+    {
+        NoPause = 0, Pause1 = 1
+    }
+
+    /***********************/
+//        ACTING STUFF  -   END
+    /***********************/
+
     public static class Logic
     {
         // UI functions

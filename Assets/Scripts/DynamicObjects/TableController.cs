@@ -4,21 +4,31 @@ using Assets.Scripts.Types;
 
 public class TableController : MonoBehaviour
 {
+    [HideInInspector]
     public Table Table;
+    [HideInInspector]
     public Unit Unit;
 
+    [HideInInspector]
     public Transform thisTransform;
+    [HideInInspector]
     public Vector3 angleToRotateTo = Vector3.zero;
-    public float plusAngle;
 
     private Transform TM_RotSign;
+    private Transform TM_MovSign;
     private MeshRenderer TM_RightRot;
     private MeshRenderer TM_LeftRot;
 
     Vector3 RotationPoint = Vector3.zero;
     Vector3 MovementPoint = Vector3.zero;
 
+    private GameObject trailGameObject;
+
+    private float minimumMoveLength = 2.44f;
+
+    [HideInInspector]
     public bool rotateTable;
+    [HideInInspector]
     public bool moveTable;
 
     public TableMovementAction TableMovementAction;
@@ -43,7 +53,9 @@ public class TableController : MonoBehaviour
                 case "TM_RotSign":
                     TM_RotSign = child.transform;
                     break;
-
+                case "TM_MovSign":
+                    TM_MovSign = child.transform;
+                    break;
                 case "TM_LeftRot":
                     TM_LeftRot = child.transform.GetComponent<MeshRenderer>();
                     break;
@@ -112,12 +124,14 @@ public class TableController : MonoBehaviour
                         TableMovementAction = TableMovementAction.RotateLeft;
                         SetRenderers();
                         angleToRotateTo = thisTransform.eulerAngles + new Vector3(0, angleA, 0);
+                        TM_RotSign.localScale = new Vector3(-0.44f, 0.7f, 0.7f);
                     }
                     else
                     {
                         TableMovementAction = TableMovementAction.RotateRight;
                         SetRenderers();
                         angleToRotateTo = thisTransform.eulerAngles - new Vector3(0, angleA, 0);
+                        TM_RotSign.localScale = new Vector3(0.44f, 0.7f, 0.7f);
                     }
 
                     var AB_desiredLength = 2f;
@@ -134,10 +148,14 @@ public class TableController : MonoBehaviour
             {
                 TableMovementAction = TableMovementAction.Move;
 
-                if (AB > 2.77f)
+                if (AB > minimumMoveLength)
                     MovementPoint = Logic.IncreaseOrDecreaseLine(A, C, AC, AB);
                 else
-                    MovementPoint = Logic.IncreaseOrDecreaseLine(A, C, AC, 2.77f);
+                    MovementPoint = Logic.IncreaseOrDecreaseLine(A, C, AC, minimumMoveLength);
+
+                TM_MovSign.position = MovementPoint;
+                SetRenderers();
+                return;
             }
             SetRenderers(false);
         }
@@ -150,24 +168,35 @@ public class TableController : MonoBehaviour
             TM_LeftRot.enabled = false;
             TM_RightRot.enabled = false;
             TM_RotSign.GetComponent<MeshRenderer>().enabled = false;
+            TM_MovSign.GetComponent<MeshRenderer>().enabled = false;
         }
         else
         {
+            TM_MovSign.GetComponent<MeshRenderer>().enabled = false;
             if (TableMovementAction == TableMovementAction.RotateRight)
             {
                 TM_RightRot.enabled = true;
                 TM_LeftRot.enabled = false;
             }
-            else
+            else if (TableMovementAction == TableMovementAction.RotateLeft)
             {
                 TM_LeftRot.enabled = true;
                 TM_RightRot.enabled = false;
+            }
+            else
+            {
+                TM_LeftRot.enabled = false;
+                TM_RightRot.enabled = false;
+                TM_RotSign.GetComponent<MeshRenderer>().enabled = false;
+                TM_MovSign.GetComponent<MeshRenderer>().enabled = true;
             }
         }
     }
 
     public void StopTableMovement()
     {
+        Destroy(trailGameObject);
+
         if (rotateTable)
         {
             rotateTable = false;
@@ -184,7 +213,9 @@ public class TableController : MonoBehaviour
 
     public Vector3 MoveTable()
     {
+        LeaveTrail();
         SetRenderers(false);
+
         if (TableMovementAction == TableMovementAction.RotateRight || TableMovementAction == TableMovementAction.RotateLeft)
         {
             rotateTable = true;
@@ -207,6 +238,25 @@ public class TableController : MonoBehaviour
         Table.TableAnimation.PlayLoopAction(TableAnimations.Move_Table);
 
         return MovementPoint;
+    }
+
+    public void LeaveTrail()
+    {
+        if (TableMovementAction == TableMovementAction.RotateRight)
+        {
+            trailGameObject = (GameObject)Instantiate(TM_RotSign.gameObject, TM_RotSign.position, TM_RotSign.rotation);
+            trailGameObject.transform.parent = null;
+        }
+        else if (TableMovementAction == TableMovementAction.RotateLeft)
+        {
+            trailGameObject = (GameObject)Instantiate(TM_RotSign.gameObject, TM_RotSign.position, TM_RotSign.rotation);
+            trailGameObject.transform.parent = null;
+        }
+        else
+        {
+            trailGameObject = (GameObject)Instantiate(TM_MovSign.gameObject, TM_MovSign.position, TM_MovSign.rotation);
+            trailGameObject.transform.parent = null;
+        }
     }
 
     void Update()

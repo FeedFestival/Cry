@@ -6,7 +6,7 @@ public class TableActionHandler : MonoBehaviour
 {
     private Table Table;
 
-    [HideInInspector]
+    //[HideInInspector]
     public Vector3 _lastCirclePosition = new Vector3();
 
     // Use this for initialization
@@ -132,8 +132,8 @@ public class TableActionHandler : MonoBehaviour
                 if (hitPosition != Vector3.zero)
                 {
                     float[] distances = new float[2];
-                    distances[(int)TableActionStartPoint.Table_StartPos_Forward] = Vector3.Distance(hitPosition, Table.TableProperties.Table_StartPos_Forward);
-                    distances[(int)TableActionStartPoint.Table_StartPos_Back] = Vector3.Distance(hitPosition, Table.TableProperties.Table_StartPos_Back);
+                    distances[(int)TableActionStartPoint.Table_StartPos_Forward] = Vector3.Distance(hitPosition, Table.TableProperties.Table_StartPos_Forward.position);
+                    distances[(int)TableActionStartPoint.Table_StartPos_Back] = Vector3.Distance(hitPosition, Table.TableProperties.Table_StartPos_Back.position);
 
                     Table.TableActionStartPoint = (TableActionStartPoint)Logic.GetSmallestDistance(distances);
 
@@ -195,11 +195,11 @@ public class TableActionHandler : MonoBehaviour
         {
             if (Table.TableActionStartPoint == TableActionStartPoint.Table_StartPos_Forward)
             {
-                Table.TableProperties.StartPointPosition = Table.TableProperties.Table_StartPos_Forward;
+                Table.TableProperties.StartPointPosition = Table.TableProperties.Table_StartPos_Forward.position;
             }
             else
             {
-                Table.TableProperties.StartPointPosition = Table.TableProperties.Table_StartPos_Back;
+                Table.TableProperties.StartPointPosition = Table.TableProperties.Table_StartPos_Back.position;
             }
         }
         else
@@ -212,11 +212,11 @@ public class TableActionHandler : MonoBehaviour
                 }
                 else if (Table.TableEdge == TableEdge.Table_End_Collider)
                 {
-                    Table.TableProperties.StartPointPosition = Table.TableProperties.Table_BackExit;
+                    Table.TableProperties.StartPointPosition = Table.TableProperties.Table_BackExit.position;
                 }
                 else
                 {
-                    Table.TableProperties.StartPointPosition = Table.TableProperties.Table_ForwardExit;
+                    Table.TableProperties.StartPointPosition = Table.TableProperties.Table_ForwardExit.position;
                 }
             }
             else // if UnitFeetState.OnGround

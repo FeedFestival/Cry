@@ -5,209 +5,214 @@ using Assets.Scripts.Types;
 public class _memory_JohnKillsFather : MonoBehaviour
 {
     public Actor John;
-    public JohnAnimations JohnLastAnimation;
 
     public Actor Father;
-    public FatherAnimations FatherLastAnimation;
+
+    private ActObject[] acts;
 
     public AudioSource AudioSource;
 
-    void Start() {
+    void Start()
+    {
 
         AudioSource = GetComponent<AudioSource>();
+        GenerateCutscene();
 
         StartCutscene();
     }
 
-    // Use this for initialization
     void StartCutscene()
     {
+        currentIndex = 1;
+
+        ContinueCutscene();
+
         var soundTrack = Resources.Load("Sound/Soundtrack_BentAndBroken") as AudioClip;
         AudioSource.volume = 0.144f;
         AudioSource.PlayOneShot(soundTrack);
-
-        John.ActorAnimator.Play(JohnAnimations.Act1_John_Idle.ToString());
-
-        var animTime = Father.ActorAnimator[FatherAnimations.Act1_Father_Walks_ToScene.ToString()].length;
-        Father.ActorAnimator.Play(FatherAnimations.Act1_Father_Walks_ToScene.ToString());
-        FatherLastAnimation = FatherAnimations.Act1_Father_Walks_ToScene;
-        Father.SayLine("John, I've been looking everywhere for you. \n Why havent you sticked with the plan ?"
-                        , DialogBoxType.LeftSide_2Sentence
-                        , animTime);
-
-        StartCoroutine(WaitForEndOfAnimation(animTime, Father));
     }
 
-    public void EndAct(Actor actor) {
-        if (actor.Name == ActorName.John)
-        {
-            switch (JohnLastAnimation)
-            {
-                case JohnAnimations.Act1_John_Idle:
-                    break;
-                case JohnAnimations.Act1_John_Idle_SweatClear:
+    private int currentIndex;
 
-                    John.ActorAnimator.Play(JohnAnimations.Act1_JohnLightsUpACigarette.ToString());
-                    JohnLastAnimation = JohnAnimations.Act1_JohnLightsUpACigarette;
-                    var animTime = John.ActorAnimator[JohnAnimations.Act1_JohnLightsUpACigarette.ToString()].length;
-                    StartCoroutine(WaitForEndOfAnimation(animTime, John));
-
-                    Father.SayLine("What did you do John ?"
-                        , DialogBoxType.LeftSide_1MediumSentence
-                        , animTime / 4);
-
-                    break;
-                case JohnAnimations.Act1_JohnLightsUpACigarette:
-
-                    var talkTime = 2f;
-                    John.SayLine("Only me and you know ..."
-                        , DialogBoxType.LeftSide_1SmallSentence
-                        , talkTime);
-
-                    StartCoroutine(WaitForTalkLine(talkTime, JohnTalk.Talk2, FatherTalk.NoTalk));
-
-                    break;
-                case JohnAnimations.Act1_John_Cigarette_Turn_ToFather_Talk:
-                    break;
-                default:
-                    break;
-            }
-        }
-        else if (actor.Name == ActorName.Father)
-        {
-            switch (FatherLastAnimation)
-            {
-                case FatherAnimations.Act1_Father_Idle:
-                    
-                    break;
-                case FatherAnimations.Act1_Father_Walks_ToScene:
-
-                    StartCoroutine(WaitForPauseLine(3f, JohnPause.NoPause, FatherPause.Pause1));
-
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    public void EndPause(JohnPause JohnPause, FatherPause FatherPause)
+    void ContinueCutscene()
     {
-        if (JohnPause != JohnPause.NoPause)
+        var act = acts[currentIndex]; Debug.Log(act.Time);
+
+        if (act.hasAnimation)
         {
-            switch (JohnPause)
-            {
-                case JohnPause.NoPause:
-                    break;
-                default:
-                    break;
-            }
+            if (act.Time == 0)
+                act.Time = act.animTime;
+            act.Actor.ActorAnimator.Play(act.animString);
         }
-        else
+
+        if (act.hasLine)
         {
-            switch (FatherPause)
-            {
-                case FatherPause.NoPause:
-
-                    break;
-                case FatherPause.Pause1:
-
-                    Father.ActorAnimator.Play(FatherAnimations.Act1_Father_Idle.ToString());
-
-                    var talkTime = 4f;
-                    Father.SayLine("John? ..."
-                        , DialogBoxType.LeftSide_1SmallSentence
-                        , talkTime / 2);
-                    StartCoroutine(WaitForTalkLine(talkTime, JohnTalk.NoTalk, FatherTalk.Talk1));
-
-                    break;
-                default:
-                    break;
-            }
+            if (act.hasAnimation == false || act.Time == 0)
+                act.Time = act.lineTime;
+            act.Actor.SayLine(act.Line, act.DialogBoxType, act.lineTime);
         }
+
+        if (act.nextImmediate)
+        {
+            currentIndex = act.nextImmediateIndex;
+            ContinueCutscene();
+
+            if (act.nextIndex == 0)
+                return;
+        }
+
+        if (act.endPoint == false)
+            StartCoroutine(WaitForAct(act));
     }
 
-    public void EndTalk(JohnTalk JohnTalk, FatherTalk FatherTalk)
+    IEnumerator WaitForAct(ActObject act)
     {
-        if (JohnTalk != JohnTalk.NoTalk)
+        yield return new WaitForSeconds(act.Time);
+        if (act.hasPauseAfter)
+            yield return new WaitForSeconds(act.PauseLength);
+
+        if (currentIndex < act.nextIndex)
         {
-            switch (JohnTalk)
-            {
-                case JohnTalk.NoTalk:
-                    break;
-                case JohnTalk.Talk1:
-
-                    John.ActorAnimator.Play(JohnAnimations.Act1_John_Idle_SweatClear.ToString());
-                    JohnLastAnimation = JohnAnimations.Act1_John_Idle_SweatClear;
-                    var animTime = John.ActorAnimator[JohnAnimations.Act1_John_Idle_SweatClear.ToString()].length;
-                    StartCoroutine(WaitForEndOfAnimation(animTime, John));
-                    break;
-                default:
-                    break;
-            }
-        }
-        else
-        {
-            switch (FatherTalk)
-            {
-                case FatherTalk.NoTalk:
-                    break;
-                case FatherTalk.Talk1:
-
-                    var talkTime = 4f;
-                    John.SayLine("I had to do it Eric ..."
-                        , DialogBoxType.LeftSide_1MediumSentence
-                        , talkTime);
-                    StartCoroutine(WaitForTalkLine(talkTime, JohnTalk.Talk1, FatherTalk.NoTalk));
-
-                    break;
-                default:
-                    break;
-            }
+            currentIndex = act.nextIndex; Debug.Log(act.nextIndex);
+            ContinueCutscene();
         }
     }
 
-    IEnumerator WaitForEndOfAnimation(float animTime , Actor actor)
+    void GenerateCutscene()
     {
-        yield return new WaitForSeconds(animTime);
-        EndAct(actor);
+        acts = new ActObject[20];
+
+        acts[1] = new ActObject
+        {
+            nextImmediate = true,
+            nextImmediateIndex = 2,
+            nextIndex = 0,  //  No next index;
+
+            Actor = John,
+
+            hasAnimation = true,
+            animString = "Act1_John_Idle",
+        };
+
+        acts[2] = new ActObject
+        {
+            nextIndex = 3,
+
+            Actor = Father,
+
+            hasLine = true,
+            Line = "John. I've been looking everywhere for you. \n Why haven't you stuck with the plan ?",
+            lineTime = Father.ActorAnimator["Act1_Father_Walks_ToScene"].length,
+            DialogBoxType = DialogBoxType.LeftSide_2Sentence,
+
+            hasAnimation = true,
+            animString = "Act1_Father_Walks_ToScene",
+            animTime = Father.ActorAnimator["Act1_Father_Walks_ToScene"].length,
+
+            hasPauseAfter = true,
+            PauseLength = 3f
+        };
+
+        acts[3] = new ActObject
+        {
+            nextIndex = 4,
+
+            Actor = Father,
+
+            hasLine = true,
+            Line = "John? ...",
+            lineTime = 2.5f,
+            DialogBoxType = DialogBoxType.LeftSide_1SmallSentence,
+
+            hasPauseAfter = true,
+            PauseLength = 2f
+        };
+
+        acts[4] = new ActObject
+        {
+            nextIndex = 5,
+
+            Actor = John,
+
+            hasLine = true,
+            Line = "I had to do it ... I had too",
+            lineTime = John.ActorAnimator["Act1_John_Idle_SweatClear"].length,
+            DialogBoxType = DialogBoxType.LeftSide_1MediumSentence,
+
+            hasAnimation = true,
+            animString = "Act1_John_Idle_SweatClear",
+            animTime = John.ActorAnimator["Act1_John_Idle_SweatClear"].length,
+
+            hasPauseAfter = true,
+            PauseLength = 2f
+        };
+
+        acts[5] = new ActObject
+        {
+            nextImmediate = true,
+            nextImmediateIndex = 6,
+            nextIndex = 7,  // this is immediate so we set nextIndex as the index at wich we want the conversation to continue.
+
+            Actor = John,
+
+            hasAnimation = true,
+            animString = "Act1_JohnLightsUpACigarette",
+            animTime = John.ActorAnimator["Act1_JohnLightsUpACigarette"].length,
+        };
+
+        acts[6] = new ActObject
+        {
+            endPoint = true,
+
+            Actor = Father,
+
+            hasLine = true,
+            Line = "What did you do John ?",
+            lineTime = John.ActorAnimator["Act1_JohnLightsUpACigarette"].length / 4,
+            DialogBoxType = DialogBoxType.LeftSide_1MediumSentence,
+        };
+
+        acts[7] = new ActObject
+        {
+            nextImmediate = true,
+            nextImmediateIndex = 8,
+            nextIndex = 10,
+
+            Actor = John,
+
+            hasAnimation = true,
+            animString = "Act1_John_Cigarette_Turn_ToFather_Talk",
+            animTime = John.ActorAnimator["Act1_John_Cigarette_Turn_ToFather_Talk"].length,
+
+            hasPauseAfter = true,
+            PauseLength = 1f
+        };
+
+        acts[8] = new ActObject
+        {
+            nextIndex = 9,
+
+            Actor = John,
+
+            hasLine = true,
+            Line = "Only we know of it now ...",
+            lineTime = 2f,
+            DialogBoxType = DialogBoxType.LeftSide_1MediumSentence,
+ 
+            hasPauseAfter = true,
+            PauseLength = 4.5f
+        };
+
+        acts[9] = new ActObject
+        {
+            endPoint = true,
+
+            Actor = John,
+
+            hasLine = true,
+            Line = "Only you, and me ...",
+            lineTime = John.ActorAnimator["Act1_John_Cigarette_Turn_ToFather_Talk"].length,
+            DialogBoxType = DialogBoxType.LeftSide_1MediumSentence,
+        };
     }
-
-    IEnumerator WaitForPauseLine(float pauseTime, JohnPause JohnPause, FatherPause FatherPause)
-    {
-        yield return new WaitForSeconds(pauseTime);
-        EndPause(JohnPause, FatherPause);
-    }
-
-    IEnumerator WaitForTalkLine(float talkTime, JohnTalk JohnTalk, FatherTalk FatherTalk)
-    {
-        yield return new WaitForSeconds(talkTime);
-        EndTalk(JohnTalk, FatherTalk);
-    }
-}
-
-public enum JohnPause {
-    NoPause = 0
-}
-
-public enum FatherPause {
-    NoPause = 0, Pause1 = 1
-}
-
-public enum JohnTalk
-{
-    NoTalk = 0, Talk1 = 1, Talk2 = 2
-}
-
-public enum FatherTalk
-{
-    NoTalk = 0, Talk1 = 1
-}
-
-public enum JohnAnimations {
-    Act1_John_Idle = 0, Act1_John_Idle_SweatClear = 1, Act1_JohnLightsUpACigarette = 2, Act1_John_Cigarette_Turn_ToFather_Talk = 3
-}
-public enum FatherAnimations
-{
-    Act1_Father_Idle = 0, Act1_Father_Walks_ToScene = 1
 }

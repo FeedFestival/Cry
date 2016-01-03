@@ -9,7 +9,7 @@ public class TableInputTrigger : MonoBehaviour
 
     private TableEdge TableEdge;
 
-    private Transform thisTransform;
+    private Transform thisEdgeTransform;
 
     public void Initialize(Table table, TableEdge tableEdge)
     {
@@ -25,7 +25,7 @@ public class TableInputTrigger : MonoBehaviour
         else
             Table.TableEdge = TableEdge;
 
-        thisTransform = this.transform;
+        thisEdgeTransform = this.transform;
 
         Table.TableActionHandler.CalculateTableCursor();
     }
@@ -45,16 +45,19 @@ public class TableInputTrigger : MonoBehaviour
         {
             if (GlobalData.Player.PlayerActionInMind == PlayerActionInMind.UseAbility)
             {
-                Table.ResetUI();
-                Table.TableEdge = TableEdge;
-                Table.TableActionHandler.CalculateCircleActionPoint(thisTransform);
-
-                if (Input.GetMouseButtonDown((int)MouseInput.LeftClick))
+                if (GlobalData.Player.UnitFeetState != UnitFeetState.OnTable)
                 {
-                    if (Table.UI_CircleAction.CircleActionState == CircleActionState.Available)
+                    Table.ResetUI();
+                    Table.TableEdge = TableEdge;
+                    Table.TableActionHandler.CalculateCircleActionPoint(thisEdgeTransform);
+
+                    if (Input.GetMouseButtonDown((int)MouseInput.LeftClick))
                     {
-                        Table.TableActionHandler.CalculateStartPoint();
-                        GlobalData.Player.UnitActionHandler.SetAction(Table.TableProperties.thisTransform.gameObject, ActionType.GrabTable);
+                        if (Table.UI_CircleAction.CircleActionState == CircleActionState.Available)
+                        {
+                            Table.TableActionHandler.CalculateStartPoint();
+                            GlobalData.Player.UnitActionHandler.SetAction(Table.TableProperties.thisTransform.gameObject, ActionType.GrabTable);
+                        }
                     }
                 }
             }
@@ -65,14 +68,14 @@ public class TableInputTrigger : MonoBehaviour
                     || (GlobalData.Player.UnitActionState == UnitActionState.ClimbingTable && GlobalData.Player.UnitFeetState == UnitFeetState.OnTable))
                 {
                     Table.TableEdge = TableEdge;
-                    Table.TableActionHandler.CalculateCircleActionPoint(thisTransform);  // If OnTop also calculates ExitPoint
+                    Table.TableActionHandler.CalculateCircleActionPoint(thisEdgeTransform);  // If OnTop also calculates ExitPoint
                 }
 
                 if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
                 {
                     if (Table.UI_CircleAction.CircleActionState == CircleActionState.Available)
                     {
-                        Table.TableActionHandler.CalculateStartPoint(thisTransform);
+                        Table.TableActionHandler.CalculateStartPoint(thisEdgeTransform);
 
                         if (GlobalData.Player.UnitFeetState == UnitFeetState.OnTable)
                         {

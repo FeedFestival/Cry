@@ -15,19 +15,19 @@ public class TableProperties : MonoBehaviour
     public Transform thisTransform;
 
     [HideInInspector]
-    public Vector3 Table_BackExit;
+    public Transform Table_BackExit;
     [HideInInspector]
-    public Vector3 Table_ForwardExit;
+    public Transform Table_ForwardExit;
 
     [HideInInspector]
-    public Vector3 Table_RotationBack;
+    public Transform Table_RotationBack;
     [HideInInspector]
-    public Vector3 Table_RotationForward;
+    public Transform Table_RotationForward;
 
     [HideInInspector]
-    public Vector3 Table_StartPos_Forward;
+    public Transform Table_StartPos_Forward;
     [HideInInspector]
-    public Vector3 Table_StartPos_Back;
+    public Transform Table_StartPos_Back;
 
     [HideInInspector]
     public Vector3 StartPointPosition;
@@ -89,24 +89,24 @@ public class TableProperties : MonoBehaviour
             switch (child.gameObject.name)
             {
                 case "Table_BackExit":
-                    Table_BackExit = child.transform.position;
+                    Table_BackExit = child.transform;
                     break;
                 case "Table_ForwardExit":
-                    Table_ForwardExit = child.transform.position;
+                    Table_ForwardExit = child.transform;
                     break;
 
                 case "Table_Rotation_Back":
-                    Table_RotationBack = child.transform.position;
+                    Table_RotationBack = child.transform;
                     break;
                 case "Table_Rotation_Forward":
-                    Table_RotationForward = child.transform.position;
+                    Table_RotationForward = child.transform;
                     break;
 
                 case "Table_StartPos_Forward":
-                    Table_StartPos_Forward = child.transform.position;
+                    Table_StartPos_Forward = child.transform;
                     break;
                 case "Table_StartPos_Back":
-                    Table_StartPos_Back = child.transform.position;
+                    Table_StartPos_Back = child.transform;
                     break;
 
                 case "Table_Top_Collider":
