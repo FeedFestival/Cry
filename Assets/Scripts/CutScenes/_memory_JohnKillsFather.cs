@@ -36,7 +36,8 @@ public class _memory_JohnKillsFather : MonoBehaviour
 
     void ContinueCutscene()
     {
-        var act = acts[currentIndex]; Debug.Log(act.Time);
+        var act = acts[currentIndex];
+        //Debug.Log(act.Time);
 
         if (act.hasAnimation)
         {
@@ -73,7 +74,8 @@ public class _memory_JohnKillsFather : MonoBehaviour
 
         if (currentIndex < act.nextIndex)
         {
-            currentIndex = act.nextIndex; Debug.Log(act.nextIndex);
+            currentIndex = act.nextIndex;
+            //Debug.Log(act.nextIndex);
             ContinueCutscene();
         }
     }

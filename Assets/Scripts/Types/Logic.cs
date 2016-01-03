@@ -25,6 +25,12 @@ namespace Assets.Scripts.Types
     {
         None, Unavailable, ShowAvailable, Available
     }
+
+    public enum ButtonName
+    {
+        None = 0, ESC_COG = 1, W_HANDS = 2
+    }
+
     #endregion
 
     #region Player [State]

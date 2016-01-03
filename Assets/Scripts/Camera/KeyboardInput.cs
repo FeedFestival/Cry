@@ -28,5 +28,9 @@ public class KeyboardInput : MonoBehaviour
                 GlobalData.Player.Table.TableActionHandler.PlayActionAnimation();
             }
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            CameraControl.HUD_Button.HUDAction(ButtonName.ESC_COG);
+        }
     }
 }
