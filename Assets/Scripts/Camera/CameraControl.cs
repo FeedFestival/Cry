@@ -18,7 +18,7 @@ public class CameraControl : MonoBehaviour
     public CameraView CameraView;
 
     [HideInInspector]
-    public HUD_Button HUD_Button;
+    public HUD HUD;
 
     [HideInInspector]
     KeyboardInput KeyboardInput;
@@ -57,8 +57,8 @@ public class CameraControl : MonoBehaviour
         KeyboardInput = GetComponent<KeyboardInput>();
         KeyboardInput.Initialize(this);
 
-        HUD_Button = GetComponent<HUD_Button>();
-        HUD_Button.Initialize();
+        HUD = GetComponent<HUD>();
+        HUD.Initialize();
 
         //  Props
         YDistanceFromPlayer = 18f;

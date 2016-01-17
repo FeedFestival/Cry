@@ -53,6 +53,10 @@ public class Unit : MonoBehaviour
     public UnitActionInMind UnitActionInMind;
     public UnitFeetState UnitFeetState;
 
+    // This variable tell how much inventory space does the player have;
+    public bool hasBackPack;
+    public bool hasJacket;
+
     //[HideInInspector]
     //public AIPath AIPath;
     [HideInInspector]
@@ -65,6 +69,9 @@ public class Unit : MonoBehaviour
     public UnitBasicAnimation UnitBasicAnimation;
     [HideInInspector]
     public UnitProperties UnitProperties;
+
+    [HideInInspector]
+    public UnitInventory UnitInventory;
 
     [HideInInspector]
     public Animation UnitAnimator;
@@ -96,6 +103,8 @@ public class Unit : MonoBehaviour
 
         // Scripts initialization
         //AIPath = this.GetComponent<AIPath>();
+
+        UnitInventory = this.GetComponent<UnitInventory>();
 
         UnitController = this.GetComponent<UnitController>();
         if (UnitController)

@@ -30,7 +30,11 @@ public class KeyboardInput : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            CameraControl.HUD_Button.HUDAction(ButtonName.ESC_COG);
+            CameraControl.HUD.HUDAction(ButtonName.ESC_COG);
+        }
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            CameraControl.HUD.HUDAction(ButtonName.I_INVENTORY);
         }
     }
 }

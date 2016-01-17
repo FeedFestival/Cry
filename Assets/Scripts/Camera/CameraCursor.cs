@@ -4,7 +4,6 @@ using Assets.Scripts.Types;
 
 public class CameraCursor : MonoBehaviour
 {
-
     /*
         This script deals with the change of the cursor when hovering certain objects in the scene.
      * - Its parameters are diferent cursor textures.
@@ -38,6 +37,9 @@ public class CameraCursor : MonoBehaviour
     int cursorSizeX = 88;   // 48
     int cursorSizeY = 111;
 
+    public bool drawInventoryItem;
+    public bool showItemInInventory;
+
     public void Initialize()
     {
         Cursor.visible = false;
@@ -60,6 +62,10 @@ public class CameraCursor : MonoBehaviour
         {
             GUI.DrawTexture(new Rect(Event.current.mousePosition.x - cursorSizeX / 2, Event.current.mousePosition.y - cursorSizeY / 2, cursorSizeX, cursorSizeY)
                             , curentCursor);
+        }
+        if (drawInventoryItem && showItemInInventory == false)
+        {
+            GlobalData.Player.UnitInventory.InventoryObjectInHand.InventoryObject2D.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x + 22, Input.mousePosition.y + 22, 10.0f));
         }
     }
 

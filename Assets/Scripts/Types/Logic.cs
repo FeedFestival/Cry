@@ -28,9 +28,28 @@ namespace Assets.Scripts.Types
 
     public enum ButtonName
     {
-        None = 0, ESC_COG = 1, W_HANDS = 2
+        None = 0, ESC_COG = 1, W_HANDS = 2,
+        I_INVENTORY = 8
     }
 
+    #endregion
+
+    #region Inventory
+
+    public enum InventoryGroup
+    {
+        None, LeftPocket, RightPocket, Backpack, JacketLeftPocket, JacketRightPocket
+    }
+
+    public enum InventoryObjectState
+    {
+        InTheWorld, InInventory
+    }
+
+    public enum InventorySpace
+    {
+        Square, Square2, VerticalLine2, HorizontalLine2,
+    }
     #endregion
 
     #region Player [State]
