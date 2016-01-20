@@ -71,7 +71,7 @@ namespace Assets.Scripts.Types
     public enum UnitActionInMind
     {
         None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3,
-        ClimbTable = 4, ClimbDownTable = 5, MovingTable = 6, DropTable = 7
+        ClimbTable = 4, ClimbDownTable = 5, MovingTable = 6, DropTable = 7, PickupObject = 8
     }
 
     public enum UnitFeetState
@@ -83,7 +83,7 @@ namespace Assets.Scripts.Types
 
     public enum ActionType
     {
-        None = 0, Ladder = 1, ChairClimb = 2, ChairGrab = 3, LedgeClimb = 4, TableClimb = 5, GrabTable = 6
+        None = 0, Ladder = 1, ChairClimb = 2, ChairGrab = 3, LedgeClimb = 4, TableClimb = 5, GrabTable = 6, PickupObject = 7
     }
 
     #region Chair
@@ -395,6 +395,7 @@ namespace Assets.Scripts.Types
             return Vector3.zero;
         }
 
+        // Point A, Point B, Length of AB, How much you want the line to be*
         public static Vector3 IncreaseOrDecreaseLine(Vector3 A, Vector3 B, float AB, float AB_desiredLength)
         {
             float x, y, z = 0f;

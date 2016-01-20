@@ -17,9 +17,6 @@ public class InventoryBox : MonoBehaviour
 
     public bool Ocupied;
 
-    //private Color32 IBox_active;
-    //private Color32 IBox_inactive;
-
     public void Initialize(Image image, InventoryGroup inventoryGroup, int h, int x)
     {
         UnitInventory = GlobalData.Player.UnitInventory;

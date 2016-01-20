@@ -44,7 +44,9 @@ public class UnitInventory : MonoBehaviour
     void Awake()
     {
         Initialize();
+    }
 
+    void Start() {
         Inventory = new List<InventoryObject>();
         Inventory.Add(CreateInventoryObject());
     }

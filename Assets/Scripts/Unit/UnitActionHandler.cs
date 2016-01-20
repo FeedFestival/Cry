@@ -84,6 +84,18 @@ public class UnitActionHandler : MonoBehaviour
                 SetPathToStartPoint();
 
                 break;
+
+            case ActionType.PickupObject:
+
+                curentActionType = actionType;
+
+                if (!Unit.InteractiveObject)
+                    Unit.InteractiveObject = worldObject.GetComponent<InteractiveObject>();
+
+                SetPathToStartPoint();
+
+                break;
+
             default:
                 break;
         }
@@ -161,6 +173,12 @@ public class UnitActionHandler : MonoBehaviour
                 this.Unit.UnitController.SetPathToTarget(Unit.Table.TableProperties.StartPointPosition);
                 break;
 
+            case ActionType.PickupObject:
+
+                this.Unit.UnitActionInMind = UnitActionInMind.PickupObject;
+                this.Unit.UnitController.SetPathToTarget(Unit.InteractiveObject.StartPointPosition);
+                break;
+
             default:
                 break;
         }
@@ -232,6 +250,15 @@ public class UnitActionHandler : MonoBehaviour
                 Unit.Table.TableActionHandler.PlayActionAnimation(Unit);
                 break;
 
+            case ActionType.PickupObject:
+
+                // Play animation of picking up.
+                Debug.Log("Pickup Object");
+
+                this.ExitCurentAction();
+
+                break;
+
             default:
                 break;
         }
@@ -279,6 +306,13 @@ public class UnitActionHandler : MonoBehaviour
                 Unit.Table.TableState = TableState.Static;
 
                 Unit.Table = null;
+
+                break;
+
+            case ActionType.PickupObject:
+
+                Unit.PlayerActionInMind = PlayerActionInMind.Moving;
+                Unit.InteractiveObject = null;
 
                 break;
 

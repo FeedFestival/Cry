@@ -12,6 +12,8 @@ public class UnitController : MonoBehaviour
 
     public NavMeshAgent NavMeshAgent;
 
+    public NavMeshPath NavMeshPath;
+
     void Start()
     {
         NavMeshAgent = GetComponent<NavMeshAgent>();
@@ -22,6 +24,7 @@ public class UnitController : MonoBehaviour
     public void Initialize(Unit unit)
     {
         Unit = unit;
+        NavMeshPath = new NavMeshPath();
     }
 
     public void StopMoving(bool targetReached = true)
@@ -128,6 +131,13 @@ public class UnitController : MonoBehaviour
             Unit.UnitBasicAnimation.GoWalk();
             OnTable_Move = true;
         }
+    }
+
+    public Vector3[] GetNavMeshPathCorners(Vector3 start, Vector3 goal)
+    {
+        var boolean = NavMesh.CalculatePath(start, goal, NavMesh.AllAreas, NavMeshPath);
+
+        return NavMeshPath.corners;
     }
 
     Vector3 lastTarget;

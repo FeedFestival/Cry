@@ -47,5 +47,5 @@ public class InventoryObject
     public Texture2D Image;
 
     public GOInventoryItem InventoryObject2D;
-    public GameObject InventoryObject3D;
+    public InteractiveObject InteractiveObject;
 }

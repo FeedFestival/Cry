@@ -11,5 +11,18 @@ public class SceneManager : MonoBehaviour
     void Awake()
     {
         GlobalData.SceneManager = this;
+
+        var gos = GameObject.FindGameObjectsWithTag("Item");
+
+        foreach (GameObject go in gos)
+        {
+            InventoryObject io = new InventoryObject
+            {
+                InteractiveObject = go.GetComponent<InteractiveObject>()
+            };
+            go.GetComponent<InteractiveObject>().Item = io;
+
+            GlobalData.AllItemsInScene.Add(io);
+        }
     }
 }
