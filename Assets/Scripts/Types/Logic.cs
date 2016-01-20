@@ -34,16 +34,16 @@ namespace Assets.Scripts.Types
 
     #endregion
 
-    #region Inventory
+    #region InventoryItems
 
     public enum InventoryGroup
     {
         None, LeftPocket, RightPocket, Backpack, JacketLeftPocket, JacketRightPocket
     }
 
-    public enum InventoryObjectState
+    public enum ObjectState
     {
-        InTheWorld, InInventory
+        InInventory, OnGround, OnTable, OnShelf
     }
 
     public enum InventorySpace

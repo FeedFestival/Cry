@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 
 public class HUD : MonoBehaviour
 {
-
     public ButtonName buttonType;
 
     // buttons
@@ -18,7 +17,8 @@ public class HUD : MonoBehaviour
 
     // Image / Panels
     private Image GameMenu;
-    private Image Inventory;
+
+    public Image Inventory;
 
     // buttons images
     private Sprite ESC_COG_image;
@@ -60,7 +60,7 @@ public class HUD : MonoBehaviour
                     GameMenu = child.transform.GetComponent<Image>();
                     break;
 
-                case "Inventory":
+                case "InventoryItems":
 
                     Inventory = child.transform.GetComponent<Image>();
                     break;
@@ -290,7 +290,7 @@ public class HUD : MonoBehaviour
                         I_INVENTORY_button.Button.image.overrideSprite = I_INVENTORY_image_active;
                         I_INVENTORY_button.pressed = true;
 
-                        // Show Inventory
+                        // Show InventoryItems
                         Inventory.transform.gameObject.SetActive(true);
                         InventoryList.gameObject.SetActive(true);
                         PendingInventory.gameObject.SetActive(true);
@@ -303,7 +303,7 @@ public class HUD : MonoBehaviour
                         I_INVENTORY_button.Button.image.overrideSprite = I_INVENTORY_image;
                         I_INVENTORY_button.pressed = false;
 
-                        // Hide Inventory
+                        // Hide InventoryItems
                         Inventory.transform.gameObject.SetActive(false);
 
                         Time.timeScale = 1.0f;

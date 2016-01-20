@@ -83,7 +83,7 @@ public class Unit : MonoBehaviour
     public Chair Chair;
     public Ledge Ledge;
     public Table Table;
-    public InteractiveObject InteractiveObject;
+    public Item Item;
 
     void Awake()
     {

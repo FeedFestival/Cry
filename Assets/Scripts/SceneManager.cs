@@ -12,17 +12,18 @@ public class SceneManager : MonoBehaviour
     {
         GlobalData.SceneManager = this;
 
-        var gos = GameObject.FindGameObjectsWithTag("Item");
+        //GlobalData.AllItemsInScene = new System.Collections.Generic.List<Item>();
+        //var gos = GameObject.FindGameObjectsWithTag("Item");
 
-        foreach (GameObject go in gos)
-        {
-            InventoryObject io = new InventoryObject
-            {
-                InteractiveObject = go.GetComponent<InteractiveObject>()
-            };
-            go.GetComponent<InteractiveObject>().Item = io;
+        //foreach (GameObject go in gos)
+        //{
+        //    var item = Items.CreateItem(go.GetComponent<InteractiveObject>().ItemName);
+        //    go.GetComponent<InteractiveObject>().Item = item;
+        //    go.GetComponent<InteractiveObject>().Initialize();
+            
+        //    GlobalData.AllItemsInScene.Add(item);
+        //}
 
-            GlobalData.AllItemsInScene.Add(io);
-        }
+        GlobalData.CameraControl.Initialize();
     }
 }

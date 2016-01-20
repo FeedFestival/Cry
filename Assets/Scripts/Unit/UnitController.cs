@@ -135,7 +135,7 @@ public class UnitController : MonoBehaviour
 
     public Vector3[] GetNavMeshPathCorners(Vector3 start, Vector3 goal)
     {
-        var boolean = NavMesh.CalculatePath(start, goal, NavMesh.AllAreas, NavMeshPath);
+        NavMesh.CalculatePath(start, goal, NavMesh.AllAreas, NavMeshPath);
 
         return NavMeshPath.corners;
     }

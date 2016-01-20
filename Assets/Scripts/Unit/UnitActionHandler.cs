@@ -89,8 +89,8 @@ public class UnitActionHandler : MonoBehaviour
 
                 curentActionType = actionType;
 
-                if (!Unit.InteractiveObject)
-                    Unit.InteractiveObject = worldObject.GetComponent<InteractiveObject>();
+                if (Unit.Item == null)
+                    Unit.Item = worldObject.GetComponent<InteractiveObject>().Item;
 
                 SetPathToStartPoint();
 
@@ -176,7 +176,7 @@ public class UnitActionHandler : MonoBehaviour
             case ActionType.PickupObject:
 
                 this.Unit.UnitActionInMind = UnitActionInMind.PickupObject;
-                this.Unit.UnitController.SetPathToTarget(Unit.InteractiveObject.StartPointPosition);
+                this.Unit.UnitController.SetPathToTarget(Unit.Item.InteractiveObject.StartPointPosition);
                 break;
 
             default:
@@ -255,6 +255,16 @@ public class UnitActionHandler : MonoBehaviour
                 // Play animation of picking up.
                 Debug.Log("Pickup Object");
 
+                // this needs to be used with the 'out' keyword --> TO_DO
+                var item = Unit.UnitInventory.FindSpaceInInventory(Unit.Item);
+
+                if (item != null)
+                {
+                    item = Items.CreateInventoryObject2D(item);
+                    Unit.UnitInventory.InventoryObjectInHand = item;
+                    Unit.UnitInventory.PlaceInSpace(item.originH, item.originX, item.InventoryGroup);
+                }
+
                 this.ExitCurentAction();
 
                 break;
@@ -312,7 +322,8 @@ public class UnitActionHandler : MonoBehaviour
             case ActionType.PickupObject:
 
                 Unit.PlayerActionInMind = PlayerActionInMind.Moving;
-                Unit.InteractiveObject = null;
+                Destroy(Unit.Item.InteractiveObject.gameObject);
+                Unit.Item = null;
 
                 break;
 

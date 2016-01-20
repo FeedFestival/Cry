@@ -7,14 +7,14 @@ using UnityEngine.EventSystems;
 
 public class UnitInventory : MonoBehaviour
 {
-    public List<InventoryObject> Inventory;
+    public List<Item> InventoryItems;
 
     public InventoryBox[,] LeftPocket;
     public InventoryBox[,] RightPocket;
     public InventoryBox[,] Backpack;
 
-    private InventoryObject _inventoryObjectInHand;
-    public InventoryObject InventoryObjectInHand
+    private Item _inventoryObjectInHand;
+    public Item InventoryObjectInHand
     {
         get
         {
@@ -36,7 +36,7 @@ public class UnitInventory : MonoBehaviour
     private Sprite IBox_active;
     private Sprite IBox_inactive;
 
-    private bool isLastItemValid;
+    private bool isLastItemValid = true;
 
     private int newH = 0;
     private int newX = 0;
@@ -47,8 +47,7 @@ public class UnitInventory : MonoBehaviour
     }
 
     void Start() {
-        Inventory = new List<InventoryObject>();
-        Inventory.Add(CreateInventoryObject());
+        InventoryItems = new List<Item>();
     }
 
     public void Initialize()
@@ -57,74 +56,44 @@ public class UnitInventory : MonoBehaviour
         IBox_inactive = Resources.Load<Sprite>("HUD/InventoryBox_O");
     }
 
-    public InventoryObject CreateInventoryObject()
-    {
-        var _object = new InventoryObject
-        {
-            InventoryObjectState = InventoryObjectState.InInventory,
-            Name = "Apple",
-            originH = 2, originX = 0,
-            InventoryGroup = InventoryGroup.LeftPocket,
-            InventorySpace = InventorySpace.Square2
-        };
-        var goImage = GameObject.Instantiate(Resources.Load("Prefabs/UI/InventoryItem"), Vector3.zero, GlobalData.CameraControl.HUD.InventoryList.transform.rotation) as GameObject;
-
-        _object.InventoryObject2D = goImage.transform.GetComponent<GOInventoryItem>();
-        _object.InventoryObject2D.Image = goImage.GetComponent<Image>();
-
-        // we modify the parent so we can click on the box instead of the item;
-        _object.InventoryObject2D.Image.transform.parent = GlobalData.CameraControl.HUD.InventoryList.transform;
-        
-        // we assing the image to the apple;
-        _object.InventoryObject2D.Image.overrideSprite = Resources.Load<Sprite>("InventoryItems/Apple");
-        _object.InventoryObject2D.Image.name = "Apple";
-
-        _object.InventoryObject2D.Image.transform.localScale = new Vector3(1, 1, 1);
-        _object.InventoryObject2D.Image.rectTransform.sizeDelta = new Vector2(42f, 42f);
-
-        _object.InventoryObject2D.Initialize(_object);
-
-        return _object;
-    }
-
     // This function is used for when you click the inventory and you want to see your items displayed;
     public void PlaceInventoryItems()
     {
-        foreach (InventoryObject io in Inventory)
+        foreach (Item item in InventoryItems)
         {
-            InventoryObjectInHand = io;
-            PlaceInSpace(io.originH, io.originX, io.InventoryGroup, true);
+            InventoryObjectInHand = item;
+            PlaceInSpace(item.originH, item.originX, item.InventoryGroup, true);
         }
     }
 
-    public void RemoveInventoryItems(InventoryObject io)
+    public void RemoveInventoryItems(Item item)
     {
-        switch (io.InventoryGroup)
+        switch (item.InventoryGroup)
         {
             case InventoryGroup.LeftPocket:
 
-                LeftPocket = removeFromInventorySpace(LeftPocket, io.originH, io.originX);
+                LeftPocket = removeFromInventorySpace(LeftPocket, item.originH, item.originX);
                 break;
 
             case InventoryGroup.RightPocket:
 
-                RightPocket = removeFromInventorySpace(RightPocket, io.originH, io.originX);
+                RightPocket = removeFromInventorySpace(RightPocket, item.originH, item.originX);
                 break;
 
             case InventoryGroup.Backpack:
 
-                Backpack = removeFromInventorySpace(Backpack, io.originH, io.originX);
+                Backpack = removeFromInventorySpace(Backpack, item.originH, item.originX);
                 break;
 
             default:
                 break;
         }
-        io.InventoryObject2D.Image.transform.parent = GlobalData.CameraControl.HUD.PendingInventory.transform;
-        Inventory.Remove(io);
+        item.InventoryObject2D.Image.transform.parent = GlobalData.CameraControl.HUD.PendingInventory.transform;
+        InventoryItems.Remove(item);
     }
 
     // This function is used for when u pick up and object.
-    public bool FindSpaceInInventory(InventoryObject io)
+    public Item FindSpaceInInventory(Item item)
     {
         for (var h = 0; h < 4; h++)
         {
@@ -139,18 +108,18 @@ public class UnitInventory : MonoBehaviour
                 for (var ig = 1; ig < igLength; ig++)
                 {
                     // If we find space for the item, then return true as operation completed successfully;
-                    if (checkValidity(h, x, (InventoryGroup)ig, io.InventorySpace))
+                    if (checkValidity(h, x, (InventoryGroup)ig, item.InventorySpace))
                     {
-                        io.originH = h;
-                        io.originX = x;
-                        io.InventoryGroup = (InventoryGroup)ig;
+                        item.originH = h;
+                        item.originX = x;
+                        item.InventoryGroup = (InventoryGroup)ig;
 
-                        return true;
+                        return item;
                     }
                 }
             }
         }
-        return false;
+        return null;
     }
 
     public void CalculateSpace(int posH, int posX, InventoryGroup inventoryGroup)
@@ -274,7 +243,7 @@ public class UnitInventory : MonoBehaviour
 
     public bool checkValidity(int y, int x, InventoryGroup InventoryGroup, InventorySpace InventorySpace)
     {
-        int maxH = 4;
+        //int maxH = 4;
         int maxX = 2;
 
         int blockedH;
@@ -292,7 +261,7 @@ public class UnitInventory : MonoBehaviour
         }
         else
         {
-            maxH = 8;
+            //maxH = 8;
             maxX = 4;
 
             // there are multiple
@@ -359,7 +328,7 @@ public class UnitInventory : MonoBehaviour
 
             case InventorySpace.Square2:
 
-                // The InventoryObject image;
+                // The Item image;
                 // Midpoint beween to vectors -> http://www.leadinglesson.com/midpoint-between-two-vectors
                 InventoryObjectInHand.InventoryObject2D.transform.position = (Vector3)((array[posH, posX].Image.transform.position + array[posH - 1, posX + 1].Image.transform.position) / 2);
 
@@ -404,11 +373,11 @@ public class UnitInventory : MonoBehaviour
 
             case InventorySpace.Square2:
 
-                // The InventoryObject image;
+                // The Item image;
                 // Midpoint beween to vectors -> http://www.leadinglesson.com/midpoint-between-two-vectors
                 InventoryObjectInHand.InventoryObject2D.transform.position = (Vector3)((array[posH, posX].Image.transform.position + array[posH - 1, posX + 1].Image.transform.position) / 2);
 
-                InventoryObjectInHand.InventoryObjectState = InventoryObjectState.InInventory;
+                InventoryObjectInHand.ObjectState = ObjectState.InInventory;
 
                 // Origin
                 array[posH, posX].Image.overrideSprite = IBox_inactive;

@@ -4,14 +4,14 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Assets.Scripts.Types;
 
-public class GOInventoryItem : MonoBehaviour {
-
-    public InventoryObject InventoryObject;
+public class GOInventoryItem : MonoBehaviour
+{
+    public Item Item;
     public Image Image;
 
-    public void Initialize(InventoryObject inventoryObject)
+    public void Initialize(Item inventoryObject)
     {
-        InventoryObject = inventoryObject;
+        Item = inventoryObject;
 
         EventTrigger trigger = Image.transform.gameObject.GetComponent<EventTrigger>();
 
@@ -27,7 +27,7 @@ public class GOInventoryItem : MonoBehaviour {
     public void Click(UnityEngine.EventSystems.BaseEventData baseEvent)
     {
         // Grab Item.
-        GlobalData.Player.UnitInventory.InventoryObjectInHand = this.InventoryObject;
-        GlobalData.Player.UnitInventory.RemoveInventoryItems(this.InventoryObject);
+        GlobalData.Player.UnitInventory.InventoryObjectInHand = this.Item;
+        GlobalData.Player.UnitInventory.RemoveInventoryItems(this.Item);
     }
 }

@@ -4,12 +4,14 @@ using Assets.Scripts.Types;
 
 public class InteractiveObject : MonoBehaviour
 {
-    public InventoryObject Item;
+    public Item Item;
+    public ItemName ItemName;
+
     public GameObject _3DObject;
 
-    public ObjetState ObjetState;
-
     private Material Material;
+
+    // transforms
 
     private Vector3 objectPosition;
     private Vector3 objectNavMeshPosition;
@@ -18,7 +20,9 @@ public class InteractiveObject : MonoBehaviour
 
     void Start()
     {
-        Material = _3DObject.GetComponent<Material>();
+        this.Item = Items.CreateItem(this.ItemName);
+
+        Material = _3DObject.GetComponent<Renderer>().material;
 
         objectPosition = this.transform.position;
 
@@ -34,16 +38,18 @@ public class InteractiveObject : MonoBehaviour
         var dif = objectPosition.y - objectNavMeshPosition.y;
         if (dif < 0.3f)
         {
-            ObjetState = ObjetState.OnGround;
+            Item.ObjectState = ObjectState.OnGround;
         }
         else if (dif > 1f && dif < 2f)
         {
-            ObjetState = ObjetState.OnShelf;
+            Item.ObjectState = ObjectState.OnShelf;
         }
         else if (dif < 1f)
         {
-            ObjetState = ObjetState.OnTable;
+            Item.ObjectState = ObjectState.OnTable;
         }
+
+        Item.InteractiveObject = this;
     }
 
     private void Pickup()
@@ -54,11 +60,11 @@ public class InteractiveObject : MonoBehaviour
         if (length > 7)
             return;
 
-        switch (ObjetState)
+        switch (Item.ObjectState)
         {
-            case ObjetState.InInventory:
+            case ObjectState.InInventory:
                 break;
-            case ObjetState.OnGround:
+            case ObjectState.OnGround:
 
                 var path = GlobalData.Player.UnitController.GetNavMeshPathCorners(playerPosition, objectNavMeshPosition);
 
@@ -69,13 +75,13 @@ public class InteractiveObject : MonoBehaviour
                 }
                 break;
 
-            case ObjetState.OnTable:
+            case ObjectState.OnTable:
 
                 StartPointPosition = Logic.IncreaseOrDecreaseLine(objectNavMeshPosition, playerPosition, length, 0.7f);   // this might be totally wrong.
                 GlobalData.Player.UnitActionHandler.SetAction(this.gameObject, ActionType.PickupObject);
                 break;
 
-            case ObjetState.OnShelf:
+            case ObjectState.OnShelf:
 
                 StartPointPosition = Logic.IncreaseOrDecreaseLine(objectNavMeshPosition, playerPosition, length, 0.7f);   // this might be totally wrong.
                 GlobalData.Player.UnitActionHandler.SetAction(this.gameObject, ActionType.PickupObject);
@@ -96,18 +102,13 @@ public class InteractiveObject : MonoBehaviour
 
     void OnMouseEnter()
     {
-        _3DObject.GetComponent<Renderer>().material.SetColor("_OutlineColor", Color.white);
-        _3DObject.GetComponent<Renderer>().material.SetFloat("_Outline", 20f);
+        Material.SetColor("_OutlineColor", Color.white);
+        Material.SetFloat("_Outline", 20f);
     }
 
     void OnMouseExit()
     {
-        _3DObject.GetComponent<Renderer>().material.SetColor("_OutlineColor", Color.black);
-        _3DObject.GetComponent<Renderer>().material.SetFloat("_Outline", 4f);
+        Material.SetColor("_OutlineColor", Color.black);
+        Material.SetFloat("_Outline", 4f);
     }
-}
-
-public enum ObjetState
-{
-    InInventory, OnGround, OnTable, OnShelf
 }

@@ -40,7 +40,7 @@ public class CameraControl : MonoBehaviour
     void Awake()
     {
         GlobalData.CameraControl = this;
-        Initialize();
+        //Initialize();
     }
 
     public void Initialize()
@@ -57,15 +57,15 @@ public class CameraControl : MonoBehaviour
         KeyboardInput = GetComponent<KeyboardInput>();
         KeyboardInput.Initialize(this);
 
-        HUD = GetComponent<HUD>();
-        HUD.Initialize();
-
         //  Props
         YDistanceFromPlayer = 18f;
 
         thisTransform = this.transform;
 
         CameraPanSpeed = minCameraPanSpeed;
+
+        HUD = GetComponent<HUD>();
+        HUD.Initialize();
     }
 
     void Update()

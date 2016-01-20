@@ -11,6 +11,6 @@ namespace Assets.Scripts.Types
         public static CameraControl CameraControl { get; set; }
         public static Unit Player { get; set; }
 
-        public static List<InventoryObject> AllItemsInScene;
+        public static List<Item> AllItemsInScene;
     }
 }
