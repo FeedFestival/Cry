@@ -93,7 +93,7 @@ public class UnitInventory : MonoBehaviour
     }
 
     // This function is used for when u pick up and object.
-    public Item FindSpaceInInventory(Item item)
+    public bool FindSpaceInInventory(Item item, out Item returnItem)
     {
         for (var h = 0; h < 4; h++)
         {
@@ -114,12 +114,15 @@ public class UnitInventory : MonoBehaviour
                         item.originX = x;
                         item.InventoryGroup = (InventoryGroup)ig;
 
-                        return item;
+                        returnItem = item;
+                        return true;
                     }
                 }
             }
         }
-        return null;
+
+        returnItem = item;
+        return false;
     }
 
     public void CalculateSpace(int posH, int posX, InventoryGroup inventoryGroup)

@@ -39,7 +39,7 @@ namespace Assets.Scripts.Types
         {
             var goImage = GameObject.Instantiate(Resources.Load("Prefabs/UI/InventoryItem"), Vector3.zero, GlobalData.CameraControl.HUD.InventoryList.transform.rotation) as GameObject;
 
-            Item.InventoryObject2D = goImage.transform.GetComponent<GOInventoryItem>();
+            Item.InventoryObject2D = goImage.transform.GetComponent<InventoryObject>();
             Item.InventoryObject2D.Image = goImage.GetComponent<Image>();
 
             // we modify the parent so we can click on the box instead of the item;
@@ -61,7 +61,7 @@ namespace Assets.Scripts.Types
         //{
             //var goImage = GameObject.Instantiate(Resources.Load("Prefabs/UI/InventoryItem"), Vector3.zero, GlobalData.CameraControl.HUD.InventoryList.transform.rotation) as GameObject;
 
-            //Item.InventoryObject2D = goImage.transform.GetComponent<GOInventoryItem>();
+            //Item.InventoryObject2D = goImage.transform.GetComponent<InventoryObject>();
             //Item.InventoryObject2D.Image = goImage.GetComponent<Image>();
 
             //// we modify the parent so we can click on the box instead of the item;

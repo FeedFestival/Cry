@@ -176,7 +176,7 @@ public class UnitActionHandler : MonoBehaviour
             case ActionType.PickupObject:
 
                 this.Unit.UnitActionInMind = UnitActionInMind.PickupObject;
-                this.Unit.UnitController.SetPathToTarget(Unit.Item.InteractiveObject.StartPointPosition);
+                this.Unit.UnitController.SetPathToTarget(Unit.Item.StartPointPosition);
                 break;
 
             default:
@@ -253,16 +253,23 @@ public class UnitActionHandler : MonoBehaviour
             case ActionType.PickupObject:
 
                 // Play animation of picking up.
-                Debug.Log("Pickup Object");
+                //-
 
                 // this needs to be used with the 'out' keyword --> TO_DO
-                var item = Unit.UnitInventory.FindSpaceInInventory(Unit.Item);
+                var isRoom = Unit.UnitInventory.FindSpaceInInventory(Unit.Item, out Unit.Item);
 
-                if (item != null)
+                if (isRoom)
                 {
-                    item = Items.CreateInventoryObject2D(item);
-                    Unit.UnitInventory.InventoryObjectInHand = item;
-                    Unit.UnitInventory.PlaceInSpace(item.originH, item.originX, item.InventoryGroup);
+                    Debug.Log("Pickup Object");
+
+                    Unit.Item = Items.CreateInventoryObject2D(Unit.Item);
+                    Unit.UnitInventory.InventoryObjectInHand = Unit.Item;
+                    Unit.UnitInventory.PlaceInSpace(Unit.Item.originH, Unit.Item.originX, Unit.Item.InventoryGroup);
+                }
+                else
+                {
+                    // open Inventory and try to switch places with an item.
+                    Debug.Log("NoSpace");
                 }
 
                 this.ExitCurentAction();

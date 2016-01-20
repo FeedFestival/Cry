@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Assets.Scripts.Types;
 
-public class GOInventoryItem : MonoBehaviour
+public class InventoryObject : MonoBehaviour
 {
     public Item Item;
     public Image Image;

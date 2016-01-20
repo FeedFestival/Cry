@@ -6,9 +6,11 @@ using UnityEngine.UI;
 public class Item
 {
     public ObjectState ObjectState;
-
     public ItemName ItemName;
+    public Texture2D Image;
 
+    // 2d
+    public InventoryObject InventoryObject2D;
     public int originH;
     public int originX;
 
@@ -19,8 +21,13 @@ public class Item
     public int spaceH;
     public int spaceX;
 
-    public Texture2D Image;
-
-    public GOInventoryItem InventoryObject2D;
+    // 3d
     public InteractiveObject InteractiveObject;
+    public GameObject model;
+    public Material Material;
+
+    public Vector3 objectPosition;
+    public Vector3 objectNavMeshPosition;
+
+    public Vector3 StartPointPosition;
 }
