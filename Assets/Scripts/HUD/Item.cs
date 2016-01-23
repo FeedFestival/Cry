@@ -10,7 +10,7 @@ public class Item
     public Texture2D Image;
 
     // 2d
-    public InventoryObject InventoryObject2D;
+    public InventoryObject InventoryObject;
     public int originH;
     public int originX;
 

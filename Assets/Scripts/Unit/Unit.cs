@@ -20,15 +20,38 @@ public class Unit : MonoBehaviour
 
     public PlayerActionInMind PlayerActionInMind;
 
-    public UnitPrimaryState UnitPrimaryState;
+    public UnitPrimaryState _unitPrimaryState;
+    public UnitPrimaryState UnitPrimaryState
+    {
+        get
+        {
+            return _unitPrimaryState;
+        }
+        set
+        {
+            _unitPrimaryState = value;
+
+            if (_unitPrimaryState != UnitPrimaryState.Idle)
+            {
+                GlobalData.CameraControl.CenterCamera = true;
+                GlobalData.CameraControl.HUD.MovementPoints.gameObject.SetActive(false);
+            }
+            else
+            {
+                if (GlobalData.CameraControl != null)
+                    GlobalData.CameraControl.HUD.MovementPoints.gameObject.SetActive(true);
+            }
+        }
+    }
 
     public UnitActionState _unitActionState;
-    public UnitActionState UnitActionState 
+    public UnitActionState UnitActionState
     {
-        get {
+        get
+        {
             return _unitActionState;
         }
-        set 
+        set
         {
             _unitActionState = value;
             switch (UnitActionState)

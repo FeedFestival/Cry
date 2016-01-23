@@ -271,9 +271,7 @@ public class UnitActionHandler : MonoBehaviour
                     // open Inventory and try to switch places with an item.
                     Debug.Log("NoSpace");
                 }
-
                 this.ExitCurentAction();
-
                 break;
 
             default:
@@ -329,7 +327,8 @@ public class UnitActionHandler : MonoBehaviour
             case ActionType.PickupObject:
 
                 Unit.PlayerActionInMind = PlayerActionInMind.Moving;
-                Destroy(Unit.Item.InteractiveObject.gameObject);
+                if (Unit.Item.ObjectState == ObjectState.InInventory)
+                    Destroy(Unit.Item.InteractiveObject.gameObject);
                 Unit.Item = null;
 
                 break;

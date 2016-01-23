@@ -17,6 +17,14 @@ namespace Assets.Scripts.Types
     {
         LeftClick = 0, RightClick = 1
     }
+    public enum CameraEdge
+    {
+        T, TR, R, DR, D, DL, L, TL
+    }
+    public enum CameraEdgeSpeed
+    {
+        Slow, Fast
+    }
     public enum ColliderMouseState
     {
         Out = 0, Hover = 1
@@ -230,7 +238,7 @@ namespace Assets.Scripts.Types
     }
 
     /***********************/
-//        ACTING STUFF
+    //        ACTING STUFF
     /***********************/
 
     public class ActObject
@@ -267,13 +275,13 @@ namespace Assets.Scripts.Types
         Talk1, Talk2, Talk3
     }
 
-    public enum LinePause 
+    public enum LinePause
     {
         NoPause = 0, Pause1 = 1
     }
 
     /***********************/
-//        ACTING STUFF  -   END
+    //        ACTING STUFF  -   END
     /***********************/
 
     public static class Logic

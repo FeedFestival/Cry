@@ -65,7 +65,7 @@ public class CameraCursor : MonoBehaviour
         }
         if (drawInventoryItem && showItemInInventory == false)
         {
-            GlobalData.Player.UnitInventory.InventoryObjectInHand.InventoryObject2D.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x + 22, Input.mousePosition.y + 22, 10.0f));
+            GlobalData.Player.UnitInventory.InventoryObjectInHand.InventoryObject.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x + 22, Input.mousePosition.y + 22, 10.0f));
         }
     }
 

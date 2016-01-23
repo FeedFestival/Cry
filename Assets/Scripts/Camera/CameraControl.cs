@@ -4,13 +4,12 @@ using Assets.Scripts.Types;
 
 public class CameraControl : MonoBehaviour
 {
-    /*
-     * Reads input from mouse
-     * -    It handles the panning of the camera.
-     */
     public bool debug;
 
     private Camera Camera;
+
+    private CameraEdge CameraEdge;
+    private CameraEdgeSpeed CameraEdgeSpeed;
 
     [HideInInspector]
     public CameraCursor CameraCursor;
@@ -29,7 +28,7 @@ public class CameraControl : MonoBehaviour
     [HideInInspector]
     public Transform thisTransform;
 
-    private Vector3 currentScreenPos;
+    private Vector3 DesiredPosition;
 
     private float minCameraPanSpeed = 4.44f;
     private float CameraPanSpeed;
@@ -37,10 +36,16 @@ public class CameraControl : MonoBehaviour
     private Vector3 vectorUp = new Vector3(0, 0.77f, 0.44f);
     private Vector3 cameraDirection;
 
+    public bool CenterCamera;
+    public bool PanCamera;
+
+    Transform CameraOn;
+
     void Awake()
     {
         GlobalData.CameraControl = this;
-        //Initialize();
+
+        CameraOn = GlobalData.Player.transform; // HARD_CODED
     }
 
     public void Initialize()
@@ -65,153 +70,129 @@ public class CameraControl : MonoBehaviour
         CameraPanSpeed = minCameraPanSpeed;
 
         HUD = GetComponent<HUD>();
-        HUD.Initialize();
+        HUD.Initialize(this);
+
+        CenterCamera = true;
     }
 
     void Update()
     {
-        if (CheckYDistance())
+        if (Input.GetKey(KeyCode.Space))
         {
-            var desiredPosition = new Vector3(thisTransform.position.x,
-                                                GlobalData.Player.UnitProperties.thisTransform.position.y + YDistanceFromPlayer,
-                                                thisTransform.position.z);
-            thisTransform.position = Vector3.Lerp(thisTransform.position, desiredPosition, Time.deltaTime * 2f);
+            if (!CenterCamera)
+                CenterCamera = true;
         }
-        if (!Input.GetKey(KeyCode.Space))
+        if (CenterCamera)
         {
-            CameraPan();
+            CenterCameraOn();
         }
-    }
-
-    private void CameraPan()
-    {
-        currentScreenPos = Camera.ScreenToViewportPoint(Input.mousePosition);
-        cameraDirection = GetCameraDirection();
-
-        if (cameraDirection != Vector3.zero)
+        if (PanCamera && !this.HUD.I_INVENTORY_button.pressed)
         {
             thisTransform.Translate(cameraDirection * CameraPanSpeed * Time.deltaTime);
+            if (CheckYDistance())
+            {
+                DesiredPosition = new Vector3(thisTransform.position.x,
+                                            CameraOn.position.y + YDistanceFromPlayer,
+                                            thisTransform.position.z);
+                thisTransform.position = Vector3.Lerp(thisTransform.position, DesiredPosition, Time.deltaTime * 2f);
+            }
         }
     }
 
-    private float bigLowSize = 0.15f;
-    private float mediumLowSize = 0.1f;
-    private float minimmumLowSize = 0.05f;
-
-    private float bigHighSize = 0.80f;
-    private float mediumHighSize = 0.85f;
-    private float minimmumHighSize = 0.9f;
-
-    private Vector3 GetCameraDirection()
+    private void CenterCameraOn()
     {
-        // left
-        if (currentScreenPos.x <= bigLowSize)
+        if (!this.HUD.I_INVENTORY_button.pressed)
         {
-            if (currentScreenPos.x <= mediumLowSize)
-            {
-                if (currentScreenPos.x <= minimmumLowSize)
-                {
-                    CameraPanSpeed = minCameraPanSpeed / 1.2f;
-                    if (currentScreenPos.y >= minimmumHighSize)
-                    {
-                        return (vectorUp + (-Vector3.right));
-                    }
-                    else if (currentScreenPos.y <= minimmumLowSize)
-                    {
-                        return ((-vectorUp) + (-Vector3.right));
-                    }
-                    CameraPanSpeed = minCameraPanSpeed;
-                    return -Vector3.right;
-                }
-                CameraPanSpeed = minCameraPanSpeed / 3;
-                return -Vector3.right;
-            }
-            CameraPanSpeed = minCameraPanSpeed / 6;
-            return -Vector3.right;
+            DesiredPosition = new Vector3(CameraOn.position.x - 7.22f,
+                                                CameraOn.position.y + YDistanceFromPlayer,
+                                                CameraOn.position.z + 7.22f);
         }
-        // right
-        else if (currentScreenPos.x >= bigHighSize)
+        else
         {
-            if (currentScreenPos.x >= mediumHighSize)
-            {
-                if (currentScreenPos.x >= minimmumHighSize)
-                {
-                    CameraPanSpeed = minCameraPanSpeed / 1.2f;
-                    if (currentScreenPos.y >= minimmumHighSize)
-                    {
-                        return (vectorUp + Vector3.right);
-                    }
-                    else if (currentScreenPos.y <= minimmumLowSize)
-                    {
-                        return ((-vectorUp) + Vector3.right);
-                    }
-                    CameraPanSpeed = minCameraPanSpeed;
-                    return Vector3.right;
-                }
-                CameraPanSpeed = minCameraPanSpeed / 3;
-                return Vector3.right;
-            }
-            CameraPanSpeed = minCameraPanSpeed / 6;
-            return Vector3.right;
+            // -5.77 // 
+            DesiredPosition = new Vector3(CameraOn.position.x - 4.30f,
+                                                CameraOn.position.y + 11f,
+                                                CameraOn.position.z + 4.30f);
         }
-        // up
-        else if (currentScreenPos.y >= bigHighSize)
+        thisTransform.position = Vector3.Lerp(thisTransform.position, DesiredPosition, Time.deltaTime * 2f);
+    }
+
+    public void CameraPan(CameraEdge cameraEdge, CameraEdgeSpeed cameraEdgeSpeed)
+    {
+        if (GlobalData.Player.UnitPrimaryState != UnitPrimaryState.Walk)
         {
-            if (currentScreenPos.y >= mediumHighSize)
-            {
-                if (currentScreenPos.y >= minimmumHighSize)
-                {
-                    CameraPanSpeed = minCameraPanSpeed / 1.2f;
-                    if (currentScreenPos.x <= minimmumLowSize)
-                    {
-                        return (vectorUp + (-Vector3.right));
-                    }
-                    else if (currentScreenPos.x >= minimmumHighSize)
-                    {
-                        return (vectorUp + Vector3.right);
-                    }
-                    CameraPanSpeed = minCameraPanSpeed;
-                    return vectorUp;
-                }
-                CameraPanSpeed = minCameraPanSpeed / 3;
-                return vectorUp;
-            }
-            CameraPanSpeed = minCameraPanSpeed / 6;
-            return vectorUp;
+            CameraEdge = cameraEdge;
+            CameraEdgeSpeed = cameraEdgeSpeed;
+            MoveCameraDirection();
+            CenterCamera = false;
+            PanCamera = true;
         }
-        // down
-        else if (currentScreenPos.y <= bigLowSize)
+    }
+
+    public void DontCameraPan()
+    {
+        PanCamera = false;
+    }
+
+    public void MoveCameraDirection()
+    {
+        if (CameraEdgeSpeed == CameraEdgeSpeed.Slow)
+            CameraPanSpeed = minCameraPanSpeed / 4;
+        else
+            CameraPanSpeed = minCameraPanSpeed;
+
+        switch (CameraEdge)
         {
-            if (currentScreenPos.y <= mediumLowSize)
-            {
-                if (currentScreenPos.y <= minimmumLowSize)
-                {
-                    CameraPanSpeed = minCameraPanSpeed / 1.2f;
-                    if (currentScreenPos.x <= minimmumLowSize)
-                    {
-                        return ((-vectorUp) + (-Vector3.right));
-                    }
-                    else if (currentScreenPos.x >= minimmumHighSize)
-                    {
-                        return ((-vectorUp) + Vector3.right);
-                    }
-                    CameraPanSpeed = minCameraPanSpeed;
-                    return -vectorUp;
-                }
-                CameraPanSpeed = minCameraPanSpeed / 3;
-                return -vectorUp;
-            }
-            CameraPanSpeed = minCameraPanSpeed / 6;
-            return -vectorUp;
+            case CameraEdge.T:
+
+                cameraDirection = vectorUp;
+                break;
+
+            case CameraEdge.TR:
+
+                cameraDirection = (vectorUp + Vector3.right);
+                break;
+
+            case CameraEdge.R:
+
+                cameraDirection = Vector3.right;
+                break;
+
+            case CameraEdge.DR:
+
+                cameraDirection = ((-vectorUp) + Vector3.right);
+                break;
+
+            case CameraEdge.D:
+
+                cameraDirection = -vectorUp;
+                break;
+
+            case CameraEdge.DL:
+
+                cameraDirection = ((-vectorUp) + (-Vector3.right));
+                break;
+
+            case CameraEdge.L:
+
+                cameraDirection = -Vector3.right;
+                break;
+
+            case CameraEdge.TL:
+
+                cameraDirection = (vectorUp + (-Vector3.right));
+                break;
+
+            default:
+                break;
         }
-        return Vector3.zero;
     }
 
     private bool CheckYDistance()
     {
         if (GlobalData.Player != null)
         {
-            var distance = Mathf.Round((GlobalData.Player.UnitProperties.thisTransform.position.y + YDistanceFromPlayer) * 1000f) / 1000f;
+            var distance = Mathf.Round((CameraOn.position.y + YDistanceFromPlayer) * 1000f) / 1000f;
             var cameraCurrentPosition = Mathf.Round((thisTransform.position.y) * 1000f) / 1000f;
             if (distance != cameraCurrentPosition)
             {

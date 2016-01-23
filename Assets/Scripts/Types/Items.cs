@@ -39,20 +39,20 @@ namespace Assets.Scripts.Types
         {
             var goImage = GameObject.Instantiate(Resources.Load("Prefabs/UI/InventoryItem"), Vector3.zero, GlobalData.CameraControl.HUD.InventoryList.transform.rotation) as GameObject;
 
-            Item.InventoryObject2D = goImage.transform.GetComponent<InventoryObject>();
-            Item.InventoryObject2D.Image = goImage.GetComponent<Image>();
+            Item.InventoryObject = goImage.transform.GetComponent<InventoryObject>();
+            Item.InventoryObject.Image = goImage.GetComponent<Image>();
 
             // we modify the parent so we can click on the box instead of the item;
-            Item.InventoryObject2D.Image.transform.parent = GlobalData.CameraControl.HUD.InventoryList.transform;
+            Item.InventoryObject.Image.transform.SetParent(GlobalData.CameraControl.HUD.InventoryList.transform);
 
             // we assing the image to the apple;
-            Item.InventoryObject2D.Image.overrideSprite = Resources.Load<Sprite>("InventoryItems/" + Item.ItemName.ToString());
-            Item.InventoryObject2D.Image.name = Item.ItemName.ToString();
+            Item.InventoryObject.Image.overrideSprite = Resources.Load<Sprite>("InventoryItems/" + Item.ItemName.ToString());
+            Item.InventoryObject.Image.name = Item.ItemName.ToString();
 
-            Item.InventoryObject2D.Image.transform.localScale = new Vector3(1, 1, 1);
-            Item.InventoryObject2D.Image.rectTransform.sizeDelta = new Vector2(42f, 42f);
+            Item.InventoryObject.Image.transform.localScale = new Vector3(1, 1, 1);
+            Item.InventoryObject.Image.rectTransform.sizeDelta = new Vector2(42f, 42f);
 
-            Item.InventoryObject2D.Initialize(Item);
+            Item.InventoryObject.Initialize(Item);
 
             return Item;
         }
@@ -61,20 +61,20 @@ namespace Assets.Scripts.Types
         //{
             //var goImage = GameObject.Instantiate(Resources.Load("Prefabs/UI/InventoryItem"), Vector3.zero, GlobalData.CameraControl.HUD.InventoryList.transform.rotation) as GameObject;
 
-            //Item.InventoryObject2D = goImage.transform.GetComponent<InventoryObject>();
-            //Item.InventoryObject2D.Image = goImage.GetComponent<Image>();
+            //Item.InventoryObject = goImage.transform.GetComponent<InventoryObject>();
+            //Item.InventoryObject.Image = goImage.GetComponent<Image>();
 
             //// we modify the parent so we can click on the box instead of the item;
-            //Item.InventoryObject2D.Image.transform.parent = GlobalData.CameraControl.HUD.InventoryList.transform;
+            //Item.InventoryObject.Image.transform.parent = GlobalData.CameraControl.HUD.InventoryList.transform;
 
             //// we assing the image to the apple;
-            //Item.InventoryObject2D.Image.overrideSprite = Resources.Load<Sprite>("InventoryItems/" + Item.ItemName.ToString());
-            //Item.InventoryObject2D.Image.name = Item.ItemName.ToString();
+            //Item.InventoryObject.Image.overrideSprite = Resources.Load<Sprite>("InventoryItems/" + Item.ItemName.ToString());
+            //Item.InventoryObject.Image.name = Item.ItemName.ToString();
 
-            //Item.InventoryObject2D.Image.transform.localScale = new Vector3(1, 1, 1);
-            //Item.InventoryObject2D.Image.rectTransform.sizeDelta = new Vector2(42f, 42f);
+            //Item.InventoryObject.Image.transform.localScale = new Vector3(1, 1, 1);
+            //Item.InventoryObject.Image.rectTransform.sizeDelta = new Vector2(42f, 42f);
 
-            //Item.InventoryObject2D.Initialize(Item);
+            //Item.InventoryObject.Initialize(Item);
 
             //return Item;
         //}

@@ -6,12 +6,14 @@ using UnityEngine.EventSystems;
 
 public class HUD : MonoBehaviour
 {
+    private CameraControl CameraControl;
+
     public ButtonName buttonType;
 
     // buttons
     private CryButton ESC_COG_button;
 
-    private CryButton I_INVENTORY_button;
+    public CryButton I_INVENTORY_button;
 
     private Button GameMenu_ResumeGame;
 
@@ -19,6 +21,7 @@ public class HUD : MonoBehaviour
     private Image GameMenu;
 
     public Image Inventory;
+    public Image InventoryDropArea;
 
     // buttons images
     private Sprite ESC_COG_image;
@@ -30,8 +33,12 @@ public class HUD : MonoBehaviour
     public GameObject PendingInventory;
     public GameObject InventoryList;
 
-    public void Initialize()
+    public Transform MovementPoints;
+
+    public void Initialize(CameraControl cameraControl)
     {
+        CameraControl = cameraControl;
+
         ESC_COG_image = Resources.Load<Sprite>("HUD/Cog");
         ESC_COG_image_active = Resources.Load<Sprite>("HUD/Cog_Active");
 
@@ -80,9 +87,23 @@ public class HUD : MonoBehaviour
                     InventoryList = child.transform.gameObject;
                     break;
 
+                case "InventoryDropArea":
+
+                    InventoryDropArea = child.transform.gameObject.GetComponent<Image>();
+                    break;
+
+                case "MovementPoints":
+
+                    MovementPoints = child;
+                    break;
+
                 default:
                     break;
             }
+        }
+        foreach (Transform child in MovementPoints)
+        {
+            child.gameObject.GetComponent<ScreenEdge>().Initialize(this.CameraControl);
         }
 
         GetInventoryBoxes();
@@ -140,17 +161,14 @@ public class HUD : MonoBehaviour
                     {
                         if (allChildren[c] != null && allChildren[c].gameObject.name == name)
                         {
-                            allChildren[c].transform.gameObject.AddComponent<InventoryBox>();
-                            array[h, x] = allChildren[c].transform.gameObject.GetComponent<InventoryBox>();
-
+                            array[h, x] = allChildren[c].gameObject.GetComponent<InventoryBox>();
                             array[h, x].Ocupied = false;
-                            array[h, x].Initialize(allChildren[c].transform.GetComponent<Image>(), _inventoryGroup, h, x);
+                            array[h, x].Initialize(allChildren[c].gameObject.GetComponent<Image>(), _inventoryGroup, h, x);
 
                             exist = true;
                             break;
                         }
                     }
-
                     if (exist)
                     {
                         allChildren[c] = null;
@@ -160,18 +178,12 @@ public class HUD : MonoBehaviour
 
             if (_inventoryGroup == InventoryGroup.LeftPocket)
             {
-                array[0, 1] = new InventoryBox
-                {
-                    Ocupied = true
-                };
+                array[0, 1].Ocupied = true;
                 GlobalData.Player.UnitInventory.LeftPocket = array;
             }
             else if (_inventoryGroup == InventoryGroup.RightPocket)
             {
-                array[0, 0] = new InventoryBox
-                {
-                    Ocupied = true
-                };
+                array[0, 0].Ocupied = true;
                 GlobalData.Player.UnitInventory.RightPocket = array;
             }
             else
@@ -267,6 +279,7 @@ public class HUD : MonoBehaviour
                         // Show Options
                         GameMenu.transform.gameObject.SetActive(true);
 
+                        MovementPoints.gameObject.SetActive(false);
                         Time.timeScale = 0.0f;
                     }
                     else
@@ -277,6 +290,7 @@ public class HUD : MonoBehaviour
                         // Hide Options
                         GameMenu.transform.gameObject.SetActive(false);
 
+                        MovementPoints.gameObject.SetActive(true);
                         Time.timeScale = 1.0f;
                     }
                     break;
@@ -296,7 +310,7 @@ public class HUD : MonoBehaviour
                         PendingInventory.gameObject.SetActive(true);
                         GlobalData.Player.UnitInventory.PlaceInventoryItems();
 
-                        Time.timeScale = 0.0f;
+                        MovementPoints.gameObject.SetActive(false);
                     }
                     else
                     {
@@ -305,8 +319,9 @@ public class HUD : MonoBehaviour
 
                         // Hide InventoryItems
                         Inventory.transform.gameObject.SetActive(false);
+                        InventoryDropArea.gameObject.SetActive(false);
 
-                        Time.timeScale = 1.0f;
+                        MovementPoints.gameObject.SetActive(true);
                     }
                     break;
 

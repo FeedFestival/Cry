@@ -25,9 +25,11 @@ public class UnitInventory : MonoBehaviour
             _inventoryObjectInHand = value;
             if (value == null)
             {
+                GlobalData.CameraControl.HUD.InventoryDropArea.gameObject.SetActive(false);
                 return;
             }
-            
+
+            GlobalData.CameraControl.HUD.InventoryDropArea.gameObject.SetActive(true);
             GlobalData.CameraControl.CameraCursor.drawInventoryItem = true;
             GlobalData.CameraControl.CameraCursor.showItemInInventory = false;
         }
@@ -46,7 +48,8 @@ public class UnitInventory : MonoBehaviour
         Initialize();
     }
 
-    void Start() {
+    void Start()
+    {
         InventoryItems = new List<Item>();
     }
 
@@ -88,14 +91,14 @@ public class UnitInventory : MonoBehaviour
             default:
                 break;
         }
-        item.InventoryObject2D.Image.transform.parent = GlobalData.CameraControl.HUD.PendingInventory.transform;
+        item.InventoryObject.Image.transform.SetParent(GlobalData.CameraControl.HUD.PendingInventory.transform);
         InventoryItems.Remove(item);
     }
 
     // This function is used for when u pick up and object.
     public bool FindSpaceInInventory(Item item, out Item returnItem)
     {
-        for (var h = 0; h < 4; h++)
+        for (var h = 3; h >= 0; h--)
         {
             for (var x = 0; x < 2; x++)
             {
@@ -204,7 +207,7 @@ public class UnitInventory : MonoBehaviour
             }
             InventoryObjectInHand.originH = posH;
             InventoryObjectInHand.originX = posX;
-            InventoryObjectInHand.InventoryObject2D.Image.transform.parent = GlobalData.CameraControl.HUD.InventoryList.transform;
+            InventoryObjectInHand.InventoryObject.Image.transform.SetParent(GlobalData.CameraControl.HUD.InventoryList.transform);
             InventoryObjectInHand.InventoryGroup = inventoryGroup;
             InventoryObjectInHand = null;
         }
@@ -294,12 +297,21 @@ public class UnitInventory : MonoBehaviour
                         return false;
                     }
 
-                    var occupied = LeftPocket[y - 1, x].Ocupied;
-                    occupied = LeftPocket[y - 1, x + 1].Ocupied;
-                    occupied = LeftPocket[y, x + 1].Ocupied;
+                    switch (InventoryGroup)
+                    {
+                        case InventoryGroup.LeftPocket:
 
-                    if (occupied)
-                        return false;
+                            return checkForOcupied(y, x, InventoryGroup, InventorySpace, LeftPocket);
+                            break;
+
+                        case InventoryGroup.RightPocket:
+
+                            return checkForOcupied(y, x, InventoryGroup, InventorySpace, RightPocket);
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
                 else
                 {
@@ -319,6 +331,33 @@ public class UnitInventory : MonoBehaviour
         return true;
     }
 
+    bool checkForOcupied(int y, int x, InventoryGroup InventoryGroup, InventorySpace InventorySpace, InventoryBox[,] inventory)
+    {
+        switch (InventorySpace)
+        {
+            case InventorySpace.Square:
+                break;
+            case InventorySpace.Square2:
+
+                var occupied = inventory[y - 1, x].Ocupied;
+                occupied = inventory[y - 1, x + 1].Ocupied;
+                occupied = inventory[y, x + 1].Ocupied;
+
+                if (occupied)
+                    return false;
+
+                break;
+
+            case InventorySpace.VerticalLine2:
+                break;
+            case InventorySpace.HorizontalLine2:
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
     private InventoryBox[,] showInventorySpace(InventoryBox[,] array, int posH, int posX)
     {
         switch (InventoryObjectInHand.InventorySpace)
@@ -333,7 +372,7 @@ public class UnitInventory : MonoBehaviour
 
                 // The Item image;
                 // Midpoint beween to vectors -> http://www.leadinglesson.com/midpoint-between-two-vectors
-                InventoryObjectInHand.InventoryObject2D.transform.position = (Vector3)((array[posH, posX].Image.transform.position + array[posH - 1, posX + 1].Image.transform.position) / 2);
+                InventoryObjectInHand.InventoryObject.transform.position = (Vector3)((array[posH, posX].Image.transform.position + array[posH - 1, posX + 1].Image.transform.position) / 2);
 
                 // Origin
                 array[posH, posX].Image.overrideSprite = IBox_inactive;
@@ -378,7 +417,7 @@ public class UnitInventory : MonoBehaviour
 
                 // The Item image;
                 // Midpoint beween to vectors -> http://www.leadinglesson.com/midpoint-between-two-vectors
-                InventoryObjectInHand.InventoryObject2D.transform.position = (Vector3)((array[posH, posX].Image.transform.position + array[posH - 1, posX + 1].Image.transform.position) / 2);
+                InventoryObjectInHand.InventoryObject.transform.position = (Vector3)((array[posH, posX].Image.transform.position + array[posH - 1, posX + 1].Image.transform.position) / 2);
 
                 InventoryObjectInHand.ObjectState = ObjectState.InInventory;
 
