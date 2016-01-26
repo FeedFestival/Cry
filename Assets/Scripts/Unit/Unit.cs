@@ -76,6 +76,8 @@ public class Unit : MonoBehaviour
     public UnitActionInMind UnitActionInMind;
     public UnitFeetState UnitFeetState;
 
+    public bool isMouseOverMap;
+
     // This variable tell how much inventory space does the player have;
     public bool hasBackPack;
     public bool hasJacket;

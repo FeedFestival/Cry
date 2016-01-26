@@ -34,9 +34,12 @@ public class UnitController : MonoBehaviour
             if (debuging)
                 Debug.Log("Reaching (Player action in mind = " + Unit.UnitActionInMind + ")");
 
-            if (NavMeshAgent && NavMeshAgent.enabled == false)
+            if (NavMeshAgent)
             {
-                NavMeshAgent.enabled = true;
+                if (NavMeshAgent.enabled == false)
+                {
+                    NavMeshAgent.enabled = true;
+                }
                 NavMeshAgent.Stop();
             }
 

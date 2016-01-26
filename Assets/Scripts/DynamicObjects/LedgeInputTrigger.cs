@@ -13,49 +13,55 @@ public class LedgeInputTrigger : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (Ledge.LedgeState == LedgeState.Static)
+        if (GlobalData.Player.PlayerActionInMind != PlayerActionInMind.LookInInventory)
         {
-            Ledge.LedgeActionHandler.CalculateLedgeState();
+            if (Ledge.LedgeState == LedgeState.Static)
+            {
+                Ledge.LedgeActionHandler.CalculateLedgeState();
+            }
         }
     }
 
     void OnMouseOver()
     {
-        if (Ledge.LedgeState == LedgeState.Static)
+        if (GlobalData.Player.PlayerActionInMind != PlayerActionInMind.LookInInventory)
         {
-            if (Ledge.LedgeStartPoint != LedgeStartPoint.OutOfReach)
+            if (Ledge.LedgeState == LedgeState.Static)
             {
-                if (GlobalData.Player.UnitPrimaryState != UnitPrimaryState.Busy)
+                if (Ledge.LedgeStartPoint != LedgeStartPoint.OutOfReach)
                 {
-                    if (GlobalData.Player.UnitActionInMind == UnitActionInMind.None
-                        || GlobalData.Player.UnitActionInMind == UnitActionInMind.ClimbingWall)
+                    if (GlobalData.Player.UnitPrimaryState != UnitPrimaryState.Busy)
                     {
-                        Ledge.LedgeActionHandler.CalculateCircleActionPoint();
-
-                        if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
+                        if (GlobalData.Player.UnitActionInMind == UnitActionInMind.None
+                            || GlobalData.Player.UnitActionInMind == UnitActionInMind.ClimbingWall)
                         {
-                            if (Ledge.UI_CircleAction.CircleActionState == CircleActionState.Available)
-                            {
-                                Ledge.LedgeActionHandler.CreateStartPosition();
+                            Ledge.LedgeActionHandler.CalculateCircleActionPoint();
 
-                                GlobalData.Player.UnitActionHandler.SetAction(Ledge.thisTransform.gameObject, ActionType.LedgeClimb);
+                            if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
+                            {
+                                if (Ledge.UI_CircleAction.CircleActionState == CircleActionState.Available)
+                                {
+                                    Ledge.LedgeActionHandler.CreateStartPosition();
+
+                                    GlobalData.Player.UnitActionHandler.SetAction(Ledge.thisTransform.gameObject, ActionType.LedgeClimb);
+                                }
                             }
                         }
                     }
-                }
-                else if (GlobalData.Player.UnitFeetState == UnitFeetState.OnTable)
-                {
-                    if (Ledge.LedgeStartPoint == LedgeStartPoint.Bottom)
+                    else if (GlobalData.Player.UnitFeetState == UnitFeetState.OnTable)
                     {
-                        Ledge.LedgeActionHandler.CalculateCircleActionPoint();
-
-                        if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
+                        if (Ledge.LedgeStartPoint == LedgeStartPoint.Bottom)
                         {
-                            if (Ledge.UI_CircleAction.CircleActionState == CircleActionState.Available)
-                            {
-                                Ledge.LedgeActionHandler.CreateStartPosition();
+                            Ledge.LedgeActionHandler.CalculateCircleActionPoint();
 
-                                GlobalData.Player.UnitActionHandler.SetAction(Ledge.thisTransform.gameObject, ActionType.LedgeClimb);
+                            if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
+                            {
+                                if (Ledge.UI_CircleAction.CircleActionState == CircleActionState.Available)
+                                {
+                                    Ledge.LedgeActionHandler.CreateStartPosition();
+
+                                    GlobalData.Player.UnitActionHandler.SetAction(Ledge.thisTransform.gameObject, ActionType.LedgeClimb);
+                                }
                             }
                         }
                     }

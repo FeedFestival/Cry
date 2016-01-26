@@ -84,9 +84,12 @@ public class InteractiveObject : MonoBehaviour
 
     void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
+        if (GlobalData.Player.UnitActionState != UnitActionState.MovingItemInInventory)
         {
-            Pickup();
+            if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
+            {
+                Pickup();
+            }
         }
     }
 

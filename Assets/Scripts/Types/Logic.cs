@@ -64,7 +64,7 @@ namespace Assets.Scripts.Types
 
     public enum PlayerActionInMind
     {
-        Moving = 0, UseAbility = 1, MovingTable = 2
+        Moving = 0, UseAbility = 1, MovingTable = 2, LookInInventory
     }
 
     public enum UnitPrimaryState
@@ -74,7 +74,7 @@ namespace Assets.Scripts.Types
 
     public enum UnitActionState
     {
-        None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3, ClimbingTable = 4, MovingTable = 5
+        None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3, ClimbingTable = 4, MovingTable = 5, MovingItemInInventory = 6
     }
     public enum UnitActionInMind
     {

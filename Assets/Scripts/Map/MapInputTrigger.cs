@@ -8,6 +8,7 @@ public class MapInputTrigger : MonoBehaviour
 
     void OnMouseEnter()
     {
+        GlobalData.Player.isMouseOverMap = true;
         if (GlobalData.Player != null && GlobalData.Player.UnitPrimaryState == UnitPrimaryState.Busy)
         {
             if (GlobalData.Player.UnitActionState == UnitActionState.ClimbingLadder)
@@ -31,8 +32,15 @@ public class MapInputTrigger : MonoBehaviour
                     GlobalData.Player.Table.TableController.CalculateAction(pos);
             }
         }
+    }
 
-        if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
+    public void DoAction()  // lack of a better name;
+    {
+        if (GlobalData.Player.UnitActionState == UnitActionState.MovingItemInInventory)
+        {
+            GlobalData.Player.UnitActionState = UnitActionState.None;
+        }
+        else
         {
             if (GlobalData.Player.UnitPrimaryState == UnitPrimaryState.Busy)
             {
@@ -79,6 +87,7 @@ public class MapInputTrigger : MonoBehaviour
 
     void OnMouseExit()
     {
+        GlobalData.Player.isMouseOverMap = false;
         GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
     }
 }

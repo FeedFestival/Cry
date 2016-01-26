@@ -301,6 +301,8 @@ public class HUD : MonoBehaviour
                 case ButtonName.I_INVENTORY:
                     if (I_INVENTORY_button.pressed == false)
                     {
+                        GlobalData.Player.PlayerActionInMind = PlayerActionInMind.LookInInventory;
+
                         I_INVENTORY_button.Button.image.overrideSprite = I_INVENTORY_image_active;
                         I_INVENTORY_button.pressed = true;
 
@@ -308,12 +310,17 @@ public class HUD : MonoBehaviour
                         Inventory.transform.gameObject.SetActive(true);
                         InventoryList.gameObject.SetActive(true);
                         PendingInventory.gameObject.SetActive(true);
+
                         GlobalData.Player.UnitInventory.PlaceInventoryItems();
+                        GlobalData.Player.UnitActionInMind = UnitActionInMind.None;
+                        GlobalData.Player.UnitController.StopMoving(false);
 
                         MovementPoints.gameObject.SetActive(false);
                     }
                     else
                     {
+                        GlobalData.Player.PlayerActionInMind = PlayerActionInMind.Moving;
+
                         I_INVENTORY_button.Button.image.overrideSprite = I_INVENTORY_image;
                         I_INVENTORY_button.pressed = false;
 

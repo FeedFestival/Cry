@@ -11,6 +11,10 @@ public class Item
 
     // 2d
     public InventoryObject InventoryObject;
+
+    public int pendingH;
+    public int pendingX;
+
     public int originH;
     public int originX;
 
@@ -18,6 +22,7 @@ public class Item
 
     public InventorySpace InventorySpace;
 
+    // This is how much this Item ocupies on the board: If its 0 then it ocupies only one box;
     public int spaceH;
     public int spaceX;
 

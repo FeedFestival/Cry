@@ -20,72 +20,78 @@ public class TableInputTrigger : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (TableEdge != TableEdge.Table_Top_Collider)
-            Table.ColliderMouseState = ColliderMouseState.Hover;
-        else
-            Table.TableEdge = TableEdge;
+        if (GlobalData.Player.PlayerActionInMind != PlayerActionInMind.LookInInventory)
+        {
+            if (TableEdge != TableEdge.Table_Top_Collider)
+                Table.ColliderMouseState = ColliderMouseState.Hover;
+            else
+                Table.TableEdge = TableEdge;
 
-        thisEdgeTransform = this.transform;
+            thisEdgeTransform = this.transform;
 
-        Table.TableActionHandler.CalculateTableCursor();
+            Table.TableActionHandler.CalculateTableCursor();
+        }
     }
 
     void OnMouseOver()
     {
-        if (TableEdge == TableEdge.Table_Top_Collider)
+        if (GlobalData.Player.PlayerActionInMind != PlayerActionInMind.LookInInventory)
         {
-            if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
+            if (TableEdge == TableEdge.Table_Top_Collider)
             {
-                var pos = Logic.GetPointHitAtMousePosition();
-                if (pos != Vector3.zero)
-                    GlobalData.Player.UnitController.SetPathToTarget(pos);
-            }
-        }
-        else
-        {
-            if (GlobalData.Player.PlayerActionInMind == PlayerActionInMind.UseAbility)
-            {
-                if (GlobalData.Player.UnitFeetState != UnitFeetState.OnTable)
+                if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
                 {
-                    Table.ResetUI();
-                    Table.TableEdge = TableEdge;
-                    Table.TableActionHandler.CalculateCircleActionPoint(thisEdgeTransform);
-
-                    if (Input.GetMouseButtonDown((int)MouseInput.LeftClick))
-                    {
-                        if (Table.UI_CircleAction.CircleActionState == CircleActionState.Available)
-                        {
-                            Table.TableActionHandler.CalculateStartPoint();
-                            GlobalData.Player.UnitActionHandler.SetAction(Table.TableProperties.thisTransform.gameObject, ActionType.GrabTable);
-                        }
-                    }
+                    var pos = Logic.GetPointHitAtMousePosition();
+                    if (pos != Vector3.zero)
+                        GlobalData.Player.UnitController.SetPathToTarget(pos);
                 }
             }
             else
             {
-                if ((GlobalData.Player.UnitPrimaryState == UnitPrimaryState.Idle
-                    || GlobalData.Player.UnitPrimaryState == UnitPrimaryState.Walk)
-                    || (GlobalData.Player.UnitActionState == UnitActionState.ClimbingTable && GlobalData.Player.UnitFeetState == UnitFeetState.OnTable))
+                if (GlobalData.Player.PlayerActionInMind == PlayerActionInMind.UseAbility)
                 {
-                    Table.TableEdge = TableEdge;
-                    Table.TableActionHandler.CalculateCircleActionPoint(thisEdgeTransform);  // If OnTop also calculates ExitPoint
-                }
-
-                if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
-                {
-                    if (Table.UI_CircleAction.CircleActionState == CircleActionState.Available)
+                    if (GlobalData.Player.UnitFeetState != UnitFeetState.OnTable)
                     {
-                        Table.TableActionHandler.CalculateStartPoint(thisEdgeTransform);
+                        Table.ResetUI();
+                        Table.TableEdge = TableEdge;
+                        Table.TableActionHandler.CalculateCircleActionPoint(thisEdgeTransform);
 
-                        if (GlobalData.Player.UnitFeetState == UnitFeetState.OnTable)
+                        if (Input.GetMouseButtonDown((int)MouseInput.LeftClick))
                         {
-                            Table.Unit.UnitActionInMind = UnitActionInMind.ClimbDownTable;
-
-                            GlobalData.Player.UnitController.SetPathToTarget(Table.TableProperties.StartPointPosition);
+                            if (Table.UI_CircleAction.CircleActionState == CircleActionState.Available)
+                            {
+                                Table.TableActionHandler.CalculateStartPoint();
+                                GlobalData.Player.UnitActionHandler.SetAction(Table.TableProperties.thisTransform.gameObject, ActionType.GrabTable);
+                            }
                         }
-                        else // if UnitFeetState.OnGround
+                    }
+                }
+                else
+                {
+                    if ((GlobalData.Player.UnitPrimaryState == UnitPrimaryState.Idle
+                        || GlobalData.Player.UnitPrimaryState == UnitPrimaryState.Walk)
+                        || (GlobalData.Player.UnitActionState == UnitActionState.ClimbingTable && GlobalData.Player.UnitFeetState == UnitFeetState.OnTable))
+                    {
+                        Table.TableEdge = TableEdge;
+                        Table.TableActionHandler.CalculateCircleActionPoint(thisEdgeTransform);  // If OnTop also calculates ExitPoint
+                    }
+
+                    if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
+                    {
+                        if (Table.UI_CircleAction.CircleActionState == CircleActionState.Available)
                         {
-                            GlobalData.Player.UnitActionHandler.SetAction(Table.TableProperties.thisTransform.gameObject, ActionType.TableClimb);
+                            Table.TableActionHandler.CalculateStartPoint(thisEdgeTransform);
+
+                            if (GlobalData.Player.UnitFeetState == UnitFeetState.OnTable)
+                            {
+                                Table.Unit.UnitActionInMind = UnitActionInMind.ClimbDownTable;
+
+                                GlobalData.Player.UnitController.SetPathToTarget(Table.TableProperties.StartPointPosition);
+                            }
+                            else // if UnitFeetState.OnGround
+                            {
+                                GlobalData.Player.UnitActionHandler.SetAction(Table.TableProperties.thisTransform.gameObject, ActionType.TableClimb);
+                            }
                         }
                     }
                 }

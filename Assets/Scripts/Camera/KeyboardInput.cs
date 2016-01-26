@@ -15,6 +15,25 @@ public class KeyboardInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetMouseButtonDown((int)MouseInput.RightClick))
+        {
+            if (GlobalData.Player.UnitActionState == UnitActionState.MovingItemInInventory)
+            {
+                var item = GlobalData.Player.UnitInventory.InventoryObjectInHand;
+                if (item != null)
+                {
+                    GlobalData.Player.UnitInventory.PlaceInSpace(item.pendingH, item.pendingX, item.InventoryGroup, true);
+                }
+            }
+            else
+            {
+                if (GlobalData.Player.isMouseOverMap)
+                {
+                    GlobalData.SceneManager.Map.DoAction();
+                }
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.W))
         {
             if (GlobalData.Player.PlayerActionInMind == PlayerActionInMind.Moving)

@@ -326,7 +326,8 @@ public class UnitActionHandler : MonoBehaviour
 
             case ActionType.PickupObject:
 
-                Unit.PlayerActionInMind = PlayerActionInMind.Moving;
+                if (Unit.PlayerActionInMind != PlayerActionInMind.LookInInventory)
+                    Unit.PlayerActionInMind = PlayerActionInMind.Moving;
                 if (Unit.Item.ObjectState == ObjectState.InInventory)
                     Destroy(Unit.Item.InteractiveObject.gameObject);
                 Unit.Item = null;

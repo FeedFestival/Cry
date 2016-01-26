@@ -25,9 +25,15 @@ public class UnitInventory : MonoBehaviour
             _inventoryObjectInHand = value;
             if (value == null)
             {
+                GlobalData.Player.UnitPrimaryState = UnitPrimaryState.Idle;
+                GlobalData.Player.UnitActionState = UnitActionState.None;
                 GlobalData.CameraControl.HUD.InventoryDropArea.gameObject.SetActive(false);
+
                 return;
             }
+
+            GlobalData.Player.UnitPrimaryState = UnitPrimaryState.Busy;
+            GlobalData.Player.UnitActionState = UnitActionState.MovingItemInInventory;
 
             GlobalData.CameraControl.HUD.InventoryDropArea.gameObject.SetActive(true);
             GlobalData.CameraControl.CameraCursor.drawInventoryItem = true;
@@ -207,6 +213,9 @@ public class UnitInventory : MonoBehaviour
             }
             InventoryObjectInHand.originH = posH;
             InventoryObjectInHand.originX = posX;
+            // We use the pending for when you pick up the object from the inventory and then u right click to cancel. Then we just put the item back.
+            InventoryObjectInHand.pendingH = posH;
+            InventoryObjectInHand.pendingX = posX;
             InventoryObjectInHand.InventoryObject.Image.transform.SetParent(GlobalData.CameraControl.HUD.InventoryList.transform);
             InventoryObjectInHand.InventoryGroup = inventoryGroup;
             InventoryObjectInHand = null;
