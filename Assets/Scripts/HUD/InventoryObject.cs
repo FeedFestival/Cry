@@ -28,6 +28,6 @@ public class InventoryObject : MonoBehaviour
     {
         // Grab Item.
         GlobalData.Player.UnitInventory.InventoryObjectInHand = this.Item;
-        GlobalData.Player.UnitInventory.RemoveInventoryItems(this.Item);
+        GlobalData.Player.UnitInventory.RemoveInventoryItems();
     }
 }

@@ -54,10 +54,6 @@ namespace Assets.Scripts.Types
         InInventory, OnGround, OnTable, OnShelf
     }
 
-    public enum InventorySpace
-    {
-        Square, Square2, VerticalLine2, HorizontalLine2,
-    }
     #endregion
 
     #region Player [State]

@@ -70,6 +70,6 @@ public class InventoryBox : MonoBehaviour
     public void Click(UnityEngine.EventSystems.BaseEventData baseEvent)
     {
         if (UnitInventory.InventoryObjectInHand != null && this.Ocupied == false)
-            UnitInventory.PlaceInSpace(H, X, InventoryGroup);
+            UnitInventory.PlaceInSpace(H, X);
     }
 }

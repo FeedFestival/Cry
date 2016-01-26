@@ -131,6 +131,8 @@ public class Unit : MonoBehaviour
         //AIPath = this.GetComponent<AIPath>();
 
         UnitInventory = this.GetComponent<UnitInventory>();
+        if (UnitInventory)
+            UnitInventory.Initialize(this);
 
         UnitController = this.GetComponent<UnitController>();
         if (UnitController)

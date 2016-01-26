@@ -9,6 +9,8 @@ public class Item
     public ItemName ItemName;
     public Texture2D Image;
 
+    public bool isInInventory;
+
     // 2d
     public InventoryObject InventoryObject;
 
@@ -19,8 +21,6 @@ public class Item
     public int originX;
 
     public InventoryGroup InventoryGroup;
-
-    public InventorySpace InventorySpace;
 
     // This is how much this Item ocupies on the board: If its 0 then it ocupies only one box;
     public int spaceH;

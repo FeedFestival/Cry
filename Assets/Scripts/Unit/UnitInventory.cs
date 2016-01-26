@@ -7,13 +7,21 @@ using UnityEngine.EventSystems;
 
 public class UnitInventory : MonoBehaviour
 {
+    [HideInInspector]
+    public Unit Unit;
+
+    [HideInInspector]
     public List<Item> InventoryItems;
 
+    [HideInInspector]
     public InventoryBox[,] LeftPocket;
+    [HideInInspector]
     public InventoryBox[,] RightPocket;
+    [HideInInspector]
     public InventoryBox[,] Backpack;
 
     private Item _inventoryObjectInHand;
+    [HideInInspector]
     public Item InventoryObjectInHand
     {
         get
@@ -49,56 +57,68 @@ public class UnitInventory : MonoBehaviour
     private int newH = 0;
     private int newX = 0;
 
-    void Awake()
+    public void Initialize(Unit unit)
     {
-        Initialize();
-    }
+        Unit = unit;
 
-    void Start()
-    {
         InventoryItems = new List<Item>();
-    }
 
-    public void Initialize()
-    {
         IBox_active = Resources.Load<Sprite>("HUD/InventoryBox");
         IBox_inactive = Resources.Load<Sprite>("HUD/InventoryBox_O");
     }
 
-    // This function is used for when you click the inventory and you want to see your items displayed;
-    public void PlaceInventoryItems()
+    public void RemoveInventoryItems()
     {
-        foreach (Item item in InventoryItems)
+        var inventory = getInventoryGroupArray(InventoryObjectInHand.InventoryGroup);
+        inventory = removeFromInventorySpace(inventory);
+
+        InventoryObjectInHand.InventoryObject.Image.transform.SetParent(GlobalData.CameraControl.HUD.PendingInventory.transform);
+        InventoryItems.Remove(InventoryObjectInHand);
+    }
+
+    public void CalculateSpace(int posH, int posX, InventoryGroup inventoryGroup)
+    {
+        InventoryObjectInHand.originH = posH;
+        InventoryObjectInHand.originX = posX;
+        InventoryObjectInHand.InventoryGroup = inventoryGroup;
+
+        newH = 0;
+        newX = 0;
+
+        // If the item doesn't fit, return and dont color anything;
+        if (checkValidity() == false)
         {
-            InventoryObjectInHand = item;
-            PlaceInSpace(item.originH, item.originX, item.InventoryGroup, true);
+            isLastItemValid = false;
+            return;
+        }
+        else
+        {
+            isLastItemValid = true;
+
+            // show the InventoryItem where it will be;
+            GlobalData.CameraControl.CameraCursor.drawInventoryItem = false;
+            GlobalData.CameraControl.CameraCursor.showItemInInventory = true;
+
+            // color the InventoryBoxes as black;
+            var inventory = getInventoryGroupArray(inventoryGroup);
+            inventory = showInventorySpace(inventory);
         }
     }
 
-    public void RemoveInventoryItems(Item item)
+    public void CalculateSpaceExit(int posH, int posX, InventoryGroup inventoryGroup)
     {
-        switch (item.InventoryGroup)
+        if (isLastItemValid == false)
         {
-            case InventoryGroup.LeftPocket:
-
-                LeftPocket = removeFromInventorySpace(LeftPocket, item.originH, item.originX);
-                break;
-
-            case InventoryGroup.RightPocket:
-
-                RightPocket = removeFromInventorySpace(RightPocket, item.originH, item.originX);
-                break;
-
-            case InventoryGroup.Backpack:
-
-                Backpack = removeFromInventorySpace(Backpack, item.originH, item.originX);
-                break;
-
-            default:
-                break;
+            return;
         }
-        item.InventoryObject.Image.transform.SetParent(GlobalData.CameraControl.HUD.PendingInventory.transform);
-        InventoryItems.Remove(item);
+        else
+        {
+            GlobalData.CameraControl.CameraCursor.drawInventoryItem = true;
+            GlobalData.CameraControl.CameraCursor.showItemInInventory = false;
+
+            var inventory = getInventoryGroupArray(inventoryGroup);
+            inventory = hideInventorySpace(inventory);
+        }
     }
 
     // This function is used for when u pick up and object.
@@ -117,13 +137,17 @@ public class UnitInventory : MonoBehaviour
                 for (var ig = 1; ig < igLength; ig++)
                 {
                     // If we find space for the item, then return true as operation completed successfully;
-                    if (checkValidity(h, x, (InventoryGroup)ig, item.InventorySpace))
+                    item.originH = h;
+                    item.originX = x;
+                    item.InventoryGroup = (InventoryGroup)ig;
+                    if (checkValidity(item))
                     {
                         item.originH = h;
                         item.originX = x;
                         item.InventoryGroup = (InventoryGroup)ig;
 
                         returnItem = item;
+                        this.InventoryObjectInHand = item;
                         return true;
                     }
                 }
@@ -134,142 +158,22 @@ public class UnitInventory : MonoBehaviour
         return false;
     }
 
-    public void CalculateSpace(int posH, int posX, InventoryGroup inventoryGroup)
+    public bool checkValidity(Item item = null)
     {
-        newH = 0;
-        newX = 0;
+        if (item == null)
+            item = InventoryObjectInHand;
 
-        // If the item doesn't fit, return and dont color anything;
-        if (checkValidity(posH, posX, inventoryGroup, InventoryObjectInHand.InventorySpace) == false)
-        {
-            isLastItemValid = false;
-            return;
-        }
-        else
-        {
-            // show the InventoryItem where it will be;
-            GlobalData.CameraControl.CameraCursor.drawInventoryItem = false;
-            GlobalData.CameraControl.CameraCursor.showItemInInventory = true;
-
-            // color the InventoryBoxes as black;
-            isLastItemValid = true;
-            switch (inventoryGroup)
-            {
-                case InventoryGroup.LeftPocket:
-
-                    LeftPocket = showInventorySpace(LeftPocket, posH, posX);
-                    break;
-
-                case InventoryGroup.RightPocket:
-
-                    RightPocket = showInventorySpace(RightPocket, posH, posX);
-                    break;
-
-                case InventoryGroup.Backpack:
-
-                    Backpack = showInventorySpace(Backpack, posH, posX);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
-    public void PlaceInSpace(int posH, int posX, InventoryGroup inventoryGroup, bool isInInventory = false)
-    {
-        if (isInInventory == true && checkValidity(posH, posX, inventoryGroup, InventoryObjectInHand.InventorySpace) == false)
-        {
-            return;
-        }
-        if (isInInventory == false && isLastItemValid == false)
-        {
-            return;
-        }
-        else
-        {
-            GlobalData.CameraControl.CameraCursor.drawInventoryItem = false;
-            GlobalData.CameraControl.CameraCursor.showItemInInventory = false;
-
-            switch (inventoryGroup)
-            {
-                case InventoryGroup.LeftPocket:
-
-                    LeftPocket = placeInventorySpace(LeftPocket, posH, posX);
-                    break;
-
-                case InventoryGroup.RightPocket:
-
-                    RightPocket = placeInventorySpace(RightPocket, posH, posX);
-                    break;
-
-                case InventoryGroup.Backpack:
-
-                    Backpack = placeInventorySpace(Backpack, posH, posX);
-                    break;
-
-                default:
-                    break;
-            }
-            InventoryObjectInHand.originH = posH;
-            InventoryObjectInHand.originX = posX;
-            // We use the pending for when you pick up the object from the inventory and then u right click to cancel. Then we just put the item back.
-            InventoryObjectInHand.pendingH = posH;
-            InventoryObjectInHand.pendingX = posX;
-            InventoryObjectInHand.InventoryObject.Image.transform.SetParent(GlobalData.CameraControl.HUD.InventoryList.transform);
-            InventoryObjectInHand.InventoryGroup = inventoryGroup;
-            InventoryObjectInHand = null;
-        }
-    }
-
-    public void CalculateSpaceExit(int posH, int posX, InventoryGroup inventoryGroup)
-    {
-        if (isLastItemValid == false)
-        {
-            return;
-        }
-        else
-        {
-            GlobalData.CameraControl.CameraCursor.drawInventoryItem = true;
-            GlobalData.CameraControl.CameraCursor.showItemInInventory = false;
-
-            switch (inventoryGroup)
-            {
-                case InventoryGroup.LeftPocket:
-
-                    LeftPocket = hideInventorySpace(LeftPocket, posH, posX);
-                    break;
-
-                case InventoryGroup.RightPocket:
-
-                    RightPocket = hideInventorySpace(RightPocket, posH, posX);
-                    break;
-
-                case InventoryGroup.Backpack:
-
-                    Backpack = hideInventorySpace(Backpack, posH, posX);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
-    public bool checkValidity(int y, int x, InventoryGroup InventoryGroup, InventorySpace InventorySpace)
-    {
-        //int maxH = 4;
         int maxX = 2;
-
+        var inventory = getInventoryGroupArray(item.InventoryGroup);
         int blockedH;
         int blockedX;
 
-        if (InventoryGroup == InventoryGroup.LeftPocket)
+        if (item.InventoryGroup == InventoryGroup.LeftPocket)
         {
             blockedH = 0;
             blockedX = 1;
         }
-        else if (InventoryGroup == InventoryGroup.RightPocket)
+        else if (item.InventoryGroup == InventoryGroup.RightPocket)
         {
             blockedH = 0;
             blockedX = 0;
@@ -284,267 +188,150 @@ public class UnitInventory : MonoBehaviour
             blockedX = 0;
         }
 
-        switch (InventorySpace)
+        for (var H = item.spaceH; H >= 0; H--)
         {
-            case InventorySpace.Square:
-                break;
-            case InventorySpace.Square2:
-
-                if ((y - 1 >= 0) && (x + 1 < maxX))
+            for (var X = 0; X <= item.spaceX; X++)
+            {
+                newH = item.originH - H;
+                newX = item.originX + X;
+                if (newH >= 0 && newX < maxX)   // Test for bounds
                 {
-                    // test for the blocked inventoryBox;
-                    if (y - 1 == blockedH && x + 1 == blockedX)
+                    if (newH == blockedH && newX == blockedX)   // test for the blocked inventoryBox;
                     {
                         return false;
                     }
-                    else if (y == blockedH && x + 1 == blockedX)
-                    {
+                    //occupied = inventory[newH, newX].Ocupied;
+                    if (inventory[newH, newX].Ocupied)
                         return false;
-                    }
-                    else if (y - 1 == blockedH && x == blockedX)
-                    {
-                        return false;
-                    }
-
-                    switch (InventoryGroup)
-                    {
-                        case InventoryGroup.LeftPocket:
-
-                            return checkForOcupied(y, x, InventoryGroup, InventorySpace, LeftPocket);
-                            break;
-
-                        case InventoryGroup.RightPocket:
-
-                            return checkForOcupied(y, x, InventoryGroup, InventorySpace, RightPocket);
-                            break;
-
-                        default:
-                            break;
-                    }
                 }
                 else
                 {
                     return false;
                 }
-
-                break;
-
-            case InventorySpace.VerticalLine2:
-                break;
-            case InventorySpace.HorizontalLine2:
-                break;
-            default:
-                break;
-        }
-
-        return true;
-    }
-
-    bool checkForOcupied(int y, int x, InventoryGroup InventoryGroup, InventorySpace InventorySpace, InventoryBox[,] inventory)
-    {
-        switch (InventorySpace)
-        {
-            case InventorySpace.Square:
-                break;
-            case InventorySpace.Square2:
-
-                var occupied = inventory[y - 1, x].Ocupied;
-                occupied = inventory[y - 1, x + 1].Ocupied;
-                occupied = inventory[y, x + 1].Ocupied;
-
-                if (occupied)
-                    return false;
-
-                break;
-
-            case InventorySpace.VerticalLine2:
-                break;
-            case InventorySpace.HorizontalLine2:
-                break;
-            default:
-                break;
+            }
         }
         return true;
     }
 
-    private InventoryBox[,] showInventorySpace(InventoryBox[,] array, int posH, int posX)
+    public void PlaceInSpace(int? posH = null, int? posX = null)
     {
-        switch (InventoryObjectInHand.InventorySpace)
+        // this can be from a click event
+        if (posH.HasValue && posX.HasValue)
         {
-            case InventorySpace.Square:
+            InventoryObjectInHand.originH = posH.Value;
+            InventoryObjectInHand.originX = posX.Value;
+        }
 
-                // Origin
-                array[posH, posX].Image.overrideSprite = IBox_inactive;
+        if (InventoryObjectInHand.isInInventory == true && checkValidity() == false)
+        {
+            return;
+        }
+        if (InventoryObjectInHand.isInInventory == false && isLastItemValid == false)
+        {
+            return;
+        }
+        else
+        {
+            GlobalData.CameraControl.CameraCursor.drawInventoryItem = false;
+            GlobalData.CameraControl.CameraCursor.showItemInInventory = false;
+
+            var inventory = getInventoryGroupArray(InventoryObjectInHand.InventoryGroup);
+            inventory = placeInventorySpace(inventory);
+
+            // We use the pending for when you pick up the object from the inventory and then u right click to cancel. Then we just put the item back.
+            InventoryObjectInHand.pendingH = InventoryObjectInHand.originH;
+            InventoryObjectInHand.pendingX = InventoryObjectInHand.originX;
+            InventoryObjectInHand.InventoryObject.Image.transform.SetParent(GlobalData.CameraControl.HUD.InventoryList.transform);
+            InventoryObjectInHand = null;
+        }
+    }
+
+    private InventoryBox[,] getInventoryGroupArray(InventoryGroup InventoryGroup)
+    {
+        switch (InventoryGroup)
+        {
+            case InventoryGroup.LeftPocket:
+                return LeftPocket;
+            case InventoryGroup.RightPocket:
+                return RightPocket;
+            case InventoryGroup.Backpack:
+                return Backpack;
+            case InventoryGroup.JacketLeftPocket:
                 break;
-
-            case InventorySpace.Square2:
-
-                // The Item image;
-                // Midpoint beween to vectors -> http://www.leadinglesson.com/midpoint-between-two-vectors
-                InventoryObjectInHand.InventoryObject.transform.position = (Vector3)((array[posH, posX].Image.transform.position + array[posH - 1, posX + 1].Image.transform.position) / 2);
-
-                // Origin
-                array[posH, posX].Image.overrideSprite = IBox_inactive;
-
-                // Up
-                newH = posH - 1;
-                newX = posX;
-                array[newH, newX].Image.overrideSprite = IBox_inactive;
-
-                // Right
-                newH = posH;
-                newX = posX + 1;
-                array[newH, newX].Image.overrideSprite = IBox_inactive;
-
-                // Up - Right
-                newH = posH - 1;
-                newX = posX + 1;
-                array[newH, newX].Image.overrideSprite = IBox_inactive;
-                break;
-
-            case InventorySpace.VerticalLine2:
-                break;
-            case InventorySpace.HorizontalLine2:
+            case InventoryGroup.JacketRightPocket:
                 break;
             default:
                 break;
         }
-        return array;
+
+        return null;
     }
-    private InventoryBox[,] placeInventorySpace(InventoryBox[,] array, int posH, int posX)
+    private InventoryBox[,] showInventorySpace(InventoryBox[,] array)
     {
-        switch (InventoryObjectInHand.InventorySpace)
+        InventoryObjectInHand.InventoryObject.transform.position = CenterItemImage(array);
+
+        for (var H = InventoryObjectInHand.spaceH; H >= 0; H--)
         {
-            case InventorySpace.Square:
-
-                // Origin
-                array[posH, posX].Ocupied = true;
-
-                break;
-
-            case InventorySpace.Square2:
-
-                // The Item image;
-                // Midpoint beween to vectors -> http://www.leadinglesson.com/midpoint-between-two-vectors
-                InventoryObjectInHand.InventoryObject.transform.position = (Vector3)((array[posH, posX].Image.transform.position + array[posH - 1, posX + 1].Image.transform.position) / 2);
-
-                InventoryObjectInHand.ObjectState = ObjectState.InInventory;
-
-                // Origin
-                array[posH, posX].Image.overrideSprite = IBox_inactive;
-                array[posH, posX].Ocupied = true;
-                // Up
-                newH = posH - 1;
-                newX = posX;
+            for (var X = 0; X <= InventoryObjectInHand.spaceX; X++)
+            {
+                newH = InventoryObjectInHand.originH - H;
+                newX = InventoryObjectInHand.originX + X;
                 array[newH, newX].Image.overrideSprite = IBox_inactive;
-                array[newH, newX].Ocupied = true;
-                // Right
-                newH = posH;
-                newX = posX + 1;
-                array[newH, newX].Image.overrideSprite = IBox_inactive;
-                array[newH, newX].Ocupied = true;
-                // Up - Right
-                newH = posH - 1;
-                newX = posX + 1;
-                array[newH, newX].Image.overrideSprite = IBox_inactive;
-                array[newH, newX].Ocupied = true;
-                break;
-
-            case InventorySpace.VerticalLine2:
-                break;
-            case InventorySpace.HorizontalLine2:
-                break;
-            default:
-                break;
+            }
         }
         return array;
     }
-    private InventoryBox[,] hideInventorySpace(InventoryBox[,] array, int posH, int posX)
+    private InventoryBox[,] placeInventorySpace(InventoryBox[,] array)
     {
-        newH = 0;
-        newX = 0;
-        switch (InventoryObjectInHand.InventorySpace)
+        InventoryObjectInHand.InventoryObject.transform.position = CenterItemImage(array);
+
+        InventoryObjectInHand.ObjectState = ObjectState.InInventory;
+
+        for (var H = InventoryObjectInHand.spaceH; H >= 0; H--)
         {
-            case InventorySpace.Square:
-
-                // Origin
-                array[posH, posX].Image.overrideSprite = IBox_active;
-                break;
-
-            case InventorySpace.Square2:
-
-                // Origin
-                array[posH, posX].Image.overrideSprite = IBox_active;
-
-                // Up
-                newH = posH - 1;
-                newX = posX;
-                array[newH, newX].Image.overrideSprite = IBox_active;
-
-                // Right
-                newH = posH;
-                newX = posX + 1;
-                array[newH, newX].Image.overrideSprite = IBox_active;
-
-                // Up - Right
-                newH = posH - 1;
-                newX = posX + 1;
-                array[newH, newX].Image.overrideSprite = IBox_active;
-                break;
-
-            case InventorySpace.VerticalLine2:
-                break;
-            case InventorySpace.HorizontalLine2:
-                break;
-            default:
-                break;
+            for (var X = 0; X <= InventoryObjectInHand.spaceX; X++)
+            {
+                newH = InventoryObjectInHand.originH - H;
+                newX = InventoryObjectInHand.originX + X;
+                array[newH, newX].Image.overrideSprite = IBox_inactive;
+                array[newH, newX].Ocupied = true;
+            }
         }
         return array;
     }
-    private InventoryBox[,] removeFromInventorySpace(InventoryBox[,] array, int posH, int posX)
+    public Vector3 CenterItemImage(InventoryBox[,] array)
     {
-        newH = 0;
-        newX = 0;
-        switch (InventoryObjectInHand.InventorySpace)
+        // The Item image;
+        // Midpoint beween to vectors -> http://www.leadinglesson.com/midpoint-between-two-vectors
+        return (Vector3)(
+                        (array[InventoryObjectInHand.originH, InventoryObjectInHand.originX].Image.transform.position +
+                         array[InventoryObjectInHand.originH - InventoryObjectInHand.spaceH, InventoryObjectInHand.originX + InventoryObjectInHand.spaceX].Image.transform.position)
+                         / 2);
+    }
+    private InventoryBox[,] hideInventorySpace(InventoryBox[,] array)
+    {
+        for (var H = InventoryObjectInHand.spaceH; H >= 0; H--)
         {
-            case InventorySpace.Square:
-
-                // Origin
-                array[posH, posX].Image.overrideSprite = IBox_active;
-                array[posH, posX].Ocupied = false;
-                break;
-
-            case InventorySpace.Square2:
-
-                // Origin
-                array[posH, posX].Image.overrideSprite = IBox_active;
-                array[posH, posX].Ocupied = false;
-
-                // Up
-                newH = posH - 1;
-                newX = posX;
+            for (var X = 0; X <= InventoryObjectInHand.spaceX; X++)
+            {
+                newH = InventoryObjectInHand.originH - H;
+                newX = InventoryObjectInHand.originX + X;
+                array[newH, newX].Image.overrideSprite = IBox_active;
+            }
+        }
+        return array;
+    }
+    private InventoryBox[,] removeFromInventorySpace(InventoryBox[,] array)
+    {
+        for (var H = InventoryObjectInHand.spaceH; H >= 0; H--)
+        {
+            for (var X = 0; X <= InventoryObjectInHand.spaceX; X++)
+            {
+                newH = InventoryObjectInHand.originH - H;
+                newX = InventoryObjectInHand.originX + X;
                 array[newH, newX].Image.overrideSprite = IBox_active;
                 array[newH, newX].Ocupied = false;
-
-                // Right
-                newH = posH;
-                newX = posX + 1;
-                array[newH, newX].Image.overrideSprite = IBox_active;
-                array[newH, newX].Ocupied = false;
-
-                // Up - Right
-                newH = posH - 1;
-                newX = posX + 1;
-                array[newH, newX].Image.overrideSprite = IBox_active;
-                array[newH, newX].Ocupied = false;
-                break;
-
-            case InventorySpace.VerticalLine2:
-                break;
-            case InventorySpace.HorizontalLine2:
-                break;
-            default:
-                break;
+            }
         }
         return array;
     }

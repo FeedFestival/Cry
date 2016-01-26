@@ -263,12 +263,12 @@ public class UnitActionHandler : MonoBehaviour
                     Debug.Log("Pickup Object");
 
                     Unit.Item = Items.CreateInventoryObject2D(Unit.Item);
-                    Unit.UnitInventory.InventoryObjectInHand = Unit.Item;
-                    Unit.UnitInventory.PlaceInSpace(Unit.Item.originH, Unit.Item.originX, Unit.Item.InventoryGroup);
+                    Unit.UnitInventory.PlaceInSpace();
                 }
                 else
                 {
                     // open Inventory and try to switch places with an item.
+                    Unit.UnitInventory.InventoryObjectInHand = null;
                     Debug.Log("NoSpace");
                 }
                 this.ExitCurentAction();

@@ -15,7 +15,7 @@ public class HUD : MonoBehaviour
 
     public CryButton I_INVENTORY_button;
 
-    private Button GameMenu_ResumeGame;
+    //private Button GameMenu_ResumeGame;
 
     // Image / Panels
     private Image GameMenu;
@@ -72,10 +72,10 @@ public class HUD : MonoBehaviour
                     Inventory = child.transform.GetComponent<Image>();
                     break;
 
-                case "GameMenu_ResumeGame":
+                //case "GameMenu_ResumeGame":
 
-                    GameMenu_ResumeGame = child.transform.GetComponent<Button>();
-                    break;
+                //    GameMenu_ResumeGame = child.transform.GetComponent<Button>();
+                //    break;
 
                 case "PendingInventory":
 
@@ -311,7 +311,6 @@ public class HUD : MonoBehaviour
                         InventoryList.gameObject.SetActive(true);
                         PendingInventory.gameObject.SetActive(true);
 
-                        GlobalData.Player.UnitInventory.PlaceInventoryItems();
                         GlobalData.Player.UnitActionInMind = UnitActionInMind.None;
                         GlobalData.Player.UnitController.StopMoving(false);
 

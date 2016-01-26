@@ -24,7 +24,8 @@ namespace Assets.Scripts.Types
             {
                 case ItemName.Apple:
 
-                    item.InventorySpace = InventorySpace.Square2;
+                    item.spaceH = 1;
+                    item.spaceX = 1;
 
                     break;
 

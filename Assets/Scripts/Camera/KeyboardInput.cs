@@ -22,7 +22,8 @@ public class KeyboardInput : MonoBehaviour
                 var item = GlobalData.Player.UnitInventory.InventoryObjectInHand;
                 if (item != null)
                 {
-                    GlobalData.Player.UnitInventory.PlaceInSpace(item.pendingH, item.pendingX, item.InventoryGroup, true);
+                    item.isInInventory = true;
+                    GlobalData.Player.UnitInventory.PlaceInSpace(item.pendingH, item.pendingX);
                 }
             }
             else

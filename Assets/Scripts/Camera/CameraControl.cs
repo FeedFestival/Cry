@@ -6,8 +6,6 @@ public class CameraControl : MonoBehaviour
 {
     public bool debug;
 
-    private Camera Camera;
-
     private CameraEdge CameraEdge;
     private CameraEdgeSpeed CameraEdgeSpeed;
 
@@ -53,8 +51,6 @@ public class CameraControl : MonoBehaviour
         //  Scripts initialization
         CameraCursor = GetComponent<CameraCursor>();
         CameraCursor.Initialize();
-
-        Camera = GetComponent<Camera>();
 
         CameraView = GetComponent<CameraView>();
         //CameraView.Initialize(this);
