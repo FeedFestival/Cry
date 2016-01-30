@@ -148,6 +148,7 @@ public class UnitInventory : MonoBehaviour
 
                         returnItem = item;
                         this.InventoryObjectInHand = item;
+                        isLastItemValid = true;
                         return true;
                     }
                 }
@@ -155,6 +156,7 @@ public class UnitInventory : MonoBehaviour
         }
 
         returnItem = item;
+        isLastItemValid = false;
         return false;
     }
 
@@ -213,7 +215,7 @@ public class UnitInventory : MonoBehaviour
         return true;
     }
 
-    public void PlaceInSpace(int? posH = null, int? posX = null)
+    public void PlaceInSpace(int? posH = null, int? posX = null, InventoryGroup pendingInventoryGroup = InventoryGroup.None)
     {
         // this can be from a click event
         if (posH.HasValue && posX.HasValue)
@@ -235,13 +237,14 @@ public class UnitInventory : MonoBehaviour
             GlobalData.CameraControl.CameraCursor.drawInventoryItem = false;
             GlobalData.CameraControl.CameraCursor.showItemInInventory = false;
 
+            if (pendingInventoryGroup != InventoryGroup.None)
+                InventoryObjectInHand.InventoryGroup = pendingInventoryGroup;
+
             var inventory = getInventoryGroupArray(InventoryObjectInHand.InventoryGroup);
             inventory = placeInventorySpace(inventory);
 
             // We use the pending for when you pick up the object from the inventory and then u right click to cancel. Then we just put the item back.
-            InventoryObjectInHand.pendingH = InventoryObjectInHand.originH;
-            InventoryObjectInHand.pendingX = InventoryObjectInHand.originX;
-            InventoryObjectInHand.InventoryObject.Image.transform.SetParent(GlobalData.CameraControl.HUD.InventoryList.transform);
+            InventoryObjectInHand.PlaceInInventory();
             InventoryObjectInHand = null;
         }
     }

@@ -217,6 +217,11 @@ public class HUD : MonoBehaviour
                 }
                 break;
 
+            case ButtonName.INVENTORYDROP:
+
+                GlobalData.Player.UnitInventory.InventoryObjectInHand.ShowDropItemLocation();
+                break;
+
             default:
                 break;
         }
@@ -241,6 +246,14 @@ public class HUD : MonoBehaviour
                 {
                     I_INVENTORY_button.Button.image.overrideSprite = I_INVENTORY_image;
                 }
+                break;
+
+            case ButtonName.INVENTORYDROP:  // 9
+
+                // there is a bug here and i want to catch it (i'll leave it for later)
+                //if (GlobalData.Player.UnitInventory.InventoryObjectInHand.InteractiveObject != null)
+                    Destroy(GlobalData.Player.UnitInventory.InventoryObjectInHand.InteractiveObject.gameObject);
+                GlobalData.Player.UnitInventory.InventoryObjectInHand.DontShowDropItemLocation();
                 break;
 
             default:
@@ -329,6 +342,15 @@ public class HUD : MonoBehaviour
 
                         MovementPoints.gameObject.SetActive(true);
                     }
+                    break;
+
+                case ButtonName.INVENTORYDROP:
+
+                    GlobalData.Player.UnitInventory.InventoryObjectInHand.objectPosition = GlobalData.CameraControl.CameraCursor.item3DPosition;
+                    GlobalData.Player.UnitInventory.InventoryObjectInHand.PlaceIn3DWorld();
+
+                    Destroy(GlobalData.Player.UnitInventory.InventoryObjectInHand.InventoryObject.gameObject);
+                    GlobalData.Player.UnitInventory.InventoryObjectInHand = null;
                     break;
 
                 default:

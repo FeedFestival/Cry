@@ -20,10 +20,16 @@ public class KeyboardInput : MonoBehaviour
             if (GlobalData.Player.UnitActionState == UnitActionState.MovingItemInInventory)
             {
                 var item = GlobalData.Player.UnitInventory.InventoryObjectInHand;
+                if (item.InteractiveObject != null)
+                {
+                    Destroy(item.InteractiveObject.gameObject);
+                    item.DontShowDropItemLocation();
+                }
+
                 if (item != null)
                 {
                     item.isInInventory = true;
-                    GlobalData.Player.UnitInventory.PlaceInSpace(item.pendingH, item.pendingX);
+                    GlobalData.Player.UnitInventory.PlaceInSpace(item.pendingH, item.pendingX, item.pendingInventoryGroup);
                 }
             }
             else

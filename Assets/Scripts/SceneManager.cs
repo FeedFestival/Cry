@@ -13,5 +13,11 @@ public class SceneManager : MonoBehaviour
         GlobalData.SceneManager = this;
 
         GlobalData.CameraControl.Initialize();
+
+        var itemsInScene = GameObject.FindGameObjectsWithTag("Item");
+        foreach (GameObject item in itemsInScene)
+        {
+            item.GetComponent<InteractiveObject>().Initialize();
+        }
     }
 }

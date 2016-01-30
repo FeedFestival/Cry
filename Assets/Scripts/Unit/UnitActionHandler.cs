@@ -255,7 +255,6 @@ public class UnitActionHandler : MonoBehaviour
                 // Play animation of picking up.
                 //-
 
-                // this needs to be used with the 'out' keyword --> TO_DO
                 var isRoom = Unit.UnitInventory.FindSpaceInInventory(Unit.Item, out Unit.Item);
 
                 if (isRoom)

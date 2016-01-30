@@ -37,6 +37,8 @@ public class CameraCursor : MonoBehaviour
     int cursorSizeX = 88;   // 48
     int cursorSizeY = 111;
 
+    public bool showDropItemLocation;
+
     public bool drawInventoryItem;
     public bool showItemInInventory;
 
@@ -98,6 +100,38 @@ public class CameraCursor : MonoBehaviour
                         curentCursor = defaultCursor;
                         break;
                 }
+            }
+        }
+    }
+
+    public Vector3 item3DPosition = new Vector3(0,0,0);
+    public bool firstTimeMoving3DObject = true;
+
+    void Update()
+    {
+        if (showDropItemLocation)
+        {
+            if (GlobalData.Player.UnitInventory.InventoryObjectInHand != null)
+            {
+                RaycastHit Hit;
+                Ray Ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(Ray, out Hit, 100))
+                {
+                    if (Hit.transform.gameObject.tag == "Map" || Hit.transform.gameObject.tag == "Table")
+                    {
+                        item3DPosition = new Vector3(Mathf.Round(Hit.point.x * 100f) / 100f, Mathf.Round((Hit.point.y + 0.025f) * 100f) / 100f, Mathf.Round(Hit.point.z * 100f) / 100f);
+                        if (firstTimeMoving3DObject)
+                        {
+                            firstTimeMoving3DObject = false;
+                            GlobalData.Player.UnitInventory.InventoryObjectInHand.InteractiveObject.transform.position = item3DPosition;
+                        }
+                    }
+                }
+
+                var curPos = GlobalData.Player.UnitInventory.InventoryObjectInHand.InteractiveObject.transform.position;
+
+                GlobalData.Player.UnitInventory.InventoryObjectInHand.InteractiveObject.transform.position = Vector3.Lerp(curPos, item3DPosition, Time.deltaTime * 8f);
+                
             }
         }
     }

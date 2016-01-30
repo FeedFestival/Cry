@@ -7,18 +7,29 @@ public class InteractiveObject : MonoBehaviour
     public Item Item;
     public ItemName ItemName;
 
-    void Start()
+    public void Initialize(Item item = null)
     {
-        this.Item = Items.CreateItem(this.ItemName);
-
+        if (item == null)
+        {
+            this.Item = Items.CreateItem(this.ItemName);
+            setSettings();
+            Item.InteractiveObject = this;
+        }
+        else
+        {
+            this.Item = item;
+            Item.ObjectState = ObjectState.InInventory;
+        }
         Item.model = this.transform.GetChild(0).gameObject;
         Item.Material = Item.model.GetComponent<Renderer>().material;
-        Item.objectPosition = this.transform.position;
-        Item.InteractiveObject = this;
+    }
 
+    public void setSettings()
+    {
         /* Settings */
         //--------------------
-
+        Item.objectPosition = this.transform.position;
+   
         int mask = (1 << LayerMask.NameToLayer("Map"));
         RaycastHit hit;
         if (Physics.Linecast(Item.objectPosition, new Vector3(Item.objectPosition.x, 0, Item.objectPosition.z), out hit, mask))
@@ -95,13 +106,19 @@ public class InteractiveObject : MonoBehaviour
 
     void OnMouseEnter()
     {
-        Item.Material.SetColor("_OutlineColor", Color.white);
-        Item.Material.SetFloat("_Outline", 20f);
+        if (Item.ObjectState != ObjectState.InInventory)
+        {
+            Item.Material.SetColor("_OutlineColor", Color.white);
+            Item.Material.SetFloat("_Outline", 20f);
+        }
     }
 
     void OnMouseExit()
     {
-        Item.Material.SetColor("_OutlineColor", Color.black);
-        Item.Material.SetFloat("_Outline", 4f);
+        if (Item.ObjectState != ObjectState.InInventory)
+        {
+            Item.Material.SetColor("_OutlineColor", Color.black);
+            Item.Material.SetFloat("_Outline", 4f);
+        }
     }
 }

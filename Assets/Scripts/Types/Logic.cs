@@ -37,7 +37,7 @@ namespace Assets.Scripts.Types
     public enum ButtonName
     {
         None = 0, ESC_COG = 1, W_HANDS = 2,
-        I_INVENTORY = 8
+        I_INVENTORY = 8, INVENTORYDROP = 9
     }
 
     #endregion
