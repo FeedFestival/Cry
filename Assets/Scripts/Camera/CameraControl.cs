@@ -39,13 +39,6 @@ public class CameraControl : MonoBehaviour
 
     Transform CameraOn;
 
-    void Awake()
-    {
-        GlobalData.CameraControl = this;
-
-        CameraOn = GlobalData.Player.transform; // HARD_CODED
-    }
-
     public void Initialize()
     {
         //  Scripts initialization
@@ -69,9 +62,11 @@ public class CameraControl : MonoBehaviour
         HUD.Initialize(this);
 
         CenterCamera = true;
+
+        CameraOn = GlobalData.Player.transform; // HARD_CODED
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (Input.GetKey(KeyCode.Space))
         {
@@ -88,29 +83,68 @@ public class CameraControl : MonoBehaviour
             if (CheckYDistance())
             {
                 DesiredPosition = new Vector3(thisTransform.position.x,
-                                            CameraOn.position.y + YDistanceFromPlayer,
+                    /*CameraOn.position.y + YDistanceFromPlayer,*/YDistanceFromPlayer,
                                             thisTransform.position.z);
                 thisTransform.position = Vector3.Lerp(thisTransform.position, DesiredPosition, Time.deltaTime * 2f);
             }
         }
+
+        Vector3 direction = Logic.GetDirection(this.gameObject.transform.position, GlobalData.Player.transform.position);
+        Ray Ray = new Ray(this.gameObject.transform.position, direction);
+        if (Physics.Raycast(Ray, out Hit, 100))
+        {
+            if (Hit.transform.gameObject.tag == "WallCut")
+            {
+                Debug.DrawLine(this.gameObject.transform.position, GlobalData.Player.transform.position, Color.green);
+                if (once)
+                {
+                    WallCut = Hit.transform.gameObject.GetComponent<WallCut>();
+                    WallCut.ShowWall(false);
+                    once = false;
+                }
+            }
+            if (Hit.transform.gameObject.tag == "Player")
+            {
+                Debug.DrawLine(this.gameObject.transform.position, GlobalData.Player.transform.position, Color.red);
+                if (WallCut)
+                {
+                    once = true;
+                    WallCut.ShowWall(true);
+                    WallCut = null;
+                }
+            }
+        }
     }
+    bool once = true;
+    RaycastHit Hit;
+    WallCut WallCut;
 
     private void CenterCameraOn()
     {
-        if (!this.HUD.I_INVENTORY_button.pressed)
+        if (GlobalData.Player != null)
         {
-            DesiredPosition = new Vector3(CameraOn.position.x - 7.22f,
-                                                CameraOn.position.y + YDistanceFromPlayer,
-                                                CameraOn.position.z + 7.22f);
+            if (!this.HUD.I_INVENTORY_button.pressed)
+            {
+                if (CameraOn == null)
+                {
+                    CameraOn = GlobalData.Player.transform; // HARD_CODED
+                }
+                //var x = Mathf.Round(CameraOn.position.x * 1000 / 1000);
+                //var z = Mathf.RoundToInt(CameraOn.position.z * 1000 / 1000);
+                DesiredPosition = new Vector3(CameraOn.position.x - 7.22f,
+                    /*CameraOn.position.y + YDistanceFromPlayer,*/YDistanceFromPlayer,
+                                                    CameraOn.position.z + 7.22f);
+            }
+            else
+            {
+                // -5.77 // 
+                DesiredPosition = new Vector3(CameraOn.position.x - 4.30f,
+                                                    /*CameraOn.position.y + 11f,*/11f,
+                                                    CameraOn.position.z + 4.30f);
+            }
+            thisTransform.position = Vector3.Lerp(thisTransform.position, DesiredPosition, Time.deltaTime * 1.9f);
+            //thisTransform.position = DesiredPosition;
         }
-        else
-        {
-            // -5.77 // 
-            DesiredPosition = new Vector3(CameraOn.position.x - 4.30f,
-                                                CameraOn.position.y + 11f,
-                                                CameraOn.position.z + 4.30f);
-        }
-        thisTransform.position = Vector3.Lerp(thisTransform.position, DesiredPosition, Time.deltaTime * 2f);
     }
 
     public void CameraPan(CameraEdge cameraEdge, CameraEdgeSpeed cameraEdgeSpeed)
@@ -188,6 +222,10 @@ public class CameraControl : MonoBehaviour
     {
         if (GlobalData.Player != null)
         {
+            if (CameraOn == null)
+            {
+                CameraOn = GlobalData.Player.transform; // HARD_CODED
+            }
             var distance = Mathf.Round((CameraOn.position.y + YDistanceFromPlayer) * 1000f) / 1000f;
             var cameraCurrentPosition = Mathf.Round((thisTransform.position.y) * 1000f) / 1000f;
             if (distance != cameraCurrentPosition)

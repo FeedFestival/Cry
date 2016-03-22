@@ -77,6 +77,7 @@ public class UnitActionAnimation : MonoBehaviour
                 break;
 
             default:
+                Unit.UnitBasicAnimation.PlayIdle();
                 break;
         }
     }
@@ -97,5 +98,10 @@ public class UnitActionAnimation : MonoBehaviour
 
         //Player.UnitAnimator[LadderAnimations.ClimbDown_From_Level1_To_Bottom.ToString()].wrapMode = WrapMode.PingPong;
         Unit.UnitAnimator[LadderAnimations.ClimbDown_Exit_To_Bottom.ToString()].wrapMode = WrapMode.PingPong;
+
+        Unit.UnitAnimator[DoorAnimations.OpenDoor.ToString()].wrapMode = WrapMode.Once;
+        Unit.UnitAnimator[DoorAnimations.CloseDoor.ToString()].wrapMode = WrapMode.Once;
+        Unit.UnitAnimator[DoorAnimations.OpenDoorBack.ToString()].wrapMode = WrapMode.Once;
+        Unit.UnitAnimator[DoorAnimations.CloseDoorBack.ToString()].wrapMode = WrapMode.Once;
     }
 }

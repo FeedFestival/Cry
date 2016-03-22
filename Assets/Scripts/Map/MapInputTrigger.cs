@@ -6,6 +6,11 @@ public class MapInputTrigger : MonoBehaviour
 {
     public bool debug = false;
 
+    void Start()
+    {
+        GlobalData.SceneManager.Map = this;
+    }
+
     void OnMouseEnter()
     {
         GlobalData.Player.isMouseOverMap = true;
@@ -57,7 +62,7 @@ public class MapInputTrigger : MonoBehaviour
                 }
                 else if (GlobalData.Player.UnitActionState == UnitActionState.MovingTable)
                 {
-                    var pos = Logic.GetPointHitAtMousePosition();
+                    var pos = Logic.GetPointHitAtMousePosition(this.gameObject.GetComponent<Collider>());
                     if (pos != Vector3.zero)
                     {
                         GlobalData.Player.UnitProperties.thisUnitTarget.thisTransform.position = GlobalData.Player.Table.TableController.MoveTable();
@@ -70,7 +75,7 @@ public class MapInputTrigger : MonoBehaviour
                 // This is canceling the actions.
                 GlobalData.Player.UnitActionInMind = UnitActionInMind.None;
 
-                var pos = Logic.GetPointHitAtMousePosition();
+                var pos = Logic.GetPointHitAtMousePosition(this.gameObject.GetComponent<Collider>());
                 if (pos != Vector3.zero)
                 {
                     GlobalData.Player.UnitProperties.thisUnitTarget.thisTransform.position = pos;

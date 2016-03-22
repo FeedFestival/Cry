@@ -158,31 +158,34 @@ public class UnitController : MonoBehaviour
 
     void Update()
     {
-        if (Unit.UnitFeetState == UnitFeetState.OnTable)
+        if (Unit)
         {
-            MoveOnTable();
-            return;
-        }
-        if (Unit != null && Unit.UnitProperties.ControllerFollowRoot)
-        {
-            FollowRoot();
-        }
-
-        if (Unit.UnitPrimaryState == UnitPrimaryState.Walk)
-        {
-            if (lastTarget != NavMeshAgent.steeringTarget)
+            if (Unit.UnitFeetState == UnitFeetState.OnTable)
             {
-                lastTarget = NavMeshAgent.steeringTarget;
-
-                if (lerpRotComplete == true)
-                    StartCoroutine(LerpToRotation(0.6f));
+                MoveOnTable();
+                return;
             }
-            if (lerpRotComplete == false)
+            if (Unit != null && Unit.UnitProperties.ControllerFollowRoot)
             {
-                if (lastTarget != Vector3.zero)
-                    Unit.UnitProperties.thisTransform.rotation = Logic.SmoothLook(Unit.UnitProperties.thisTransform.rotation,
-                        Logic.GetDirection(Unit.UnitProperties.thisTransform.position, lastTarget),
-                        11f);
+                FollowRoot();
+            }
+
+            if (Unit.UnitPrimaryState == UnitPrimaryState.Walk)
+            {
+                if (lastTarget != NavMeshAgent.steeringTarget)
+                {
+                    lastTarget = NavMeshAgent.steeringTarget;
+
+                    if (lerpRotComplete == true)
+                        StartCoroutine(LerpToRotation(0.6f));
+                }
+                if (lerpRotComplete == false)
+                {
+                    if (lastTarget != Vector3.zero)
+                        Unit.UnitProperties.thisTransform.rotation = Logic.SmoothLook(Unit.UnitProperties.thisTransform.rotation,
+                            Logic.GetDirection(Unit.UnitProperties.thisTransform.position, lastTarget),
+                            11f);
+                }
             }
         }
     }

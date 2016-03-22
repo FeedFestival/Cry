@@ -96,6 +96,16 @@ public class UnitActionHandler : MonoBehaviour
 
                 break;
 
+            case ActionType.OpenCloseDoor:
+
+                curentActionType = actionType;
+                if (!Unit.Door)
+                    Unit.Door = worldObject.GetComponent<Door>();
+
+                SetPathToStartPoint();
+
+                break;
+
             default:
                 break;
         }
@@ -177,6 +187,12 @@ public class UnitActionHandler : MonoBehaviour
 
                 this.Unit.UnitActionInMind = UnitActionInMind.PickupObject;
                 this.Unit.UnitController.SetPathToTarget(Unit.Item.StartPointPosition);
+                break;
+
+            case ActionType.OpenCloseDoor:
+
+                this.Unit.UnitActionInMind = UnitActionInMind.OpenCloseDoor;
+                this.Unit.UnitController.SetPathToTarget(Unit.Door.StartPointPosition);
                 break;
 
             default:
@@ -273,6 +289,17 @@ public class UnitActionHandler : MonoBehaviour
                 this.ExitCurentAction();
                 break;
 
+            case ActionType.OpenCloseDoor:
+
+                Unit.PlayerActionInMind = PlayerActionInMind.OpenCloseDoor;
+                Unit.UnitActionState = UnitActionState.OpenCloseDoor;
+                Unit.UnitActionInMind = UnitActionInMind.OpenCloseDoor;
+
+                Unit.UnitProperties.Root = Unit.Door.GetRoot();
+
+                Unit.Door.DoorActionHandler.PlayActionAnimation(Unit);
+                break;
+
             default:
                 break;
         }
@@ -330,6 +357,13 @@ public class UnitActionHandler : MonoBehaviour
                 if (Unit.Item.ObjectState == ObjectState.InInventory)
                     Destroy(Unit.Item.InteractiveObject.gameObject);
                 Unit.Item = null;
+
+                break;
+
+            case ActionType.OpenCloseDoor:
+
+                Unit.PlayerActionInMind = PlayerActionInMind.Moving;
+                Unit.Door = null;
 
                 break;
 

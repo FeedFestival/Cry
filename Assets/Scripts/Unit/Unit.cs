@@ -38,7 +38,7 @@ public class Unit : MonoBehaviour
             }
             else
             {
-                if (GlobalData.CameraControl != null)
+                if (GlobalData.CameraControl != null && GlobalData.CameraControl.HUD != null)
                     GlobalData.CameraControl.HUD.MovementPoints.gameObject.SetActive(true);
             }
         }
@@ -109,12 +109,7 @@ public class Unit : MonoBehaviour
     public Ledge Ledge;
     public Table Table;
     public Item Item;
-
-    void Awake()
-    {
-        GlobalData.Player = this;
-        Initialize();
-    }
+    public Door Door;
 
     // Use this for initialization
     public void Initialize()

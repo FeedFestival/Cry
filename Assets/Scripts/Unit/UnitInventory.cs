@@ -124,17 +124,17 @@ public class UnitInventory : MonoBehaviour
     // This function is used for when u pick up and object.
     public bool FindSpaceInInventory(Item item, out Item returnItem)
     {
-        for (var h = 3; h >= 0; h--)
-        {
-            for (var x = 0; x < 2; x++)
-            {
-                var igLength = 3;   //  None, LeftPocket, RightPocket
-                if (GlobalData.Player.hasBackPack)
-                    igLength = igLength + 1;
-                if (GlobalData.Player.hasJacket)
-                    igLength = igLength + 2;
+        var igLength = 3;   //  None, LeftPocket, RightPocket
+        if (GlobalData.Player.hasBackPack)
+            igLength = igLength + 1;
+        if (GlobalData.Player.hasJacket)
+            igLength = igLength + 2;
 
-                for (var ig = 1; ig < igLength; ig++)
+        for (var ig = 1; ig < igLength; ig++)
+        {
+            for (var h = 3; h >= 0; h--)
+            {
+                for (var x = 0; x < 2; x++)
                 {
                     // If we find space for the item, then return true as operation completed successfully;
                     item.originH = h;
@@ -242,6 +242,8 @@ public class UnitInventory : MonoBehaviour
 
             var inventory = getInventoryGroupArray(InventoryObjectInHand.InventoryGroup);
             inventory = placeInventorySpace(inventory);
+
+            InventoryItems.Add(InventoryObjectInHand);
 
             // We use the pending for when you pick up the object from the inventory and then u right click to cancel. Then we just put the item back.
             InventoryObjectInHand.PlaceInInventory();

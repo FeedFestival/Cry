@@ -7,17 +7,29 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.Types
 {
-    public enum ItemName
+    public enum ItemType
     {
-        Apple
+        Miscellaneous, Key, QuestItem
     }
+
+    public enum InventoryGroup
+    {
+        None, LeftPocket, RightPocket, Backpack, JacketLeftPocket, JacketRightPocket
+    }
+    public enum ObjectState
+    {
+        InInventory, OnGround, OnTable, OnShelf
+    }
+
     public static class Items
     {
-        public static Item CreateItem(ItemName ItemName)
+        public static Item CreateItem(ItemName ItemName, ItemType itemType, int password)
         {
             Item item = new Item
             {
-                ItemName = ItemName
+                ItemName = ItemName,
+                ItemType = itemType,
+                Password = password
             };
 
             switch (ItemName)
@@ -27,6 +39,18 @@ namespace Assets.Scripts.Types
                     item.spaceH = 1;
                     item.spaceX = 1;
 
+                    break;
+
+                case ItemName.Watch:
+
+                    item.spaceH = 1;
+                    item.spaceX = 0;
+                    break;
+
+                case ItemName.Key:
+
+                    item.spaceH = 1;
+                    item.spaceX = 0;
                     break;
 
                 default:
@@ -60,12 +84,17 @@ namespace Assets.Scripts.Types
 
         public static Item CreateInventoryObject3D(Item Item)
         {
-            var goObject = GameObject.Instantiate(Resources.Load("Prefabs/Apple"), Vector3.zero, Quaternion.identity) as GameObject;
+            var goObject = GameObject.Instantiate(Resources.Load("Prefabs/" + Item.ItemName.ToString()), Vector3.zero, Quaternion.identity) as GameObject;
 
             Item.InteractiveObject = goObject.GetComponent<InteractiveObject>();
             Item.InteractiveObject.Initialize(Item);
 
             return Item;
         }
+    }
+
+    public enum ItemName
+    {
+        Apple, Watch, Key
     }
 }

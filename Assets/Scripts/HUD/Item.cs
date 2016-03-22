@@ -7,6 +7,11 @@ public class Item
 {
     public ObjectState ObjectState;
     public ItemName ItemName;
+
+    public ItemType ItemType;
+
+    public int Password;
+
     public Texture2D Image;
 
     public bool isInInventory;
@@ -30,8 +35,6 @@ public class Item
 
     // 3d
     public InteractiveObject InteractiveObject;
-    public GameObject model;
-    public Material Material;
 
     public Vector3 objectPosition;
     public Vector3 objectNavMeshPosition;
@@ -49,6 +52,7 @@ public class Item
     {
         this.ObjectState = ObjectState.OnGround;
         this.InteractiveObject.setSettings();
+        this.InteractiveObject.GetComponent<Collider>().enabled = true;
         GlobalData.CameraControl.CameraCursor.drawInventoryItem = false;
         GlobalData.CameraControl.CameraCursor.showDropItemLocation = false;
         this.isInInventory = false;
@@ -57,6 +61,7 @@ public class Item
     public void ShowDropItemLocation()
     {
         GlobalData.Player.UnitInventory.InventoryObjectInHand = Items.CreateInventoryObject3D(GlobalData.Player.UnitInventory.InventoryObjectInHand);
+        GlobalData.Player.UnitInventory.InventoryObjectInHand.InteractiveObject.GetComponent<Collider>().enabled = false;
         GlobalData.Player.UnitInventory.InventoryObjectInHand.InventoryObject.Image.enabled = false;
         GlobalData.CameraControl.CameraCursor.drawInventoryItem = false;
         GlobalData.CameraControl.CameraCursor.firstTimeMoving3DObject = true;

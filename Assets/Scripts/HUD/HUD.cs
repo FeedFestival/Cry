@@ -132,7 +132,7 @@ public class HUD : MonoBehaviour
             }
             else
             {
-                if (GlobalData.Player.hasBackPack)
+                if (GlobalData.Player != null && GlobalData.Player.hasBackPack)
                 {
                     _inventoryGroup = InventoryGroup.Backpack;
                     hl = 8;

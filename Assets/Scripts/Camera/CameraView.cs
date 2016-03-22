@@ -48,9 +48,9 @@ public class CameraView : MonoBehaviour
             camera.rect = rect;
         }
 
-        Screen.SetResolution(1280, 720, true);
-        //QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = 60;
+        //Screen.SetResolution(1280, 720, false);
+        //QualitySettings.vSyncCount = 1;
+        Application.targetFrameRate = 144;
     }
 
     //public void Initialize(CameraControl cameraControl)

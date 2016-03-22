@@ -4,14 +4,27 @@ using Assets.Scripts.Types;
 
 public class InteractiveObject : MonoBehaviour
 {
+    [HideInInspector]
     public Item Item;
+
     public ItemName ItemName;
+    public ItemType ItemType;
+
+    public int Password = 0;
+
+    [HideInInspector]
+    public GameObject ItemIndicator;
 
     public void Initialize(Item item = null)
     {
+        if ((ItemType == ItemType.Key || ItemType == ItemType.QuestItem) && Password == 0)
+        {
+            Debug.LogError("Key ("+ this.gameObject.name +") has no password and can't open any door. or pose any value in a quest.");
+        }
+
         if (item == null)
         {
-            this.Item = Items.CreateItem(this.ItemName);
+            this.Item = Items.CreateItem(this.ItemName, this.ItemType, this.Password);
             setSettings();
             Item.InteractiveObject = this;
         }
@@ -20,8 +33,8 @@ public class InteractiveObject : MonoBehaviour
             this.Item = item;
             Item.ObjectState = ObjectState.InInventory;
         }
-        Item.model = this.transform.GetChild(0).gameObject;
-        Item.Material = Item.model.GetComponent<Renderer>().material;
+        ItemIndicator = this.transform.GetChild(this.transform.GetChildCount() - 1).gameObject;
+        ItemIndicator.SetActive(false);
     }
 
     public void setSettings()
@@ -108,8 +121,9 @@ public class InteractiveObject : MonoBehaviour
     {
         if (Item.ObjectState != ObjectState.InInventory)
         {
-            Item.Material.SetColor("_OutlineColor", Color.white);
-            Item.Material.SetFloat("_Outline", 20f);
+            ItemIndicator.SetActive(true);
+            ItemIndicator.transform.LookAt(ItemIndicator.transform.position + GlobalData.CameraControl.thisTransform.rotation * (Vector3.forward), GlobalData.CameraControl.thisTransform.rotation * Vector3.up);
+            GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.None);
         }
     }
 
@@ -117,8 +131,8 @@ public class InteractiveObject : MonoBehaviour
     {
         if (Item.ObjectState != ObjectState.InInventory)
         {
-            Item.Material.SetColor("_OutlineColor", Color.black);
-            Item.Material.SetFloat("_Outline", 4f);
+            ItemIndicator.SetActive(false);
+            GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
         }
     }
 }

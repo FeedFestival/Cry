@@ -42,25 +42,11 @@ namespace Assets.Scripts.Types
 
     #endregion
 
-    #region InventoryItems
-
-    public enum InventoryGroup
-    {
-        None, LeftPocket, RightPocket, Backpack, JacketLeftPocket, JacketRightPocket
-    }
-
-    public enum ObjectState
-    {
-        InInventory, OnGround, OnTable, OnShelf
-    }
-
-    #endregion
-
     #region Player [State]
 
     public enum PlayerActionInMind
     {
-        Moving = 0, UseAbility = 1, MovingTable = 2, LookInInventory
+        Moving = 0, UseAbility = 1, MovingTable = 2, LookInInventory, OpenCloseDoor
     }
 
     public enum UnitPrimaryState
@@ -70,12 +56,12 @@ namespace Assets.Scripts.Types
 
     public enum UnitActionState
     {
-        None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3, ClimbingTable = 4, MovingTable = 5, MovingItemInInventory = 6
+        None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3, ClimbingTable = 4, MovingTable = 5, MovingItemInInventory = 6, OpenCloseDoor = 7
     }
     public enum UnitActionInMind
     {
         None = 0, ClimbingLadder = 1, ClimbingChair = 2, ClimbingWall = 3,
-        ClimbTable = 4, ClimbDownTable = 5, MovingTable = 6, DropTable = 7, PickupObject = 8
+        ClimbTable = 4, ClimbDownTable = 5, MovingTable = 6, DropTable = 7, PickupObject = 8, OpenCloseDoor = 9
     }
 
     public enum UnitFeetState
@@ -87,7 +73,7 @@ namespace Assets.Scripts.Types
 
     public enum ActionType
     {
-        None = 0, Ladder = 1, ChairClimb = 2, ChairGrab = 3, LedgeClimb = 4, TableClimb = 5, GrabTable = 6, PickupObject = 7
+        None = 0, Ladder = 1, ChairClimb = 2, ChairGrab = 3, LedgeClimb = 4, TableClimb = 5, GrabTable = 6, PickupObject = 7, OpenCloseDoor = 8
     }
 
     #region Chair
@@ -142,6 +128,25 @@ namespace Assets.Scripts.Types
 
         Idle_Ladder = 10,
         Jump_Exit_To_Bottom = 11
+    }
+
+    #endregion
+
+    #region Door
+
+    public enum DoorState
+    {
+        Closed,Open,Locked
+    }
+
+    public enum DoorStartPoint
+    {
+        front = 0, back = 1
+    }
+
+    public enum DoorAnimations
+    {
+        OpenDoor,CloseDoor,OpenDoorBack,CloseDoorBack
     }
 
     #endregion
@@ -446,13 +451,19 @@ namespace Assets.Scripts.Types
             return Quaternion.Lerp(rotation, Quaternion.LookRotation(newDirection), Time.deltaTime * speed);
         }
 
-        public static Vector3 GetPointHitAtMousePosition()
+        public static Vector3 GetPointHitAtMousePosition(Collider collider = null)
         {
             RaycastHit Hit;
             Ray Ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(Ray, out Hit, 100))
+            if (collider)
             {
-                return new Vector3(Mathf.Round(Hit.point.x * 100f) / 100f, Mathf.Round(Hit.point.y * 100f) / 100f, Mathf.Round(Hit.point.z * 100f) / 100f);
+                if (collider.Raycast(Ray, out Hit, 100))
+                    return new Vector3(Mathf.Round(Hit.point.x * 100f) / 100f, Mathf.Round(Hit.point.y * 100f) / 100f, Mathf.Round(Hit.point.z * 100f) / 100f);
+            }
+            else
+            {
+                if (Physics.Raycast(Ray, out Hit, 100))
+                    return new Vector3(Mathf.Round(Hit.point.x * 100f) / 100f, Mathf.Round(Hit.point.y * 100f) / 100f, Mathf.Round(Hit.point.z * 100f) / 100f);
             }
             return Vector3.zero;
         }
