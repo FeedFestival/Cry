@@ -36,7 +36,7 @@ public class InventoryBox : MonoBehaviour
         UnityEngine.Events.UnityAction<BaseEventData> hoverCall = new UnityEngine.Events.UnityAction<BaseEventData>(Hover);
         hoverEvent.callback.AddListener(hoverCall);
 
-        trigger.delegates.Add(hoverEvent);
+        trigger.triggers.Add(hoverEvent);
 
         EventTrigger.Entry exithoverEvent = new EventTrigger.Entry();
         exithoverEvent.eventID = EventTriggerType.PointerExit;
@@ -44,7 +44,7 @@ public class InventoryBox : MonoBehaviour
         UnityEngine.Events.UnityAction<BaseEventData> exithoverCall = new UnityEngine.Events.UnityAction<BaseEventData>(ExitHover);
         exithoverEvent.callback.AddListener(exithoverCall);
 
-        trigger.delegates.Add(exithoverEvent);
+        trigger.triggers.Add(exithoverEvent);
 
         EventTrigger.Entry clickEvent = new EventTrigger.Entry();
         clickEvent.eventID = EventTriggerType.PointerClick;
@@ -52,7 +52,7 @@ public class InventoryBox : MonoBehaviour
         UnityEngine.Events.UnityAction<BaseEventData> clickCall = new UnityEngine.Events.UnityAction<BaseEventData>(Click);
         clickEvent.callback.AddListener(clickCall);
 
-        trigger.delegates.Add(clickEvent);
+        trigger.triggers.Add(clickEvent);
     }
 
     public void Hover(UnityEngine.EventSystems.BaseEventData baseEvent)

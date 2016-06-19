@@ -26,6 +26,14 @@ public class SceneManager : MonoBehaviour
             item.GetComponent<InteractiveObject>().Initialize();
         }
 
+        var visionInScene = GameObject.FindGameObjectsWithTag("Vision");
+        foreach (GameObject vision in visionInScene)
+        {
+            vision.GetComponent<MeshRenderer>().enabled = false;
+            var pos = vision.transform.position;
+            vision.transform.position = new Vector3(pos.x, pos.y - 0.6f, pos.z);
+        }
+
         Transform[] allChildren = this.GetComponentsInChildren<Transform>();
         foreach (Transform child in allChildren)
         {

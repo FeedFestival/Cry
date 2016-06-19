@@ -21,7 +21,7 @@ public class InventoryObject : MonoBehaviour
         UnityEngine.Events.UnityAction<BaseEventData> clickCall = new UnityEngine.Events.UnityAction<BaseEventData>(Click);
         clickEvent.callback.AddListener(clickCall);
 
-        trigger.delegates.Add(clickEvent);
+        trigger.triggers.Add(clickEvent);
     }
 
     public void Click(UnityEngine.EventSystems.BaseEventData baseEvent)

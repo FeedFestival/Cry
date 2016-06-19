@@ -22,7 +22,7 @@ public class ScreenEdge : MonoBehaviour
         UnityEngine.Events.UnityAction<BaseEventData> hoverCall = new UnityEngine.Events.UnityAction<BaseEventData>(Hover);
         hoverEvent.callback.AddListener(hoverCall);
 
-        trigger.delegates.Add(hoverEvent);
+        trigger.triggers.Add(hoverEvent);
 
         EventTrigger.Entry exithoverEvent = new EventTrigger.Entry();
         exithoverEvent.eventID = EventTriggerType.PointerExit;
@@ -30,7 +30,7 @@ public class ScreenEdge : MonoBehaviour
         UnityEngine.Events.UnityAction<BaseEventData> exithoverCall = new UnityEngine.Events.UnityAction<BaseEventData>(ExitHover);
         exithoverEvent.callback.AddListener(exithoverCall);
 
-        trigger.delegates.Add(exithoverEvent);
+        trigger.triggers.Add(exithoverEvent);
     }
 
     public void Hover(UnityEngine.EventSystems.BaseEventData baseEvent)

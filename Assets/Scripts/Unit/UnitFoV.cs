@@ -21,14 +21,23 @@ public class UnitFoV : MonoBehaviour
     public float maskCutawayDst = 0.1f;
 
     public MeshFilter viewMeshFilter;   // this guy needs to be a child of the caracter, it represents the actual circle that will show the masked texture;
+    public MeshFilter viewVerticalMeshFilter;   // this guy needs to be a child of the caracter, it represents the actual circle that will show the masked texture;
     Mesh viewMesh;
+    Mesh verticalViewMesh;
+
+    // unit y position
+    float unitYPos = 0f;
 
     void Start()
     {
         viewMesh = new Mesh();
         viewMesh.name = "View Mesh";
+        verticalViewMesh = new Mesh();
+        verticalViewMesh.name = "View Mesh";
 
         viewMeshFilter.mesh = viewMesh;
+
+        viewVerticalMeshFilter.mesh = verticalViewMesh;
 
         StartCoroutine("FindTargetsWithDelay", .2f);
     }
@@ -57,7 +66,7 @@ public class UnitFoV : MonoBehaviour
         {
             Transform target = targetsInViewRadius[i].transform;
             Vector3 dirToTarget = (target.position - transform.position).normalized;
-            if (Vector3.Angle(transform.forward, dirToTarget) < viewAngle / 2)
+            if (Vector3.Angle(-transform.forward, dirToTarget) < viewAngle / 2)
             {
                 float dstToTarget = Vector3.Distance(transform.position, target.position);
                 if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
@@ -73,6 +82,8 @@ public class UnitFoV : MonoBehaviour
         int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);
         float stepAngleSize = viewAngle / stepCount;
         List<Vector3> viewPoints = new List<Vector3>();
+
+        List<Vector3> viewPointsDown = new List<Vector3>();
         ViewCastInfo oldViewCast = new ViewCastInfo();
         for (int i = 0; i <= stepCount; i++)
         {
@@ -88,10 +99,14 @@ public class UnitFoV : MonoBehaviour
                     if (edge.pointA != Vector3.zero)
                     {
                         viewPoints.Add(edge.pointA);
+
+                        viewPointsDown.Add(new Vector3(edge.pointA.x, unitYPos, edge.pointA.z));
                     }
                     if (edge.pointB != Vector3.zero)
                     {
                         viewPoints.Add(edge.pointB);
+
+                        viewPointsDown.Add(new Vector3(edge.pointB.x, unitYPos, edge.pointB.z));
                     }
                 }
 
@@ -99,18 +114,26 @@ public class UnitFoV : MonoBehaviour
 
 
             viewPoints.Add(newViewCast.point);
+            viewPointsDown.Add(new Vector3(newViewCast.point.x, unitYPos, newViewCast.point.z));
             oldViewCast = newViewCast;
         }
+
+        if (viewPointsDown.Count > 0)
+            CreateCustom(viewPointsDown);
 
         int vertexCount = viewPoints.Count + 1;
         Vector3[] vertices = new Vector3[vertexCount];
         int[] triangles = new int[(vertexCount - 2) * 3];
 
         vertices[0] = Vector3.zero;
+
         for (int i = 0; i < vertexCount - 1; i++)
         {
             vertices[i + 1] = transform.InverseTransformPoint(viewPoints[i]) + Vector3.forward * maskCutawayDst;
+        }
 
+        for (int i = 0; i < vertexCount - 1; i++)
+        {
             if (i < vertexCount - 2)
             {
                 triangles[i * 3] = 0;
@@ -126,6 +149,65 @@ public class UnitFoV : MonoBehaviour
         viewMesh.RecalculateNormals();
     }
 
+    void CreateCustom(List<Vector3> viewPointsDown)
+    {
+        List<Vector3> full = new List<Vector3>();
+
+        for (int i = 0; i < viewPointsDown.Count - 1; i++)
+        {
+            if (Vector3.Distance(viewPointsDown[i], this.gameObject.transform.position) < 9f && Vector3.Distance(viewPointsDown[i], viewPointsDown[i + 1]) < 4f)
+            {
+                full.Add(viewPointsDown[i]);
+                full.Add(new Vector3(viewPointsDown[i].x, unitYPos + 3.5f, viewPointsDown[i].z));
+            }
+            //if (i > 3)
+            //    break;
+        }
+
+        int vertexCount = full.Count;
+        Vector3[] vertices = new Vector3[vertexCount];
+        for (int i = 0; i < vertexCount; i++)
+        {
+            vertices[i] = transform.InverseTransformPoint(full[i]) + Vector3.forward * maskCutawayDst;
+            if (i + 1 < vertexCount)
+                if (i % 2 == 0)
+                {
+                    Debug.DrawLine(full[i], full[i + 1], Color.green);
+                }
+                else
+                {
+                    Debug.DrawLine(full[i], full[i + 1], Color.blue);
+                }
+        }
+
+        int[] triangles = new int[(vertexCount - 1) * 3];
+        int t = 0;
+        for (int i = 0; i < vertexCount - 1; i++)
+        {
+            if (i != 0 && i < vertexCount - 1)
+            {
+                if (i % 2 == 0)
+                {
+                    triangles[t] = i;
+                    triangles[t + 1] = i - 1;
+                    triangles[t + 2] = i + 1;
+                }
+                else
+                {
+                    triangles[t] = i;
+                    triangles[t + 1] = i + 1;
+                    triangles[t + 2] = i - 1;
+                }
+                t = t + 3;
+            }
+        }
+
+        verticalViewMesh.Clear();
+
+        verticalViewMesh.vertices = vertices;
+        verticalViewMesh.triangles = triangles;
+        verticalViewMesh.RecalculateNormals();
+    }
 
     EdgeInfo FindEdge(ViewCastInfo minViewCast, ViewCastInfo maxViewCast)
     {
