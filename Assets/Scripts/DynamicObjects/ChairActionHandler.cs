@@ -26,7 +26,7 @@ public class ChairActionHandler : MonoBehaviour
 
     public ChairStartPoint CalculateStartPoint()
     {
-        var playerPos = this.Unit.UnitProperties.thisTransform.position;
+        var playerPos = this.Unit.UnitProperties.ThisUnitTransform.position;
 
         float[] distancesChair = new float[3];
         distancesChair[(int)ChairStartPoint.Front] = Vector3.Distance(playerPos, this.Unit.Chair.StartPoint_Front.position);

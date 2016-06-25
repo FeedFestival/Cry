@@ -66,12 +66,12 @@ public class WallCut : MonoBehaviour
 
     void OnMouseEnter()
     {
-        Debug.Log("isMouseOverMap");
-        GlobalData.Player.isMouseOverMap = true;
+        //Debug.Log("IsMouseOverMap");
+        GlobalData.Player.IsMouseOverMap = true;
     }
     void OnMouseExit()
     {
-        Debug.Log("MouseOverMapIs-Not");
-        GlobalData.Player.isMouseOverMap = false;
+        //Debug.Log("MouseOverMapIs-Not");
+        GlobalData.Player.IsMouseOverMap = false;
     }
 }

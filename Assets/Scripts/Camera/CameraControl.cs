@@ -91,11 +91,11 @@ public class CameraControl : MonoBehaviour
         }
         //if (PanCamera && !this.HUD.I_INVENTORY_button.pressed)
         //{
-        //    thisTransform.Translate(cameraDirection * CameraPanSpeed * Time.deltaTime);
+        //    ThisUnitTransform.Translate(cameraDirection * CameraPanSpeed * Time.deltaTime);
         //    if (CheckYDistance())
         //    {
-        //        DesiredPosition = new Vector3(thisTransform.position.x, YDistanceFromPlayer, thisTransform.position.z);
-        //        thisTransform.position = Vector3.Lerp(thisTransform.position, DesiredPosition, Time.deltaTime * 2f);
+        //        DesiredPosition = new Vector3(ThisUnitTransform.position.x, YDistanceFromPlayer, ThisUnitTransform.position.z);
+        //        ThisUnitTransform.position = Vector3.Lerp(ThisUnitTransform.position, DesiredPosition, Time.deltaTime * 2f);
         //    }
         //}
     }

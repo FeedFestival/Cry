@@ -68,7 +68,7 @@ public class InteractiveObject : MonoBehaviour
 
     private void Pickup()
     {
-        var playerPosition = GlobalData.Player.UnitProperties.thisTransform.position;
+        var playerPosition = GlobalData.Player.UnitProperties.ThisUnitTransform.position;
         var length = Vector3.Distance(playerPosition, Item.objectPosition);
 
         if (length > 7)

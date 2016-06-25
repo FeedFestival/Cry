@@ -154,7 +154,7 @@ public class Table : MonoBehaviour
         Unit.UnitFeetState = UnitFeetState.OnTable;
 
         // this is set so we replicate the behaviour of when we climb the table for the first time.
-        Unit.UnitActionHandler.curentActionType = ActionType.TableClimb;
+        Unit.UnitActionHandler.CurentActionType = ActionType.TableClimb;
 
         TableProperties.Table_Top_Collider.gameObject.SetActive(true);
         TableStaticAnimator.transform.localPosition = Vector3.zero;

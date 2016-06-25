@@ -12,14 +12,11 @@ public class UnitTarget : MonoBehaviour
     public Transform thisTransform;
 
     // Use this for initialization
-    public void Initialize(string Name, Unit unit)
+    public void Initialize(Unit unit)
     {
         this.Unit = unit;
 
         thisTransform = this.transform;
-
-        thisTransform.gameObject.name = Unit.gameObject.name + "Target";
-        thisTransform.gameObject.layer = 11;
     }
 
     void OnTriggerEnter(Collider foreignObjectHit)

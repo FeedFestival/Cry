@@ -4,15 +4,13 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Fighter
-  - TEAM1
-  - TEAM2
   - Enviorment
   - Map
   - Table
   - Item
   - WallCut
   - Vision
+  - Enemy
   layers:
   - Default
   - TransparentFX

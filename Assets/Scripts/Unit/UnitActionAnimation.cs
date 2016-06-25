@@ -55,29 +55,29 @@ public class UnitActionAnimation : MonoBehaviour
     {
         yield return new WaitForSeconds(animTime);
 
-        switch (Unit.UnitActionHandler.curentActionType)
+        switch (Unit.UnitActionHandler.CurentActionType)
         {
             case ActionType.Ladder:
 
                 if (CurrentAction.ExitAction)
-                    Unit.UnitBasicAnimation.PlayIdle();
+                    Unit.UnitBasicAnimation.Play(UnitPrimaryState.Idle, true);
                 if (CurrentAction.IsLastAction)
                     PlayAnimation(new LadderPath { Played = false, LadderAnimation = LadderAnimations.Idle_Ladder });    // OVERKILL
-
                 break;
 
             case ActionType.ChairClimb:
                 break;
+
             case ActionType.ChairGrab:
                 break;
+
             case ActionType.LedgeClimb:
 
-                Unit.UnitBasicAnimation.PlayIdle();
-
+                Unit.UnitBasicAnimation.Play(UnitPrimaryState.Idle, true);
                 break;
 
             default:
-                Unit.UnitBasicAnimation.PlayIdle();
+                Unit.UnitBasicAnimation.Play(UnitPrimaryState.Idle, true);
                 break;
         }
     }

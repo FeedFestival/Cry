@@ -52,7 +52,7 @@ public class DoorActionHandler : MonoBehaviour
 
     public void CalculateStartPoint()
     {
-        var playerPos = GlobalData.Player.UnitProperties.thisTransform.position;
+        var playerPos = GlobalData.Player.UnitProperties.ThisUnitTransform.position;
 
         float[] distancesLadder = new float[2];
         distancesLadder[(int)DoorStartPoint.front] = Vector3.Distance(playerPos, Door.front.position);

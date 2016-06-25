@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using Assets.Scripts.Types;
 
 public class SceneManager : MonoBehaviour
@@ -9,13 +10,23 @@ public class SceneManager : MonoBehaviour
 
     public Unit Player;
 
+    public List<Unit> Enemies;
+
     // The only awake function in the game !!
     void Awake()
     {
         GlobalData.SceneManager = this;
 
         GlobalData.Player = Player;
-        Player.Initialize();
+        Player.Initialize(UnitType.Player);
+
+        if (Enemies != null && Enemies.Count > 0)
+        {
+            foreach (Unit enemy in Enemies)
+            {
+                enemy.Initialize(UnitType.Enemy);
+            }
+        }
 
         GlobalData.CameraControl = Camera.main.GetComponent<CameraControl>();
         GlobalData.CameraControl.Initialize();

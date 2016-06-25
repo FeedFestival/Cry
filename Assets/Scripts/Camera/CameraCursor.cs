@@ -62,8 +62,7 @@ public class CameraCursor : MonoBehaviour
     {
         if (lastCursor != CursorType.None)
         {
-            GUI.DrawTexture(new Rect(Event.current.mousePosition.x - cursorSizeX / 2, Event.current.mousePosition.y - cursorSizeY / 2, cursorSizeX, cursorSizeY)
-                            , curentCursor);
+            GUI.DrawTexture(new Rect(Event.current.mousePosition.x - cursorSizeX / 2.0f, Event.current.mousePosition.y - cursorSizeY / 2.0f, cursorSizeX, cursorSizeY), curentCursor);
         }
         if (drawInventoryItem && showItemInInventory == false)
         {

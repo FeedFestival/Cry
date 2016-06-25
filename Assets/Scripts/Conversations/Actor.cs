@@ -53,13 +53,11 @@ public class Actor : MonoBehaviour
 
     public void InitDialogBox(DialogBoxType boxType)
     {
-        int dialogTextCount = 0;
-        GameObject targetPrefab = new GameObject();
-
-        targetPrefab = Resources.Load(targetPrefabString) as GameObject;
+        var dialogTextCount = 0;
+        var targetPrefab = Resources.Load(targetPrefabString) as GameObject;
 
         if (thisTransform == null)
-            thisTransform = this.transform;
+            thisTransform = transform;
 
         var createdPrefab = (GameObject)Instantiate(targetPrefab, thisTransform.position + new Vector3(0, 1.5f, 0), Quaternion.identity);
 

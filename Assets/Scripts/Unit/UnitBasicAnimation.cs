@@ -4,33 +4,37 @@ using Assets.Scripts.Types;
 
 public class UnitBasicAnimation : MonoBehaviour
 {
-    private Unit Unit;
+    private Unit _unit;
 
     // Use this for initialization
     public void Initialize(Unit unit)
     {
-        Unit = unit;
+        _unit = unit;
 
         SetupAnimations();
     }
 
-    public void PlayIdle()
+    public void Play(UnitPrimaryState unitPrimaryState, bool forcePlay = false)
     {
-        Unit.UnitAnimator.Play(Unit.UnitProperties.ArmatureName + UnitPrimaryState.Idle);
-    }
-
-    public void GoWalk()
-    {
-        Unit.UnitAnimator.CrossFade(Unit.UnitProperties.ArmatureName + UnitPrimaryState.Walk);
-    }
-    public void GoIdle()
-    {
-        Unit.UnitAnimator.CrossFade(Unit.UnitProperties.ArmatureName + UnitPrimaryState.Idle);
+        if (_unit.UnitAnimator)
+        {
+            if (forcePlay)
+                _unit.UnitAnimator.Play(_unit.UnitProperties.ArmatureName + unitPrimaryState);
+            else
+                _unit.UnitAnimator.CrossFade(_unit.UnitProperties.ArmatureName + unitPrimaryState);
+            return;
+        }
+        Debug.LogError("Can't play animation ["+ unitPrimaryState + "] for Unit(" + _unit.gameObject.name + "), error: There is no Model(UnitAnimator) for this Unit. [" + _unit.UnitAnimator + "]");
     }
 
     void SetupAnimations()
     {
-        Unit.UnitAnimator[UnitPrimaryState.Idle.ToString()].wrapMode = WrapMode.Loop;
-        Unit.UnitAnimator[UnitPrimaryState.Walk.ToString()].wrapMode = WrapMode.Loop;
+        if (_unit.UnitAnimator)
+        {
+            _unit.UnitAnimator[UnitPrimaryState.Idle.ToString()].wrapMode = WrapMode.Loop;
+            _unit.UnitAnimator[UnitPrimaryState.Walk.ToString()].wrapMode = WrapMode.Loop;
+            return;
+        }
+        Debug.LogError("Can't setup animations for Unit(" + _unit.gameObject.name + "). error: There is no Model(UnitAnimator) for this Unit. [" + _unit.UnitAnimator + "]");
     }
 }

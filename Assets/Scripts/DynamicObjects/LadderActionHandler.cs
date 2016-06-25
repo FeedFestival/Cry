@@ -57,7 +57,7 @@ public class LadderActionHandler : MonoBehaviour
 
     public void CalculateStartPoint()
     {
-        var playerPos = this.Unit.UnitProperties.thisTransform.position;
+        var playerPos = this.Unit.UnitProperties.ThisUnitTransform.position;
 
         float[] distancesLadder = new float[2];
         distancesLadder[(int)LadderStartPoint.Bottom] = Vector3.Distance(playerPos, this.Ladder.StartPoint_Bottom.position);
@@ -84,7 +84,7 @@ public class LadderActionHandler : MonoBehaviour
             Ray CircleRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(CircleRay, out CircleHit, 100))
             {
-                var unitPosition = Mathf.RoundToInt(this.Unit.UnitProperties.thisTransform.position.y);
+                var unitPosition = Mathf.RoundToInt(this.Unit.UnitProperties.ThisUnitTransform.position.y);
                 var AimCircle_YPosition = Mathf.RoundToInt(CircleHit.point.y);
 
                 if (AimCircle_YPosition < unitPosition)

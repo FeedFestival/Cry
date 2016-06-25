@@ -42,7 +42,7 @@ public class TableController : MonoBehaviour
 
         thisTransform.eulerAngles = rotation;
 
-        Unit.UnitProperties.thisTransform.parent = thisTransform;
+        Unit.UnitProperties.ThisUnitTransform.parent = thisTransform;
         Table.TableProperties.thisTransform.parent = thisTransform;
 
         Transform[] allChildren = GetComponentsInChildren<Transform>();
@@ -72,7 +72,7 @@ public class TableController : MonoBehaviour
 
     public void DestroyInstance()
     {
-        Unit.UnitProperties.thisTransform.parent = null;
+        Unit.UnitProperties.ThisUnitTransform.parent = null;
         Table.TableProperties.thisTransform.parent = null;
 
         Destroy(thisTransform.gameObject);

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 using UnityEngine.UI;
 using Assets.Scripts.Types;
 using UnityEngine.EventSystems;
@@ -132,7 +133,7 @@ public class HUD : MonoBehaviour
             }
             else
             {
-                if (GlobalData.Player != null && GlobalData.Player.hasBackPack)
+                if (GlobalData.Player != null && GlobalData.Player.MainCharacterProperties.Contains(MainCharacterProperties.HasBackPack))
                 {
                     _inventoryGroup = InventoryGroup.Backpack;
                     hl = 8;

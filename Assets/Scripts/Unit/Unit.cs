@@ -18,9 +18,12 @@ public class Unit : MonoBehaviour
     [Header("Player States")]
     //  --------------------------------------------------------------------------------
 
+    [HideInInspector]
+    public UnitType UnitType;
+
     public PlayerActionInMind PlayerActionInMind;
 
-    public UnitPrimaryState _unitPrimaryState;
+    private UnitPrimaryState _unitPrimaryState;
     public UnitPrimaryState UnitPrimaryState
     {
         get
@@ -44,7 +47,7 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public UnitActionState _unitActionState;
+    private UnitActionState _unitActionState;
     public UnitActionState UnitActionState
     {
         get
@@ -57,16 +60,16 @@ public class Unit : MonoBehaviour
             switch (UnitActionState)
             {
                 case UnitActionState.None:
-                    this.UnitFeetState = UnitFeetState.OnGround;
+                    UnitFeetState = UnitFeetState.OnGround;
                     break;
                 case UnitActionState.ClimbingLadder:
-                    this.UnitFeetState = UnitFeetState.OnLadder;
+                    UnitFeetState = UnitFeetState.OnLadder;
                     break;
                 case UnitActionState.ClimbingChair:
-                    this.UnitFeetState = UnitFeetState.OnChair;
+                    UnitFeetState = UnitFeetState.OnChair;
                     break;
                 case UnitActionState.ClimbingWall:
-                    this.UnitFeetState = UnitFeetState.InAir;
+                    UnitFeetState = UnitFeetState.InAir;
                     break;
                 default:
                     break;
@@ -76,16 +79,18 @@ public class Unit : MonoBehaviour
     public UnitActionInMind UnitActionInMind;
     public UnitFeetState UnitFeetState;
 
-    public bool isMouseOverMap;
+    public bool IsMouseOverMap;
 
+    [HideInInspector]
+    public MainCharacterProperties[] MainCharacterProperties;
     // This variable tell how much inventory space does the player have;
-    public bool hasBackPack;
-    public bool hasJacket;
 
     //[HideInInspector]
     //public AIPath AIPath;
     [HideInInspector]
     public UnitController UnitController;
+    [HideInInspector]
+    public NavMeshAgent NavMeshAgent;
     [HideInInspector]
     public UnitActionAnimation UnitActionAnimation;
     [HideInInspector]
@@ -98,7 +103,8 @@ public class Unit : MonoBehaviour
     [HideInInspector]
     public UnitInventory UnitInventory;
 
-    [HideInInspector]
+    [Header("Model")]
+    //  --------------------------------------------------------------------------------
     public Animation UnitAnimator;
 
     [Header("Actions Connections")]
@@ -112,53 +118,79 @@ public class Unit : MonoBehaviour
     public Door Door;
 
     // Use this for initialization
-    public void Initialize()
+    public void Initialize(UnitType unitType)
     {
-        // State Initialization
+        UnitType = unitType;
         UnitPrimaryState = UnitPrimaryState.Idle;
-
         UnitActionState = UnitActionState.None;
         UnitActionInMind = UnitActionInMind.None;
-
         UnitFeetState = UnitFeetState.OnGround;
 
-        // Scripts initialization
-        //AIPath = this.GetComponent<AIPath>();
+        transform.gameObject.AddComponent<NavMeshAgent>();
+        transform.gameObject.AddComponent<UnitProperties>();
+        transform.gameObject.AddComponent<UnitController>();
+        transform.gameObject.AddComponent<UnitBasicAnimation>();
 
-        UnitInventory = this.GetComponent<UnitInventory>();
-        if (UnitInventory)
-            UnitInventory.Initialize(this);
+        UnitController = GetComponent<UnitController>();
+        UnitController.Initialize(this);
 
-        UnitController = this.GetComponent<UnitController>();
-        if (UnitController)
-            UnitController.Initialize(this);
+        NavMeshAgent = GetComponent<NavMeshAgent>();
+        SetupNavMeshAgen();
 
-        UnitActionHandler = this.GetComponent<UnitActionHandler>();
-        if (UnitActionHandler)
-            UnitActionHandler.Initialize(this);
+        UnitProperties = GetComponent<UnitProperties>();
+        UnitProperties.Initialize(this);
 
-        UnitProperties = this.GetComponent<UnitProperties>();
-        if (UnitProperties)
-            UnitProperties.Initialize(this);
+        UnitBasicAnimation = GetComponent<UnitBasicAnimation>();
+        UnitBasicAnimation.Initialize(this);
 
-        UnitBasicAnimation = this.GetComponent<UnitBasicAnimation>();
-        if (UnitBasicAnimation)
-            UnitBasicAnimation.Initialize(this);
+        switch (UnitType)
+        {
+            case UnitType.Player:
+                transform.gameObject.AddComponent<UnitInventory>();
+                transform.gameObject.AddComponent<UnitActionHandler>();
+                transform.gameObject.AddComponent<UnitActionAnimation>();
 
-        UnitActionAnimation = this.GetComponent<UnitActionAnimation>();
-        if (UnitActionAnimation)
-            UnitActionAnimation.Initialize(this);
+                UnitInventory = GetComponent<UnitInventory>();
+                UnitInventory.Initialize(this);
+
+                UnitActionHandler = GetComponent<UnitActionHandler>();
+                UnitActionHandler.Initialize(this);
+
+                UnitActionAnimation = GetComponent<UnitActionAnimation>();
+                UnitActionAnimation.Initialize(this);
+                break;
+
+            case UnitType.Enemy:
+
+                break;
+        }
 
         UnitController.StopMoving();
     }
 
-    public void SetTeam(bool controlledByAI = false)
+    private void SetupNavMeshAgen()
     {
-        UnitProperties.AIControlled = controlledByAI;
+        NavMeshAgent.updateRotation = false;
+
+        NavMeshAgent.radius = 0.3f;
+        NavMeshAgent.height = 2.0f;
+        NavMeshAgent.baseOffset = 0;
+
+        NavMeshAgent.speed = 1.8f;
+        NavMeshAgent.angularSpeed = 999999;
+        NavMeshAgent.acceleration = 44;
+        NavMeshAgent.stoppingDistance = 0;
+        NavMeshAgent.autoBraking = false;
+
+        NavMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+        NavMeshAgent.avoidancePriority = 50;
+
+        NavMeshAgent.autoTraverseOffMeshLink = true;
+        NavMeshAgent.autoRepath = true;
     }
 
     public void ActivateTarget(bool value)
     {
-        UnitProperties.thisUnitTarget.gameObject.SetActive(value);
+        UnitProperties.ThisUnitTarget.gameObject.SetActive(value);
     }
 }

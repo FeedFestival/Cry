@@ -24,6 +24,7 @@ public class Vision : MonoBehaviour
 
     void OnTriggerEnter(Collider unitObject)
     {
+        Debug.Log(unitObject);
         ShowWall(false);
         parentVision.enabled = true;
     }

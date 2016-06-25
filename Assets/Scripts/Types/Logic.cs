@@ -42,7 +42,17 @@ namespace Assets.Scripts.Types
 
     #endregion
 
+    public enum UnitType
+    {
+        Player, Enemy
+    }
+
     #region Player [State]
+
+    public enum MainCharacterProperties
+    {
+        HasBackPack, HasJacket
+    }
 
     public enum PlayerActionInMind
     {
@@ -428,22 +438,28 @@ namespace Assets.Scripts.Types
             return new Vector3(x, y, z);
         }
 
-        public static GameObject InstantiateEdgeUI(Vector3 position, Vector3 rotation, Vector3 scale, string name)
+        //public static GameObject InstantiateEdgeUI(Vector3 position, Vector3 rotation, Vector3 scale, string name)
+        //{
+        //    var _object = GameObject.Instantiate(Resources.Load("Prefabs/UI/WallClimb"), position, Quaternion.identity) as GameObject;
+
+        //    _object.name = name;
+        //    _object.transform.eulerAngles = rotation;
+
+        //    if (scale != Vector3.zero)
+        //        _object.transform.localScale = scale;
+
+        //    return _object;
+        //}
+
+        public static GameObject CreateFromPrefab(string resourcePath, Vector3 originPosition)
         {
-            var _object = GameObject.Instantiate(Resources.Load("Prefabs/UI/WallClimb"), position, Quaternion.identity) as GameObject;
-
-            _object.name = name;
-            _object.transform.eulerAngles = rotation;
-
-            if (scale != Vector3.zero)
-                _object.transform.localScale = scale;
-
-            return _object;
+            var targetPrefab = Resources.Load(resourcePath) as GameObject;
+            return GameObject.Instantiate(targetPrefab, originPosition, Quaternion.identity) as GameObject;
         }
 
-        public static Vector3 GetDirection(Vector3 v_From, Vector3 v_To)
+        public static Vector3 GetDirection(Vector3 vectorFrom, Vector3 vectorTo)
         {
-            return v_To - v_From;
+            return vectorTo - vectorFrom;
         }
 
         public static Quaternion SmoothLook(Quaternion rotation, Vector3 newDirection, float speed)
@@ -453,17 +469,17 @@ namespace Assets.Scripts.Types
 
         public static Vector3 GetPointHitAtMousePosition(Collider collider = null)
         {
-            RaycastHit Hit;
-            Ray Ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (collider)
             {
-                if (collider.Raycast(Ray, out Hit, 100))
-                    return new Vector3(Mathf.Round(Hit.point.x * 100f) / 100f, Mathf.Round(Hit.point.y * 100f) / 100f, Mathf.Round(Hit.point.z * 100f) / 100f);
+                if (collider.Raycast(ray, out hit, 100))
+                    return new Vector3(Mathf.Round(hit.point.x * 100f) / 100f, Mathf.Round(hit.point.y * 100f) / 100f, Mathf.Round(hit.point.z * 100f) / 100f);
             }
             else
             {
-                if (Physics.Raycast(Ray, out Hit, 100))
-                    return new Vector3(Mathf.Round(Hit.point.x * 100f) / 100f, Mathf.Round(Hit.point.y * 100f) / 100f, Mathf.Round(Hit.point.z * 100f) / 100f);
+                if (Physics.Raycast(ray, out hit, 100))
+                    return new Vector3(Mathf.Round(hit.point.x * 100f) / 100f, Mathf.Round(hit.point.y * 100f) / 100f, Mathf.Round(hit.point.z * 100f) / 100f);
             }
             return Vector3.zero;
         }

@@ -2,20 +2,25 @@
 using System.Collections;
 using Assets.Scripts.Types;
 
-public class UnitProperties : MonoBehaviour {
+public class UnitProperties : MonoBehaviour
+{
+    private Unit _unit;
 
-    private Unit Unit;
-
-    [HideInInspector]
-    public bool AIControlled;   // TO_DO
     [HideInInspector]
     public bool ControllerFollowRoot;
 
     [Header("Main Attributes")]
-    public float MovementSpeed;
 
-    public float AtackSpeed_Impact;
-    public float AtackSpeed_ParriedOrComplete;
+    private float _movementSpeed;
+    public float MovementSpeed
+    {
+        get { return _movementSpeed; }
+        set
+        {
+            _movementSpeed = value;
+            _unit.NavMeshAgent.speed = _movementSpeed;
+        }
+    }
 
     public float DamageRecoverySpeed;
     public float DefenseSpeed;
@@ -29,7 +34,7 @@ public class UnitProperties : MonoBehaviour {
     public string Tag;
 
     [HideInInspector]
-    public UnitTarget thisUnitTarget;
+    public UnitTarget ThisUnitTarget;
 
     private Transform _root;
     [HideInInspector]
@@ -42,23 +47,15 @@ public class UnitProperties : MonoBehaviour {
         set
         {
             _root = value;
-            if (Unit.UnitActionAnimation)
+            if (_unit.UnitActionAnimation)
             {
-                if (_root != null)
-                {
-                    this.ControllerFollowRoot = true;
-                }
-                else
-                {
-                    //_root = OriginalRoot;
-                    this.ControllerFollowRoot = false;
-                }
+                ControllerFollowRoot = (_root != null) ? true : false;
             }
         }
     }
 
     [HideInInspector]
-    public Transform thisTransform;
+    public Transform ThisUnitTransform;
 
     // The feet collider. we will disable it until we get off the event
     [HideInInspector]
@@ -66,57 +63,33 @@ public class UnitProperties : MonoBehaviour {
 
     public void Initialize(Unit unit)
     {
-        Unit = unit;
+        _unit = unit;
 
-        MovementSpeed = 2f;
-        AtackSpeed_Impact = 0.5f;
-        AtackSpeed_ParriedOrComplete = 0.5f;
+        MovementSpeed = 1.8f;
+        
+        Tag = _unit.UnitType.ToString();
 
-        //Unit.AIPath.speed = this.MovementSpeed;
+        ThisUnitTransform = transform;
+        ThisUnitTransform.tag = Tag;
 
-        // Transforms initialization
+        ThisUnitTarget = Logic.CreateFromPrefab("Prefabs/UnitTarget", ThisUnitTransform.position).GetComponent<UnitTarget>();
+        ThisUnitTarget.gameObject.name = _unit.gameObject.name + "Target";
+        ThisUnitTarget.gameObject.layer = 11;
 
-        this.Tag = "Player"; // HARD_CODED
+        FeetCollider = Logic.CreateFromPrefab("Prefabs/3DComponents/FeetCollider", ThisUnitTransform.position);
+        FeetCollider.tag = Tag;
+        FeetCollider.name = "FeetCollider";
+        FeetCollider.layer = 12;
+        FeetCollider.transform.parent = ThisUnitTransform;
+        FeetCollider.transform.position = new Vector3(FeetCollider.transform.position.x, FeetCollider.transform.position.y + 0.2f, FeetCollider.transform.position.z);
 
-        Transform[] allChildren = this.GetComponentsInChildren<Transform>();
-        foreach (Transform child in allChildren)
-        {
-            switch (child.gameObject.name)
-            {
-                case "Root":
-                    //Root = child;
-                    //OriginalRoot = Root;
-                    break;
-                case "FeetCollider":    // HARD_CODED
-                    child.transform.tag = Tag;
-                    FeetCollider = child.gameObject;
-                    FeetCollider.layer = 12;
-                    break;
-                case "MC":   // HARD_CODED
-                    Unit.UnitAnimator = child.gameObject.GetComponent<Animation>();
-                    break;
-                default:
-                    break;
-            }
-        }
-        thisTransform = this.transform;
-        thisTransform.tag = Tag;
+        var visionCollider = Logic.CreateFromPrefab("Prefabs/3DComponents/FeetCollider", ThisUnitTransform.position);
+        visionCollider.name = "VisionCollider";
+        visionCollider.layer = 0;
+        visionCollider.transform.parent = ThisUnitTransform;
+        visionCollider.transform.position = new Vector3(visionCollider.transform.position.x, visionCollider.transform.position.y - 0.2f, visionCollider.transform.position.z);
+        visionCollider.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
 
-        Unit.UnitAnimator["Walk"].wrapMode = WrapMode.Loop;
-        Unit.UnitAnimator["Idle"].wrapMode = WrapMode.Loop;
-        Unit.UnitAnimator[LadderAnimations.Idle_Ladder.ToString()].wrapMode = WrapMode.Loop;
-
-        //  Target initialization
-        CreateTarget();
-        thisUnitTarget.Initialize(thisTransform.gameObject.name, Unit);
-    }
-
-    private Transform CreateTarget()
-    {
-        var targetPrefab = Resources.Load("Prefabs/UnitTarget") as GameObject;
-        var createdTarget = (GameObject)Instantiate(targetPrefab, thisTransform.position, Quaternion.identity);
-        thisUnitTarget = createdTarget.GetComponent<UnitTarget>();
-
-        return createdTarget.transform;
+        ThisUnitTarget.Initialize(_unit);
     }
 }

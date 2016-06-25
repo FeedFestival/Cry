@@ -13,7 +13,7 @@ public class MapInputTrigger : MonoBehaviour
 
     void OnMouseEnter()
     {
-        GlobalData.Player.isMouseOverMap = true;
+        GlobalData.Player.IsMouseOverMap = true;
         if (GlobalData.Player != null && GlobalData.Player.UnitPrimaryState == UnitPrimaryState.Busy)
         {
             if (GlobalData.Player.UnitActionState == UnitActionState.ClimbingLadder)
@@ -65,7 +65,7 @@ public class MapInputTrigger : MonoBehaviour
                     var pos = Logic.GetPointHitAtMousePosition(this.gameObject.GetComponent<Collider>());
                     if (pos != Vector3.zero)
                     {
-                        GlobalData.Player.UnitProperties.thisUnitTarget.thisTransform.position = GlobalData.Player.Table.TableController.MoveTable();
+                        GlobalData.Player.UnitProperties.ThisUnitTarget.thisTransform.position = GlobalData.Player.Table.TableController.MoveTable();
                         GlobalData.Player.ActivateTarget(true);
                     }
                 }
@@ -78,7 +78,7 @@ public class MapInputTrigger : MonoBehaviour
                 var pos = Logic.GetPointHitAtMousePosition(this.gameObject.GetComponent<Collider>());
                 if (pos != Vector3.zero)
                 {
-                    GlobalData.Player.UnitProperties.thisUnitTarget.thisTransform.position = pos;
+                    GlobalData.Player.UnitProperties.ThisUnitTarget.thisTransform.position = pos;
                     GlobalData.Player.UnitController.GoToTarget();
                 }
             }
@@ -92,7 +92,7 @@ public class MapInputTrigger : MonoBehaviour
 
     void OnMouseExit()
     {
-        GlobalData.Player.isMouseOverMap = false;
+        GlobalData.Player.IsMouseOverMap = false;
         GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
     }
 }

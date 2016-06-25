@@ -6,18 +6,15 @@ using Assets.Scripts.Types;
 
 public class UnitActionHandler : MonoBehaviour
 {
-    // Boolean determing if we want to see stuff in the console.
-    public bool debuging;
+    private Unit _unit;
 
-    private Unit Unit;
-
-    public ActionType curentActionType;
+    public ActionType CurentActionType;
 
     // Use this for initialization
     public void Initialize(Unit unit)
     {
-        Unit = unit;
-        curentActionType = ActionType.None;
+        _unit = unit;
+        CurentActionType = ActionType.None;
     }
 
     public void SetAction(GameObject worldObject, ActionType actionType)
@@ -26,60 +23,60 @@ public class UnitActionHandler : MonoBehaviour
         {
             case ActionType.Ladder:
 
-                if (Unit.UnitActionState == UnitActionState.None)
+                if (_unit.UnitActionState == UnitActionState.None)
                 {
-                    curentActionType = actionType;
+                    CurentActionType = actionType;
 
-                    if (!Unit.Ladder)
-                        Unit.Ladder = worldObject.GetComponent<Ladder>();
+                    if (!_unit.Ladder)
+                        _unit.Ladder = worldObject.GetComponent<Ladder>();
 
-                    Unit.Ladder.LadderActionHandler.CalculateStartPoint();
+                    _unit.Ladder.LadderActionHandler.CalculateStartPoint();
                     this.SetPathToStartPoint();
 
-                    Unit.Ladder.LadderActionHandler.CalculateLadderPath(Unit.Ladder.LadderTriggerInput);
+                    _unit.Ladder.LadderActionHandler.CalculateLadderPath(_unit.Ladder.LadderTriggerInput);
                 }
-                else if (Unit.UnitActionState == UnitActionState.ClimbingLadder)
+                else if (_unit.UnitActionState == UnitActionState.ClimbingLadder)
                 {
-                    Unit.Ladder.LadderActionHandler.CalculateLadderPath(Unit.Ladder.LadderTriggerInput, true);
+                    _unit.Ladder.LadderActionHandler.CalculateLadderPath(_unit.Ladder.LadderTriggerInput, true);
                 }
 
                 break;
 
             case ActionType.ChairClimb:
 
-                curentActionType = actionType;
-                if (!Unit.Chair)
-                    Unit.Chair = worldObject.GetComponent<Chair>();
+                CurentActionType = actionType;
+                if (!_unit.Chair)
+                    _unit.Chair = worldObject.GetComponent<Chair>();
 
-                Unit.Chair.ChairActionHandler.CalculateStartPoint();
+                _unit.Chair.ChairActionHandler.CalculateStartPoint();
 
                 break;
             case ActionType.LedgeClimb:
 
-                curentActionType = actionType;
+                CurentActionType = actionType;
 
-                if (!Unit.Ledge)
-                    Unit.Ledge = worldObject.GetComponent<Ledge>();
+                if (!_unit.Ledge)
+                    _unit.Ledge = worldObject.GetComponent<Ledge>();
 
                 SetPathToStartPoint();
 
                 break;
             case ActionType.TableClimb:
 
-                curentActionType = actionType;
+                CurentActionType = actionType;
 
-                if (!Unit.Table)
-                    Unit.Table = worldObject.GetComponent<Table>();
+                if (!_unit.Table)
+                    _unit.Table = worldObject.GetComponent<Table>();
 
                 SetPathToStartPoint();
 
                 break;
             case ActionType.GrabTable:
 
-                curentActionType = actionType;
+                CurentActionType = actionType;
 
-                if (!Unit.Table)
-                    Unit.Table = worldObject.GetComponent<Table>();
+                if (!_unit.Table)
+                    _unit.Table = worldObject.GetComponent<Table>();
 
                 SetPathToStartPoint();
 
@@ -87,10 +84,10 @@ public class UnitActionHandler : MonoBehaviour
 
             case ActionType.PickupObject:
 
-                curentActionType = actionType;
+                CurentActionType = actionType;
 
-                if (Unit.Item == null)
-                    Unit.Item = worldObject.GetComponent<InteractiveObject>().Item;
+                if (_unit.Item == null)
+                    _unit.Item = worldObject.GetComponent<InteractiveObject>().Item;
 
                 SetPathToStartPoint();
 
@@ -98,9 +95,9 @@ public class UnitActionHandler : MonoBehaviour
 
             case ActionType.OpenCloseDoor:
 
-                curentActionType = actionType;
-                if (!Unit.Door)
-                    Unit.Door = worldObject.GetComponent<Door>();
+                CurentActionType = actionType;
+                if (!_unit.Door)
+                    _unit.Door = worldObject.GetComponent<Door>();
 
                 SetPathToStartPoint();
 
@@ -113,23 +110,23 @@ public class UnitActionHandler : MonoBehaviour
 
     public void SetPathToStartPoint()
     {
-        switch (curentActionType)
+        switch (CurentActionType)
         {
             case ActionType.None:
                 break;
             case ActionType.Ladder:
 
-                this.Unit.UnitActionInMind = UnitActionInMind.ClimbingLadder;
-                switch (Unit.Ladder.LadderStartPoint)
+                this._unit.UnitActionInMind = UnitActionInMind.ClimbingLadder;
+                switch (_unit.Ladder.LadderStartPoint)
                 {
                     case LadderStartPoint.Bottom:
 
-                        this.Unit.UnitController.SetPathToTarget(Unit.Ladder.StartPoint_Bottom.position);
+                        this._unit.UnitController.SetPathToTarget(_unit.Ladder.StartPoint_Bottom.position);
                         break;
 
                     case LadderStartPoint.Level2_Top:
 
-                        this.Unit.UnitController.SetPathToTarget(Unit.Ladder.StartPoint_Level2_Top.position);
+                        this._unit.UnitController.SetPathToTarget(_unit.Ladder.StartPoint_Level2_Top.position);
                         break;
 
                     default: break;
@@ -137,27 +134,27 @@ public class UnitActionHandler : MonoBehaviour
                 break;
             case ActionType.ChairClimb:
 
-                this.Unit.UnitActionInMind = UnitActionInMind.ClimbingChair;
-                switch (Unit.Chair.ChairStartPoint)
+                this._unit.UnitActionInMind = UnitActionInMind.ClimbingChair;
+                switch (_unit.Chair.ChairStartPoint)
                 {
                     case ChairStartPoint.Front:
 
-                        this.Unit.UnitController.SetPathToTarget(Unit.Chair.StartPoint_Front.position);
+                        this._unit.UnitController.SetPathToTarget(_unit.Chair.StartPoint_Front.position);
                         break;
 
                     case ChairStartPoint.Left:
 
-                        this.Unit.UnitController.SetPathToTarget(Unit.Chair.StartPoint_Left.position);
+                        this._unit.UnitController.SetPathToTarget(_unit.Chair.StartPoint_Left.position);
                         break;
 
                     case ChairStartPoint.Right:
 
-                        this.Unit.UnitController.SetPathToTarget(Unit.Chair.StartPoint_Right.position);
+                        this._unit.UnitController.SetPathToTarget(_unit.Chair.StartPoint_Right.position);
                         break;
 
                     case ChairStartPoint.Back:
 
-                        this.Unit.UnitController.SetPathToTarget(Unit.Chair.StartPoint_Back.position);
+                        this._unit.UnitController.SetPathToTarget(_unit.Chair.StartPoint_Back.position);
                         break;
 
                     default: break;
@@ -167,32 +164,32 @@ public class UnitActionHandler : MonoBehaviour
                 break;
             case ActionType.LedgeClimb:
 
-                this.Unit.UnitActionInMind = UnitActionInMind.ClimbingWall;
-                this.Unit.UnitController.SetPathToTarget(Unit.Ledge.StartPointPosition);
+                this._unit.UnitActionInMind = UnitActionInMind.ClimbingWall;
+                this._unit.UnitController.SetPathToTarget(_unit.Ledge.StartPointPosition);
                 break;
 
             case ActionType.TableClimb:
 
-                this.Unit.UnitActionInMind = UnitActionInMind.ClimbTable;
-                this.Unit.UnitController.SetPathToTarget(Unit.Table.TableProperties.StartPointPosition);
+                this._unit.UnitActionInMind = UnitActionInMind.ClimbTable;
+                this._unit.UnitController.SetPathToTarget(_unit.Table.TableProperties.StartPointPosition);
                 break;
 
             case ActionType.GrabTable:
 
-                this.Unit.UnitActionInMind = UnitActionInMind.MovingTable;
-                this.Unit.UnitController.SetPathToTarget(Unit.Table.TableProperties.StartPointPosition);
+                this._unit.UnitActionInMind = UnitActionInMind.MovingTable;
+                this._unit.UnitController.SetPathToTarget(_unit.Table.TableProperties.StartPointPosition);
                 break;
 
             case ActionType.PickupObject:
 
-                this.Unit.UnitActionInMind = UnitActionInMind.PickupObject;
-                this.Unit.UnitController.SetPathToTarget(Unit.Item.StartPointPosition);
+                this._unit.UnitActionInMind = UnitActionInMind.PickupObject;
+                this._unit.UnitController.SetPathToTarget(_unit.Item.StartPointPosition);
                 break;
 
             case ActionType.OpenCloseDoor:
 
-                this.Unit.UnitActionInMind = UnitActionInMind.OpenCloseDoor;
-                this.Unit.UnitController.SetPathToTarget(Unit.Door.StartPointPosition);
+                this._unit.UnitActionInMind = UnitActionInMind.OpenCloseDoor;
+                this._unit.UnitController.SetPathToTarget(_unit.Door.StartPointPosition);
                 break;
 
             default:
@@ -202,68 +199,68 @@ public class UnitActionHandler : MonoBehaviour
 
     public void StartAction()
     {
-        Unit.UnitPrimaryState = UnitPrimaryState.Busy;
-        Unit.UnitActionInMind = UnitActionInMind.None;
+        _unit.UnitPrimaryState = UnitPrimaryState.Busy;
+        _unit.UnitActionInMind = UnitActionInMind.None;
 
-        switch (curentActionType)
+        switch (CurentActionType)
         {
             case ActionType.Ladder:
 
-                Unit.UnitActionState = UnitActionState.ClimbingLadder;
-                Unit.Ladder.LadderActionHandler.CalculateLadderCursor();   // DOUBLE_CHECK
+                _unit.UnitActionState = UnitActionState.ClimbingLadder;
+                _unit.Ladder.LadderActionHandler.CalculateLadderCursor();   // DOUBLE_CHECK
 
                 //  This also sets the Player to follow the pivot of the ladder to be guided throut the animation
-                Unit.UnitProperties.Root = Unit.Ladder.Root;
+                _unit.UnitProperties.Root = _unit.Ladder.Root;
 
-                Unit.Ladder.LadderActionHandler.PlayActionAnimation();
+                _unit.Ladder.LadderActionHandler.PlayActionAnimation();
                 break;
 
             case ActionType.ChairClimb:
 
-                Unit.UnitActionState = UnitActionState.ClimbingChair;
+                _unit.UnitActionState = UnitActionState.ClimbingChair;
 
-                Unit.UnitProperties.Root = Unit.Chair.Root;
+                _unit.UnitProperties.Root = _unit.Chair.Root;
 
                 break;
 
             case ActionType.LedgeClimb:
 
-                if (Unit.Table)
+                if (_unit.Table)
                 {
-                    Unit.Table.ExitTableAction(true);
+                    _unit.Table.ExitTableAction(true);
                 }
 
-                Unit.Ledge.Unit = Unit;
-                Unit.Ledge.ResetUI();
+                _unit.Ledge.Unit = _unit;
+                _unit.Ledge.ResetUI();
 
-                Unit.UnitActionState = UnitActionState.ClimbingWall;
+                _unit.UnitActionState = UnitActionState.ClimbingWall;
 
-                Unit.UnitProperties.Root = Unit.Ledge.Root;
+                _unit.UnitProperties.Root = _unit.Ledge.Root;
 
-                Unit.Ledge.LedgeActionHandler.PlayActionAnimation();
+                _unit.Ledge.LedgeActionHandler.PlayActionAnimation();
 
                 break;
 
             case ActionType.TableClimb:
 
-                Unit.UnitActionState = UnitActionState.ClimbingTable;
-                Unit.UnitActionInMind = UnitActionInMind.ClimbTable;
+                _unit.UnitActionState = UnitActionState.ClimbingTable;
+                _unit.UnitActionInMind = UnitActionInMind.ClimbTable;
 
-                Unit.UnitProperties.Root = Unit.Table.TableProperties.StaticRoot;
+                _unit.UnitProperties.Root = _unit.Table.TableProperties.StaticRoot;
 
-                Unit.Table.TableActionHandler.PlayActionAnimation(Unit);
+                _unit.Table.TableActionHandler.PlayActionAnimation(_unit);
 
                 break;
 
             case ActionType.GrabTable:
 
-                Unit.PlayerActionInMind = PlayerActionInMind.MovingTable;
-                Unit.UnitActionState = UnitActionState.MovingTable;
-                Unit.UnitActionInMind = UnitActionInMind.MovingTable;
+                _unit.PlayerActionInMind = PlayerActionInMind.MovingTable;
+                _unit.UnitActionState = UnitActionState.MovingTable;
+                _unit.UnitActionInMind = UnitActionInMind.MovingTable;
 
-                Unit.UnitProperties.Root = Unit.Table.TableProperties.StaticRoot;
+                _unit.UnitProperties.Root = _unit.Table.TableProperties.StaticRoot;
 
-                Unit.Table.TableActionHandler.PlayActionAnimation(Unit);
+                _unit.Table.TableActionHandler.PlayActionAnimation(_unit);
                 break;
 
             case ActionType.PickupObject:
@@ -271,33 +268,33 @@ public class UnitActionHandler : MonoBehaviour
                 // Play animation of picking up.
                 //-
 
-                var isRoom = Unit.UnitInventory.FindSpaceInInventory(Unit.Item, out Unit.Item);
+                var isRoom = _unit.UnitInventory.FindSpaceInInventory(_unit.Item, out _unit.Item);
 
                 if (isRoom)
                 {
-                    Debug.Log("Pickup Object");
+                    //Debug.Log("Pickup Object");
 
-                    Unit.Item = Items.CreateInventoryObject2D(Unit.Item);
-                    Unit.UnitInventory.PlaceInSpace();
+                    _unit.Item = Items.CreateInventoryObject2D(_unit.Item);
+                    _unit.UnitInventory.PlaceInSpace();
                 }
                 else
                 {
                     // open Inventory and try to switch places with an item.
-                    Unit.UnitInventory.InventoryObjectInHand = null;
-                    Debug.Log("NoSpace");
+                    _unit.UnitInventory.InventoryObjectInHand = null;
+                    //Debug.Log("NoSpace");
                 }
                 this.ExitCurentAction();
                 break;
 
             case ActionType.OpenCloseDoor:
 
-                Unit.PlayerActionInMind = PlayerActionInMind.OpenCloseDoor;
-                Unit.UnitActionState = UnitActionState.OpenCloseDoor;
-                Unit.UnitActionInMind = UnitActionInMind.OpenCloseDoor;
+                _unit.PlayerActionInMind = PlayerActionInMind.OpenCloseDoor;
+                _unit.UnitActionState = UnitActionState.OpenCloseDoor;
+                _unit.UnitActionInMind = UnitActionInMind.OpenCloseDoor;
 
-                Unit.UnitProperties.Root = Unit.Door.GetRoot();
+                _unit.UnitProperties.Root = _unit.Door.GetRoot();
 
-                Unit.Door.DoorActionHandler.PlayActionAnimation(Unit);
+                _unit.Door.DoorActionHandler.PlayActionAnimation(_unit);
                 break;
 
             default:
@@ -307,63 +304,63 @@ public class UnitActionHandler : MonoBehaviour
 
     public void ExitCurentAction(bool toAnotherAction = false)
     {
-        Unit.UnitPrimaryState = UnitPrimaryState.Idle;
-        Unit.UnitActionState = UnitActionState.None;
-        Unit.UnitActionInMind = UnitActionInMind.None;
+        _unit.UnitPrimaryState = UnitPrimaryState.Idle;
+        _unit.UnitActionState = UnitActionState.None;
+        _unit.UnitActionInMind = UnitActionInMind.None;
 
-        Unit.UnitController.ExitAction(toAnotherAction);
+        _unit.UnitController.ExitAction(toAnotherAction);
 
-        switch (curentActionType)
+        switch (CurentActionType)
         {
             case ActionType.Ladder:
 
-                Unit.Ladder.LadderActionHandler.LadderPath = null;
-                Unit.Ladder = null;
+                _unit.Ladder.LadderActionHandler.LadderPath = null;
+                _unit.Ladder = null;
                 break;
 
             case ActionType.ChairClimb:
 
-                Unit.Chair = null;
+                _unit.Chair = null;
                 break;
 
             case ActionType.LedgeClimb:
 
-                Unit.Ledge.ResetLedgeAction();
-                Unit.Ledge = null;
+                _unit.Ledge.ResetLedgeAction();
+                _unit.Ledge = null;
                 break;
 
             case ActionType.TableClimb:
 
-                Unit.Table.TableState = TableState.Static;
-                Unit.Table.TableStaticAnimator.transform.localPosition = Vector3.zero;
-                Unit.Table = null;
+                _unit.Table.TableState = TableState.Static;
+                _unit.Table.TableStaticAnimator.transform.localPosition = Vector3.zero;
+                _unit.Table = null;
                 break;
 
             case ActionType.GrabTable:
 
                 GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
-                Unit.PlayerActionInMind = PlayerActionInMind.Moving;
+                _unit.PlayerActionInMind = PlayerActionInMind.Moving;
 
-                Unit.Table.TableState = TableState.Static;
+                _unit.Table.TableState = TableState.Static;
 
-                Unit.Table = null;
+                _unit.Table = null;
 
                 break;
 
             case ActionType.PickupObject:
 
-                if (Unit.PlayerActionInMind != PlayerActionInMind.LookInInventory)
-                    Unit.PlayerActionInMind = PlayerActionInMind.Moving;
-                if (Unit.Item.ObjectState == ObjectState.InInventory)
-                    Destroy(Unit.Item.InteractiveObject.gameObject);
-                Unit.Item = null;
+                if (_unit.PlayerActionInMind != PlayerActionInMind.LookInInventory)
+                    _unit.PlayerActionInMind = PlayerActionInMind.Moving;
+                if (_unit.Item.ObjectState == ObjectState.InInventory)
+                    Destroy(_unit.Item.InteractiveObject.gameObject);
+                _unit.Item = null;
 
                 break;
 
             case ActionType.OpenCloseDoor:
 
-                Unit.PlayerActionInMind = PlayerActionInMind.Moving;
-                Unit.Door = null;
+                _unit.PlayerActionInMind = PlayerActionInMind.Moving;
+                _unit.Door = null;
 
                 break;
 
@@ -371,48 +368,47 @@ public class UnitActionHandler : MonoBehaviour
                 break;
         }
 
-        curentActionType = ActionType.None;
+        CurentActionType = ActionType.None;
     }
 
     public void ExitSpecificAction(ActionType action)
     {
-        Unit.UnitController.ExitAction();
+        _unit.UnitController.ExitAction();
 
         switch (action)
         {
             case ActionType.Ladder:
 
-                Unit.Ladder.LadderActionHandler.LadderPath = null;
-                Unit.Ladder = null;
+                _unit.Ladder.LadderActionHandler.LadderPath = null;
+                _unit.Ladder = null;
                 break;
 
             case ActionType.ChairClimb:
 
-                Unit.Chair = null;
+                _unit.Chair = null;
                 break;
 
             case ActionType.LedgeClimb:
 
-                Unit.Ledge.ResetLedgeAction();
-                Debug.Log("ntra");
-                Unit.Ledge = null;
+                _unit.Ledge.ResetLedgeAction();
+                _unit.Ledge = null;
                 break;
 
             case ActionType.TableClimb:
 
-                Unit.Table.TableState = TableState.Static;
-                Unit.Table.TableStaticAnimator.transform.localPosition = Vector3.zero;
-                Unit.Table = null;
+                _unit.Table.TableState = TableState.Static;
+                _unit.Table.TableStaticAnimator.transform.localPosition = Vector3.zero;
+                _unit.Table = null;
                 break;
 
             case ActionType.GrabTable:
 
                 GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
-                Unit.PlayerActionInMind = PlayerActionInMind.Moving;
+                _unit.PlayerActionInMind = PlayerActionInMind.Moving;
 
-                Unit.Table.TableState = TableState.Static;
+                _unit.Table.TableState = TableState.Static;
 
-                Unit.Table = null;
+                _unit.Table = null;
 
                 break;
 

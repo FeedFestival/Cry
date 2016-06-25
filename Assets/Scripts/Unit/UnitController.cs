@@ -4,43 +4,47 @@ using Assets.Scripts.Types;
 
 public class UnitController : MonoBehaviour
 {
-    public bool debuging = false;
     /*
      This script recieves info about where the unit should go, if it should stop or resume its movement.
      */
-    private Unit Unit;
-
-    public NavMeshAgent NavMeshAgent;
+    private Unit _unit;
 
     public NavMeshPath NavMeshPath;
 
-    void Start()
-    {
-        NavMeshAgent = GetComponent<NavMeshAgent>();
+    // properties
+    private bool _startLerp;
+    private bool _lerpComplete;
 
-        NavMeshAgent.updateRotation = false;
-    }
+    private Vector3 _rootPosLerp;
+
+    private float _xRot;
+    private float _yRot;
+
+    private bool _onTableMove;
+    private Vector3 _tableTargetVector;
+
+    private Vector3 _lastTarget;
+    private bool _lerpRotComplete = true;
 
     public void Initialize(Unit unit)
     {
-        Unit = unit;
+        _unit = unit;
         NavMeshPath = new NavMeshPath();
     }
 
     public void StopMoving(bool targetReached = true)
     {
-        if (Unit.UnitFeetState == UnitFeetState.OnGround)
+        if (_unit.UnitFeetState == UnitFeetState.OnGround)
         {
-            if (debuging)
-                Debug.Log("Reaching (Player action in mind = " + Unit.UnitActionInMind + ")");
+            //Debug.Log("Reaching (Player action in mind = " + _unit.UnitActionInMind + ")");
 
-            if (NavMeshAgent)
+            if (_unit.NavMeshAgent)
             {
-                if (NavMeshAgent.enabled == false)
+                if (_unit.NavMeshAgent.enabled == false)
                 {
-                    NavMeshAgent.enabled = true;
+                    _unit.NavMeshAgent.enabled = true;
                 }
-                NavMeshAgent.Stop();
+                _unit.NavMeshAgent.Stop();
             }
 
             if (targetReached)
@@ -49,90 +53,92 @@ public class UnitController : MonoBehaviour
                 //      - And an action is set in mind
                 //      - And the Player is not busy with another action.
                 //  --> That means we must fire the Action in mind and exit.
-                if (Unit.UnitActionInMind != UnitActionInMind.None && Unit.UnitPrimaryState != UnitPrimaryState.Busy)
+                if (_unit.UnitActionInMind != UnitActionInMind.None && _unit.UnitPrimaryState != UnitPrimaryState.Busy)
                 {
-                    NavMeshAgent.enabled = false;
-                    Unit.UnitActionHandler.StartAction();
-                    Unit.ActivateTarget(false);
+                    _unit.NavMeshAgent.enabled = false;
+                    _unit.UnitActionHandler.StartAction();
+                    _unit.ActivateTarget(false);
                     return;
                 }
 
                 //  If we finish the journey
                 //      - And for some reason the unit is Busy - dont go into Idle.
-                if (Unit.UnitPrimaryState != UnitPrimaryState.Busy)
+                if (_unit.UnitPrimaryState != UnitPrimaryState.Busy)
                 {
-                    Unit.UnitPrimaryState = UnitPrimaryState.Idle;
-                    Unit.UnitBasicAnimation.GoIdle();
+                    _unit.UnitPrimaryState = UnitPrimaryState.Idle;
+                    _unit.UnitBasicAnimation.Play(_unit.UnitPrimaryState);
                 }
             }
             else
             {
-                Unit.UnitPrimaryState = UnitPrimaryState.Idle;
-                Unit.UnitBasicAnimation.GoIdle();
+                _unit.UnitPrimaryState = UnitPrimaryState.Idle;
+                _unit.UnitBasicAnimation.Play(_unit.UnitPrimaryState);
 
-                Unit.UnitProperties.thisUnitTarget.thisTransform.position = Unit.UnitProperties.thisTransform.position;
+                _unit.UnitProperties.ThisUnitTarget.thisTransform.position = _unit.UnitProperties.ThisUnitTransform.position;
             }
 
-            Unit.ActivateTarget(false);
+            _unit.ActivateTarget(false);
         }
-        else if (Unit.UnitFeetState == UnitFeetState.OnTable)
+        else if (_unit.UnitFeetState == UnitFeetState.OnTable)
         {
-            OnTable_Move = false;
-            Unit.UnitBasicAnimation.GoIdle();
+            _onTableMove = false;
+            _unit.UnitBasicAnimation.Play(UnitPrimaryState.Idle);
 
-            if (Unit.UnitActionInMind == UnitActionInMind.ClimbDownTable)
+            if (_unit.UnitActionInMind == UnitActionInMind.ClimbDownTable)
             {
-                Unit.UnitFeetState = UnitFeetState.OnGround;
-                
-                Unit.Table.TableActionHandler.PlayActionAnimation();
+                _unit.UnitFeetState = UnitFeetState.OnGround;
+
+                _unit.Table.TableActionHandler.PlayActionAnimation();
             }
-            else if (Unit.UnitActionInMind == UnitActionInMind.ClimbingWall)
+            else if (_unit.UnitActionInMind == UnitActionInMind.ClimbingWall)
             {
-                Unit.UnitActionHandler.StartAction();
+                _unit.UnitActionHandler.StartAction();
 
-                Unit.ActivateTarget(false);
+                _unit.ActivateTarget(false);
                 return;
             }
         }
-        Unit.ActivateTarget(false);
+        _unit.ActivateTarget(false);
     }
 
     public void ResumeMoving()
     {
-        if (NavMeshAgent.enabled == false)
-            NavMeshAgent.enabled = true;
-        NavMeshAgent.SetDestination(Unit.UnitProperties.thisUnitTarget.transform.position);
-        NavMeshAgent.Resume();
+        if (_unit.NavMeshAgent.enabled == false)
+            _unit.NavMeshAgent.enabled = true;
+        _unit.NavMeshAgent.SetDestination(_unit.UnitProperties.ThisUnitTarget.transform.position);
+        _unit.NavMeshAgent.Resume();
 
-        Unit.UnitPrimaryState = UnitPrimaryState.Walk;
-        Unit.UnitBasicAnimation.GoWalk();
+        _unit.UnitPrimaryState = UnitPrimaryState.Walk;
+        _unit.UnitBasicAnimation.Play(_unit.UnitPrimaryState);
     }
 
     public void GoToTarget()
     {
-        Unit.ActivateTarget(true);
+        _unit.ActivateTarget(true);
 
         ResumeMoving();
-        //Unit.AIPath.SearchPath();
+        //_unit.AIPath.SearchPath();
     }
 
     public void SetPathToTarget(Vector3 targetVector)
     {
-        if (Unit.UnitFeetState == UnitFeetState.OnGround)
+        switch (_unit.UnitFeetState)
         {
-            Unit.UnitProperties.thisUnitTarget.transform.position = targetVector;
-            this.GoToTarget();
-        }
-        else if (Unit.UnitFeetState == UnitFeetState.OnTable)
-        {
-            Unit.ActivateTarget(true);
+            case UnitFeetState.OnGround:
+                _unit.UnitProperties.ThisUnitTarget.transform.position = targetVector;
+                GoToTarget();
+                break;
 
-            Unit.UnitProperties.thisUnitTarget.transform.position = targetVector;
+            case UnitFeetState.OnTable:
+                _unit.ActivateTarget(true);
 
-            OnTable_targetVector = targetVector;
+                _unit.UnitProperties.ThisUnitTarget.transform.position = targetVector;
 
-            Unit.UnitBasicAnimation.GoWalk();
-            OnTable_Move = true;
+                _tableTargetVector = targetVector;
+
+                _unit.UnitBasicAnimation.Play(_unit.UnitPrimaryState);
+                _onTableMove = true;
+                break;
         }
     }
 
@@ -143,149 +149,133 @@ public class UnitController : MonoBehaviour
         return NavMeshPath.corners;
     }
 
-    Vector3 lastTarget;
-    private bool lerpRotComplete = true;
-    IEnumerator LerpToRotation(float lerpTime)
+    private IEnumerator LerpToRotation(float lerpTime)
     {
-        NavMeshAgent.updateRotation = false;
-        lerpRotComplete = false;
+        _unit.NavMeshAgent.updateRotation = false;
+        _lerpRotComplete = false;
 
         yield return new WaitForSeconds(lerpTime);
 
-        lerpRotComplete = true;
-        NavMeshAgent.updateRotation = true;
+        _lerpRotComplete = true;
+        _unit.NavMeshAgent.updateRotation = true;
     }
 
     void Update()
     {
-        if (Unit)
+        if (_unit)
         {
-            if (Unit.UnitFeetState == UnitFeetState.OnTable)
+            if (_unit.UnitFeetState == UnitFeetState.OnTable)
             {
                 MoveOnTable();
                 return;
             }
-            if (Unit != null && Unit.UnitProperties.ControllerFollowRoot)
+            if (_unit != null && _unit.UnitProperties.ControllerFollowRoot)
             {
                 FollowRoot();
             }
 
-            if (Unit.UnitPrimaryState == UnitPrimaryState.Walk)
+            if (_unit.UnitPrimaryState == UnitPrimaryState.Walk)
             {
-                if (lastTarget != NavMeshAgent.steeringTarget)
+                if (_lastTarget != _unit.NavMeshAgent.steeringTarget)
                 {
-                    lastTarget = NavMeshAgent.steeringTarget;
+                    _lastTarget = _unit.NavMeshAgent.steeringTarget;
 
-                    if (lerpRotComplete == true)
+                    if (_lerpRotComplete == true)
                         StartCoroutine(LerpToRotation(0.6f));
                 }
-                if (lerpRotComplete == false)
+                if (_lerpRotComplete == false && _lastTarget != Vector3.zero)
                 {
-                    if (lastTarget != Vector3.zero)
-                        Unit.UnitProperties.thisTransform.rotation = Logic.SmoothLook(Unit.UnitProperties.thisTransform.rotation,
-                            Logic.GetDirection(Unit.UnitProperties.thisTransform.position, lastTarget),
-                            11f);
+                    _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
+                        Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _lastTarget),
+                        11f);
                 }
             }
         }
     }
 
-    bool OnTable_Move;
-    Vector3 OnTable_targetVector;
-
-    void MoveOnTable()
+    private void MoveOnTable()
     {
-        if (OnTable_Move)
+        if (_onTableMove)
         {
-            Unit.UnitProperties.thisTransform.position = Vector3.Lerp(Unit.UnitProperties.thisTransform.position,
-                                                                        OnTable_targetVector,
+            _unit.UnitProperties.ThisUnitTransform.position = Vector3.Lerp(_unit.UnitProperties.ThisUnitTransform.position,
+                                                                        _tableTargetVector,
                                                                         Time.deltaTime * 3);
 
-            Unit.UnitProperties.thisTransform.rotation = Logic.SmoothLook(Unit.UnitProperties.thisTransform.rotation,
-                Logic.GetDirection(Unit.UnitProperties.thisTransform.position, OnTable_targetVector),
+            _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
+                Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _tableTargetVector),
                 7f);
         }
     }
 
-    bool startLerp;
-    bool lerpComplete;
-
-    Vector3 rootPos_lerp = new Vector3();
-
-    float xRot;
-    float yRot;
-
-    void FollowRoot()
+    private void FollowRoot()
     {
-        if (lerpComplete == false)
+        if (_lerpComplete == false)
         {
-            if (startLerp == false)
+            if (_startLerp == false)
             {
-                xRot = 90f;
-                yRot = 90f;
+                _xRot = 90f;
+                _yRot = 90f;
 
-                startLerp = true;
+                _startLerp = true;
                 StartCoroutine(LerpToPosition(0.6f));
             }
-            rootPos_lerp = new Vector3(Unit.UnitProperties.Root.position.x,
-                                    Unit.UnitProperties.Root.position.y,
-                                    Unit.UnitProperties.Root.position.z);
-            Unit.UnitProperties.thisTransform.position = Vector3.Lerp(Unit.UnitProperties.thisTransform.position, rootPos_lerp, Time.deltaTime * 11);
+            _rootPosLerp = new Vector3(_unit.UnitProperties.Root.position.x,
+                                    _unit.UnitProperties.Root.position.y,
+                                    _unit.UnitProperties.Root.position.z);
+            _unit.UnitProperties.ThisUnitTransform.position = Vector3.Lerp(_unit.UnitProperties.ThisUnitTransform.position, _rootPosLerp, Time.deltaTime * 11);
         }
-        if (lerpComplete)
+        if (_lerpComplete)
         {
-            var rootPos = new Vector3(Unit.UnitProperties.Root.position.x,
-                                Unit.UnitProperties.Root.position.y,
-                                Unit.UnitProperties.Root.position.z);
-            Unit.UnitProperties.thisTransform.position = rootPos;
+            var rootPos = new Vector3(_unit.UnitProperties.Root.position.x,
+                                _unit.UnitProperties.Root.position.y,
+                                _unit.UnitProperties.Root.position.z);
+            _unit.UnitProperties.ThisUnitTransform.position = rootPos;
         }
 
         var rot = new Quaternion();
-        rot.eulerAngles = new Vector3(Unit.UnitProperties.Root.eulerAngles.x + xRot,  //90
-                                    Unit.UnitProperties.Root.eulerAngles.y - yRot,   //180
-                                    Unit.UnitProperties.Root.eulerAngles.z);
-        transform.rotation = Quaternion.Slerp(Unit.UnitProperties.thisTransform.rotation, rot, Time.deltaTime * 10);
+        rot.eulerAngles = new Vector3(_unit.UnitProperties.Root.eulerAngles.x + _xRot,  //90
+                                    _unit.UnitProperties.Root.eulerAngles.y - _yRot,   //180
+                                    _unit.UnitProperties.Root.eulerAngles.z);
+        transform.rotation = Quaternion.Slerp(_unit.UnitProperties.ThisUnitTransform.rotation, rot, Time.deltaTime * 10);
     }
 
     public void ExitAction(bool toAnotherAction = false)
     {
-        startLerp = false;
-        lerpComplete = false;
+        _startLerp = false;
+        _lerpComplete = false;
 
-        Unit.UnitProperties.Root = null;
+        _unit.UnitProperties.Root = null;
 
         if (toAnotherAction == false)
             StopMoving();
     }
 
-    IEnumerator LerpToPosition(float lerpTime)
+    private IEnumerator LerpToPosition(float lerpTime)
     {
         yield return new WaitForSeconds(lerpTime);
-        lerpComplete = true;
+        _lerpComplete = true;
     }
 
-    void KeepOnGround()
+    private void KeepOnGround()
     {
-        var pos = Unit.UnitProperties.FeetCollider.transform.position;
+        var pos = _unit.UnitProperties.FeetCollider.transform.position;
 
         var posDown = new Vector3(pos.x, pos.y - 2f, pos.z);
 
         var direction = posDown - pos;
 
-        if (debuging)
-            Debug.DrawLine(pos, (pos + direction));
+        //Debug.DrawLine(pos, (pos + direction));
 
-        Ray Ray = new Ray(pos, direction);
-        RaycastHit Hit;
-        if (Physics.Raycast(Ray, out Hit, 100))
+        Ray ray = new Ray(pos, direction);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100))
         {
-            if (Hit.transform.tag == "Map")
+            if (hit.transform.tag == "Map")
             {
-                if (debuging)
-                    Debug.DrawLine(pos, (pos + direction), Color.red);
-                Unit.UnitProperties.thisTransform.position = new Vector3(Unit.UnitProperties.thisTransform.position.x,
-                                                                        Hit.point.y + 1f,
-                                                                        Unit.UnitProperties.thisTransform.position.z);
+                //Debug.DrawLine(pos, (pos + direction), Color.red);
+                _unit.UnitProperties.ThisUnitTransform.position = new Vector3(_unit.UnitProperties.ThisUnitTransform.position.x,
+                                                                        hit.point.y + 1f,
+                                                                        _unit.UnitProperties.ThisUnitTransform.position.z);
             }
         }
     }

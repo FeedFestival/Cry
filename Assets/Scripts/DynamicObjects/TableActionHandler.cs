@@ -76,7 +76,7 @@ public class TableActionHandler : MonoBehaviour
         Table.TableProperties.Bottom_YPos = Table.TableProperties.thisTransform.position.y;
         Table.TableProperties.Ypos = Table.TableProperties.thisTransform.position.y + 1f;
 
-        var UnitYPos = GlobalData.Player.UnitProperties.thisTransform.position.y;
+        var UnitYPos = GlobalData.Player.UnitProperties.ThisUnitTransform.position.y;
 
         Table.TableStartPoint = (TableStartPoint)Logic.GetClosestYPos(UnitYPos, Table.TableProperties.Bottom_YPos, Table.TableProperties.Ypos);
 

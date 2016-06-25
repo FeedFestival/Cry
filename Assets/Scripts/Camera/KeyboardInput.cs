@@ -34,7 +34,7 @@ public class KeyboardInput : MonoBehaviour
             }
             else
             {
-                if (GlobalData.Player.isMouseOverMap)
+                if (GlobalData.Player.IsMouseOverMap)
                 {
                     GlobalData.SceneManager.Map.DoAction();
                 }
