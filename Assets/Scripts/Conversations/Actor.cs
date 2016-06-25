@@ -91,7 +91,7 @@ public class Actor : MonoBehaviour
     {
         var charsAllowedPerLine = 0;
         var linesAllowed = 0;
-        var charsAllowed = 0;
+        //var charsAllowed = 0;
 
         switch (boxType)
         {
@@ -105,7 +105,7 @@ public class Actor : MonoBehaviour
             case DialogBoxType.LeftSide_1SmallSentence:
                 charsAllowedPerLine = 7;
                 linesAllowed = 5;
-                charsAllowed = charsAllowedPerLine * linesAllowed;
+                //charsAllowed = charsAllowedPerLine * linesAllowed;
                 targetPrefabString = "Prefabs/UI/LeftSide_1SmallSentence";
                 dialogBoxPivot = new Vector2(0, 0);
                 dialogTexts = 1;
@@ -113,7 +113,7 @@ public class Actor : MonoBehaviour
             case DialogBoxType.LeftSide_1MediumSentence:
                 charsAllowedPerLine = 9;
                 linesAllowed = 5;
-                charsAllowed = charsAllowedPerLine * linesAllowed;
+                //charsAllowed = charsAllowedPerLine * linesAllowed;
                 targetPrefabString = "Prefabs/UI/LeftSide_1MediumSentence";
                 dialogBoxPivot = new Vector2(0, 0);
                 dialogTexts = 1;
@@ -121,7 +121,7 @@ public class Actor : MonoBehaviour
             case DialogBoxType.LeftSide_1LargeSentence:
                 charsAllowedPerLine = 16;
                 linesAllowed = 8;
-                charsAllowed = charsAllowedPerLine * linesAllowed;
+                //charsAllowed = charsAllowedPerLine * linesAllowed;
                 targetPrefabString = "Prefabs/UI/LeftSide_1LargeSentence";
                 dialogBoxPivot = new Vector2(0, 0);
                 dialogTexts = 1;
@@ -129,7 +129,7 @@ public class Actor : MonoBehaviour
             case DialogBoxType.LeftSide_2Sentence:
                 charsAllowedPerLine = 0; //12
                 linesAllowed = 5;
-                charsAllowed = charsAllowedPerLine * linesAllowed;
+                //charsAllowed = charsAllowedPerLine * linesAllowed;
                 targetPrefabString = "Prefabs/UI/LeftSide_2Sentence";
                 dialogBoxPivot = new Vector2(0, 0);
                 dialogTexts = 2;

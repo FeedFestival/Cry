@@ -28,16 +28,28 @@ public class CameraControl : MonoBehaviour
 
     private Vector3 DesiredPosition;
 
-    private float minCameraPanSpeed = 4.44f;
+    private float minCameraPanSpeed = 4.42f;
     private float CameraPanSpeed;
 
-    private Vector3 vectorUp = new Vector3(0, 0.77f, 0.44f);
+    private Vector3 vectorUp = new Vector3(0, 0.73f, 0.46f);
     private Vector3 cameraDirection;
 
-    public bool CenterCamera;
+    private bool _centerCamera;
+    public bool CenterCamera {
+        set {
+            _centerCamera = value;
+
+            if (_centerCamera) {
+                CameraPanSpeed = 2.3f;
+            }
+        }
+        get {
+            return _centerCamera;
+        }
+    }
     public bool PanCamera;
 
-    Transform CameraOn;
+    Transform ObjectToFollow;
 
     public void Initialize()
     {
@@ -63,61 +75,49 @@ public class CameraControl : MonoBehaviour
 
         CenterCamera = true;
 
-        CameraOn = GlobalData.Player.transform; // HARD_CODED
+        ObjectToFollow = GlobalData.Player.transform; // HARD_CODED
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        if (Input.GetKey(KeyCode.Space))
-        {
-            if (!CenterCamera)
-                CenterCamera = true;
-        }
+        //if (Input.GetKey(KeyCode.Space))
+        //{
+        //    if (!CenterCamera)
+        //        CenterCamera = true;
+        //}
         if (CenterCamera)
         {
             CenterCameraOn();
         }
-        if (PanCamera && !this.HUD.I_INVENTORY_button.pressed)
-        {
-            thisTransform.Translate(cameraDirection * CameraPanSpeed * Time.deltaTime);
-            if (CheckYDistance())
-            {
-                DesiredPosition = new Vector3(thisTransform.position.x,
-                    /*CameraOn.position.y + YDistanceFromPlayer,*/YDistanceFromPlayer,
-                                            thisTransform.position.z);
-                thisTransform.position = Vector3.Lerp(thisTransform.position, DesiredPosition, Time.deltaTime * 2f);
-            }
-        }
+        //if (PanCamera && !this.HUD.I_INVENTORY_button.pressed)
+        //{
+        //    thisTransform.Translate(cameraDirection * CameraPanSpeed * Time.deltaTime);
+        //    if (CheckYDistance())
+        //    {
+        //        DesiredPosition = new Vector3(thisTransform.position.x, YDistanceFromPlayer, thisTransform.position.z);
+        //        thisTransform.position = Vector3.Lerp(thisTransform.position, DesiredPosition, Time.deltaTime * 2f);
+        //    }
+        //}
     }
-    bool once = true;
-    RaycastHit Hit;
-
+    
     private void CenterCameraOn()
     {
         if (GlobalData.Player != null)
         {
-            if (!this.HUD.I_INVENTORY_button.pressed)
+            if (HUD.I_INVENTORY_button.pressed == false)
             {
-                //CameraOn = GlobalData.Player.UnitProperties.thisUnitTarget.transform;
-                if (CameraOn == null)
+                if (ObjectToFollow == null)
                 {
-                    CameraOn = GlobalData.Player.transform; // HARD_CODED
+                    ObjectToFollow = GlobalData.Player.transform;
                 }
-                //var x = Mathf.Round(CameraOn.position.x * 1000 / 1000);
-                //var z = Mathf.RoundToInt(CameraOn.position.z * 1000 / 1000);
-                DesiredPosition = new Vector3(CameraOn.position.x - 7.22f,
-                    /*CameraOn.position.y + YDistanceFromPlayer,*/YDistanceFromPlayer,
-                                                    CameraOn.position.z + 7.22f);
+                DesiredPosition = new Vector3(ObjectToFollow.position.x - 8f, YDistanceFromPlayer, ObjectToFollow.position.z + 8f);
             }
             else
             {
-                // -5.77 // 
-                DesiredPosition = new Vector3(CameraOn.position.x - 4.30f,
-                                                    /*CameraOn.position.y + 11f,*/11f,
-                                                    CameraOn.position.z + 4.30f);
+                //Debug.Log(DesiredPosition);
+                DesiredPosition = new Vector3(ObjectToFollow.position.x - 4.30f, 11f, ObjectToFollow.position.z + 4.30f);
             }
-            thisTransform.position = Vector3.Lerp(thisTransform.position, DesiredPosition, Time.deltaTime * 0.9f);
-            //thisTransform.position = DesiredPosition;
+            thisTransform.position = Vector3.Lerp(thisTransform.position, DesiredPosition, Time.deltaTime * CameraPanSpeed);
         }
     }
 
@@ -132,12 +132,7 @@ public class CameraControl : MonoBehaviour
             PanCamera = true;
         }
     }
-
-    public void DontCameraPan()
-    {
-        PanCamera = false;
-    }
-
+    
     public void MoveCameraDirection()
     {
         if (CameraEdgeSpeed == CameraEdgeSpeed.Slow)
@@ -196,11 +191,11 @@ public class CameraControl : MonoBehaviour
     {
         if (GlobalData.Player != null)
         {
-            if (CameraOn == null)
+            if (ObjectToFollow == null)
             {
-                CameraOn = GlobalData.Player.transform; // HARD_CODED
+                ObjectToFollow = GlobalData.Player.transform; // HARD_CODED
             }
-            var distance = Mathf.Round((CameraOn.position.y + YDistanceFromPlayer) * 1000f) / 1000f;
+            var distance = Mathf.Round((ObjectToFollow.position.y + YDistanceFromPlayer) * 1000f) / 1000f;
             var cameraCurrentPosition = Mathf.Round((thisTransform.position.y) * 1000f) / 1000f;
             if (distance != cameraCurrentPosition)
             {

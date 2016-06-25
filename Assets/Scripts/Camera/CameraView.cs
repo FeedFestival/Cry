@@ -52,18 +52,7 @@ public class CameraView : MonoBehaviour
         //QualitySettings.vSyncCount = 1;
         Application.targetFrameRate = 144;
     }
-
-    //public void Initialize(CameraControl cameraControl)
-    //{
-    //    CameraControl = cameraControl;
-    //}
-
-    void Update()
-    {
-        //if (Input.GetKeyDown(KeyCode.P))
-        //    EditorApplication.isPaused = !EditorApplication.isPaused;
-    }
-
+    
     void OnGUI()
     {
         if (ControlTime)

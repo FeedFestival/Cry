@@ -940,7 +940,7 @@ GameObject:
   - 4: {fileID: 489156}
   - 20: {fileID: 2023886}
   m_Layer: 0
-  m_Name: Camera
+  m_Name: FOV_Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1672,7 +1672,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 436196}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!4 &436196
 Transform:
   m_ObjectHideFlags: 1
@@ -1680,12 +1680,12 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 161566}
   m_LocalRotation: {x: 0.19134168, y: 0.8001032, z: -0.46193984, w: 0.33141348}
-  m_LocalPosition: {x: -10.13, y: 20.86, z: 5.1}
+  m_LocalPosition: {x: -30.85, y: 18, z: 8.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 60, y: 135, z: 0}
   m_Children:
-  - {fileID: 489156}
   - {fileID: 425710}
+  - {fileID: 489156}
   - {fileID: 22406964}
   - {fileID: 454858}
   m_Father: {fileID: 0}
@@ -1715,7 +1715,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 436196}
-  m_RootOrder: 0
+  m_RootOrder: 1
 --- !u!20 &2007132
 Camera:
   m_ObjectHideFlags: 1
@@ -1759,7 +1759,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0.019607844}
+  m_BackGroundColor: {r: 0.04059977, g: 0.043137256, b: 0.041886184, a: 0.019607844}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -1768,13 +1768,13 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 1
+  field of view: 30
   orthographic: 0
   orthographic size: 5
-  m_Depth: -2
+  m_Depth: -3
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 65536
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -1792,7 +1792,7 @@ Camera:
   m_GameObject: {fileID: 161566}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 3
   m_BackGroundColor: {r: 0.066176474, g: 0.066176474, b: 0.066176474, a: 1}
   m_NormalizedViewPortRect:
     serializedVersion: 2
@@ -1808,7 +1808,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967263
+    m_Bits: 4294770655
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -6279,7 +6279,6 @@ MonoBehaviour:
   HUD: {fileID: 0}
   YDistanceFromPlayer: 0
   thisTransform: {fileID: 0}
-  CenterCamera: 0
   PanCamera: 0
 --- !u!114 &11494522
 MonoBehaviour:

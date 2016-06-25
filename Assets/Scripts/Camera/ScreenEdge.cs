@@ -40,6 +40,6 @@ public class ScreenEdge : MonoBehaviour
 
     public void ExitHover(UnityEngine.EventSystems.BaseEventData baseEvent)
     {
-        CameraControl.DontCameraPan();
+        CameraControl.PanCamera = false;
     }
 }

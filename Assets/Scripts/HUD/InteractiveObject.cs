@@ -33,7 +33,7 @@ public class InteractiveObject : MonoBehaviour
             this.Item = item;
             Item.ObjectState = ObjectState.InInventory;
         }
-        ItemIndicator = this.transform.GetChild(this.transform.GetChildCount() - 1).gameObject;
+        ItemIndicator = this.transform.GetChild(this.transform.childCount - 1).gameObject;
         ItemIndicator.SetActive(false);
     }
 
