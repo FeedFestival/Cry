@@ -83,10 +83,7 @@ public class Unit : MonoBehaviour
 
     [HideInInspector]
     public MainCharacterProperties[] MainCharacterProperties;
-    // This variable tell how much inventory space does the player have;
-
-    //[HideInInspector]
-    //public AIPath AIPath;
+    
     [HideInInspector]
     public UnitController UnitController;
     [HideInInspector]
@@ -102,6 +99,9 @@ public class Unit : MonoBehaviour
 
     [HideInInspector]
     public UnitInventory UnitInventory;
+
+    [HideInInspector]
+    public UnitInteligence UnitInteligence;
 
     [Header("Model")]
     //  --------------------------------------------------------------------------------
@@ -161,7 +161,10 @@ public class Unit : MonoBehaviour
                 break;
 
             case UnitType.Enemy:
+                transform.gameObject.AddComponent<UnitInteligence>();
 
+                UnitInteligence = GetComponent<UnitInteligence>();
+                UnitInteligence.Initialize(this);
                 break;
         }
 
@@ -178,7 +181,7 @@ public class Unit : MonoBehaviour
 
         NavMeshAgent.speed = 1.8f;
         NavMeshAgent.angularSpeed = 999999;
-        NavMeshAgent.acceleration = 44;
+        NavMeshAgent.acceleration = 45;
         NavMeshAgent.stoppingDistance = 0;
         NavMeshAgent.autoBraking = false;
 
