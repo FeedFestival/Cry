@@ -31,10 +31,9 @@ public class MapInputTrigger : MonoBehaviour
         if (GlobalData.Player != null && GlobalData.Player.UnitActionState == UnitActionState.MovingTable)
         {
             var pos = Logic.GetPointHitAtMousePosition();
-            if (pos != Vector3.zero)
+            if (pos != Vector3.zero && GlobalData.Player.Table.TableController)
             {
-                if (GlobalData.Player.Table.TableController)
-                    GlobalData.Player.Table.TableController.CalculateAction(pos);
+                GlobalData.Player.Table.TableController.CalculateAction(pos);
             }
         }
     }
@@ -62,12 +61,7 @@ public class MapInputTrigger : MonoBehaviour
                 }
                 else if (GlobalData.Player.UnitActionState == UnitActionState.MovingTable)
                 {
-                    var pos = Logic.GetPointHitAtMousePosition(this.gameObject.GetComponent<Collider>());
-                    if (pos != Vector3.zero)
-                    {
-                        GlobalData.Player.UnitProperties.ThisUnitTarget.thisTransform.position = GlobalData.Player.Table.TableController.MoveTable();
-                        GlobalData.Player.ActivateTarget(true);
-                    }
+                    SetUnitTargetToPos(gameObject.GetComponent<Collider>());
                 }
             }
             else
@@ -75,18 +69,37 @@ public class MapInputTrigger : MonoBehaviour
                 // This is canceling the actions.
                 GlobalData.Player.UnitActionInMind = UnitActionInMind.None;
 
-                var pos = Logic.GetPointHitAtMousePosition(this.gameObject.GetComponent<Collider>());
-                if (pos != Vector3.zero)
-                {
-                    GlobalData.Player.UnitProperties.ThisUnitTarget.thisTransform.position = pos;
-                    GlobalData.Player.UnitController.GoToTarget();
-                }
+                SetUnitTargetToPos(gameObject.GetComponent<Collider>());
             }
             if (GlobalData.Player.PlayerActionInMind == PlayerActionInMind.UseAbility)
             {
                 GlobalData.CameraControl.CameraCursor.ChangeCursor(CursorType.Default);
                 GlobalData.Player.PlayerActionInMind = PlayerActionInMind.Moving;
             }
+        }
+    }
+
+    private void SetUnitTargetToPos(Collider collider, bool forTable = false)
+    {
+        var pos = Logic.GetPointHitAtMousePosition(collider);
+        //Debug.Log(collider.bounds.Contains(pos));
+        if (pos != Vector3.zero)
+        {
+            //Debug.Log("point is inside collider");
+            if (forTable)
+            {
+                GlobalData.Player.UnitProperties.ThisUnitTarget.thisTransform.position = GlobalData.Player.Table.TableController.MoveTable();
+                GlobalData.Player.ActivateTarget(true);
+            }
+            else
+            {
+                GlobalData.Player.UnitProperties.ThisUnitTarget.thisTransform.position = pos;
+                GlobalData.Player.UnitController.GoToTarget();
+            }
+        }
+        else
+        {
+            Debug.LogError("point doesnt exists on the WALKABLE map");
         }
     }
 

@@ -21,15 +21,15 @@ TagManager:
   - 
   - 
   - Map
-  - Fighter
-  - EventCollider
-  - UnitTarget
-  - Unit
-  - Item
-  - Obstacles
-  - Targets
-  - FoW
-  - Int_Camera
+  - WallOrObstacle
+  - Vision
+  - UnitInteraction
+  - FogOfWar
+  - 
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 

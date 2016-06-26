@@ -387,14 +387,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 421872}
   - 114: {fileID: 11457316}
-  - 114: {fileID: 11478386}
-  - 114: {fileID: 11460266}
-  - 114: {fileID: 11452132}
-  - 114: {fileID: 11461774}
-  - 114: {fileID: 11484472}
-  - 195: {fileID: 19568306}
-  - 114: {fileID: 11425870}
-  m_Layer: 1
+  m_Layer: 0
   m_Name: MainCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1210,29 +1203,6 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 1
---- !u!114 &11425870
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 171932}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eec1e7881ad6f4a4cbcf8bf47cf9454c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Unit: {fileID: 0}
---- !u!114 &11452132
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 171932}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd54895a8b6348340b68a68af0631b9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &11457316
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1249,8 +1219,7 @@ MonoBehaviour:
   UnitActionInMind: 0
   UnitFeetState: 0
   IsMouseOverMap: 0
-  HasBackPack: 0
-  HasJacket: 0
+  MainCharacterProperties: 
   UnitController: {fileID: 0}
   NavMeshAgent: {fileID: 0}
   UnitActionAnimation: {fileID: 0}
@@ -1258,70 +1227,13 @@ MonoBehaviour:
   UnitBasicAnimation: {fileID: 0}
   UnitProperties: {fileID: 0}
   UnitInventory: {fileID: 0}
+  UnitInteligence: {fileID: 0}
   UnitAnimator: {fileID: 11189086}
   Ladder: {fileID: 0}
   Chair: {fileID: 0}
   Ledge: {fileID: 0}
   Table: {fileID: 0}
   Door: {fileID: 0}
---- !u!114 &11460266
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 171932}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ddc7dbe6c8522de498672baf845830ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CurentActionType: 0
---- !u!114 &11461774
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 171932}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a58b13987d64a6342b517c4d113de3a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  debuging: 0
-  CurrentAnimation: 
---- !u!114 &11478386
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 171932}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32c463acd6a28bd4aa298d0af36b58eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &11484472
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 171932}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fdc63655ae336a84698261732ccf755f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ControllerFollowRoot: 0
-  MovementSpeed: 0
-  AtackSpeed_Impact: 0
-  AtackSpeed_ParriedOrComplete: 0
-  DamageRecoverySpeed: 0
-  DefenseSpeed: 0
-  ArmatureName: 
-  Tag: 
-  ThisUnitTarget: {fileID: 0}
-  ThisUnitTransform: {fileID: 0}
-  FeetCollider: {fileID: 0}
 --- !u!137 &13709926
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
@@ -1465,26 +1377,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.28820807, y: 0.014298528, z: 0.08045155}
     m_Extent: {x: 0.37705523, y: 0.32321772, z: 0.30269736}
   m_DirtyAABB: 0
---- !u!195 &19568306
-NavMeshAgent:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 171932}
-  m_Enabled: 1
-  m_Radius: 0.3
-  m_Speed: 1.8
-  m_Acceleration: 44
-  avoidancePriority: 50
-  m_AngularSpeed: 999999
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

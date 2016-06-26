@@ -154,7 +154,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: bd96f045afa5b5049b25fa2db990a7dc, type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bd96f045afa5b5049b25fa2db990a7dc, type: 3}
@@ -266,7 +266,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: e84be0277b6d2c240b9643f13437616b, type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e84be0277b6d2c240b9643f13437616b, type: 3}
@@ -328,7 +328,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 827a575cb52386147b035c2ee9986b20, type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 827a575cb52386147b035c2ee9986b20, type: 3}
       propertyPath: m_ReceiveShadows
@@ -417,7 +417,7 @@ GameObject:
   - 65: {fileID: 100556099}
   - 23: {fileID: 100556098}
   - 114: {fileID: 100556097}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: Obs
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -618,6 +618,10 @@ Prefab:
       propertyPath: m_LocalScale.z
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: c4903c3565d1a2a4e90fd5699eefded6, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c4903c3565d1a2a4e90fd5699eefded6, type: 3}
   m_IsPrefabParent: 0
@@ -637,7 +641,7 @@ GameObject:
   - 65: {fileID: 182975655}
   - 23: {fileID: 182975654}
   - 114: {fileID: 182975653}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: SecretaryDesks 1
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -766,7 +770,7 @@ GameObject:
   - 65: {fileID: 195922357}
   - 23: {fileID: 195922356}
   - 114: {fileID: 195922355}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: FrontDesk1
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -915,7 +919,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 1efef5d86e0d79546bede0334271ac0e, type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 1efef5d86e0d79546bede0334271ac0e, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -1067,7 +1071,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: f353824e595bac34e88cf3246f0c2282, type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: f353824e595bac34e88cf3246f0c2282, type: 3}
       propertyPath: m_CastShadows
@@ -1100,7 +1104,7 @@ GameObject:
   - 65: {fileID: 405648458}
   - 23: {fileID: 405648457}
   - 114: {fileID: 405648460}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: vision_Hall_T_Secretary_Collider
   m_TagString: Vision
   m_Icon: {fileID: 0}
@@ -1176,7 +1180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfb7feceb0c6ea142a022347ed8b6517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startWithValue: 0
+  StartWithValue: 0
   Walls: []
   Insides: []
 --- !u!1 &433656437
@@ -1191,7 +1195,7 @@ GameObject:
   - 65: {fileID: 433656440}
   - 23: {fileID: 433656439}
   - 114: {fileID: 433656442}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: Obs
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -1353,7 +1357,7 @@ GameObject:
   - 65: {fileID: 482721216}
   - 23: {fileID: 482721215}
   - 114: {fileID: 482721214}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: Obs
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -1441,7 +1445,7 @@ GameObject:
   - 65: {fileID: 499326680}
   - 23: {fileID: 499326679}
   - 114: {fileID: 499326678}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SecretaryOffice_MainHallWay_T_VISION_Collider
   m_TagString: Vision
   m_Icon: {fileID: 0}
@@ -1472,7 +1476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfb7feceb0c6ea142a022347ed8b6517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startWithValue: 0
+  StartWithValue: 0
   Walls: []
   Insides: []
 --- !u!23 &499326679
@@ -1585,7 +1589,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: c7df9856a05214945977f42cbcd774af, type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: c7df9856a05214945977f42cbcd774af, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -1692,7 +1696,7 @@ GameObject:
   - 65: {fileID: 603230558}
   - 23: {fileID: 603230557}
   - 114: {fileID: 603230556}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: Obs
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -1843,6 +1847,10 @@ Prefab:
       propertyPath: m_ReflectionProbeUsage
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 6190e8b6ae5c6164f9734d11c9ce9cb0, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6190e8b6ae5c6164f9734d11c9ce9cb0, type: 3}
   m_IsPrefabParent: 0
@@ -1940,7 +1948,7 @@ GameObject:
   - 65: {fileID: 676795554}
   - 23: {fileID: 676795553}
   - 114: {fileID: 676795552}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: StaticWall
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -2126,7 +2134,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: f9e85d86ffb2d2b48919e44cd8efc25d, type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: f9e85d86ffb2d2b48919e44cd8efc25d, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -2310,7 +2318,7 @@ GameObject:
   - 65: {fileID: 883831637}
   - 23: {fileID: 883831636}
   - 114: {fileID: 883831635}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: SecretaryDesks 3
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -2398,7 +2406,7 @@ GameObject:
   - 65: {fileID: 909438038}
   - 23: {fileID: 909438037}
   - 114: {fileID: 909438036}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: StaticWall
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -2540,7 +2548,7 @@ GameObject:
   - 65: {fileID: 968696456}
   - 23: {fileID: 968696455}
   - 114: {fileID: 968696459}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: vision_Hall_Collider
   m_TagString: Vision
   m_Icon: {fileID: 0}
@@ -2616,7 +2624,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfb7feceb0c6ea142a022347ed8b6517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startWithValue: 1
+  StartWithValue: 0
   Walls: []
   Insides: []
 --- !u!1 &1000188319
@@ -2701,6 +2709,10 @@ Prefab:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 21c5ee558d7153d4894ca51f3ec9d476, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 21c5ee558d7153d4894ca51f3ec9d476, type: 3}
   m_IsPrefabParent: 0
@@ -2720,7 +2732,7 @@ GameObject:
   - 65: {fileID: 1012054368}
   - 23: {fileID: 1012054367}
   - 114: {fileID: 1012054371}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: Obs
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -2804,7 +2816,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1029767105}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: _VISION
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2839,7 +2851,7 @@ GameObject:
   - 65: {fileID: 1036728376}
   - 23: {fileID: 1036728375}
   - 114: {fileID: 1036728374}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: SecretaryDesks 2
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -2923,7 +2935,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1055521962}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: _VISION
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3108,6 +3120,14 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2023886, guid: 6abc84c00f4997e4b8dc80edd3ab0b66, type: 2}
+      propertyPath: m_CullingMask.m_Bits
+      value: 69632
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064010, guid: 6abc84c00f4997e4b8dc80edd3ab0b66, type: 2}
+      propertyPath: m_CullingMask.m_Bits
+      value: 4294766559
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6abc84c00f4997e4b8dc80edd3ab0b66, type: 2}
   m_IsPrefabParent: 0
@@ -3216,7 +3236,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: c255fae9da19e494b93bbf54926bf64d, type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c255fae9da19e494b93bbf54926bf64d, type: 3}
@@ -3263,6 +3283,10 @@ Prefab:
     - target: {fileID: 400000, guid: c5901b703970ef648ba9c6eb453cd135, type: 3}
       propertyPath: m_RootOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: c5901b703970ef648ba9c6eb453cd135, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2300000, guid: c5901b703970ef648ba9c6eb453cd135, type: 3}
@@ -3389,6 +3413,10 @@ Prefab:
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 55dca96c27e231f4b8451b6b7dc9aa93, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 55dca96c27e231f4b8451b6b7dc9aa93, type: 3}
   m_IsPrefabParent: 0
@@ -3482,7 +3510,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1274832412}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: _VISION
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3516,7 +3544,7 @@ GameObject:
   - 65: {fileID: 1335558793}
   - 23: {fileID: 1335558792}
   - 114: {fileID: 1335558791}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Hall_MainHallWay_T_VISION_Collider
   m_TagString: Vision
   m_Icon: {fileID: 0}
@@ -3547,7 +3575,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfb7feceb0c6ea142a022347ed8b6517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startWithValue: 0
+  StartWithValue: 0
   Walls: []
   Insides: []
 --- !u!23 &1335558792
@@ -3668,7 +3696,7 @@ GameObject:
   - 65: {fileID: 1384278774}
   - 23: {fileID: 1384278773}
   - 114: {fileID: 1384278776}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: Obs
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -3891,7 +3919,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 0221c767fb74fc941be4cc6bd55ab54c, type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 0221c767fb74fc941be4cc6bd55ab54c, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -3952,7 +3980,7 @@ GameObject:
   - 65: {fileID: 1483539309}
   - 23: {fileID: 1483539308}
   - 114: {fileID: 1483539307}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: StaticWall
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -4342,7 +4370,7 @@ GameObject:
   - 65: {fileID: 1664126700}
   - 23: {fileID: 1664126699}
   - 114: {fileID: 1664126698}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: MainHallWay_VISION_2_Collider
   m_TagString: Vision
   m_Icon: {fileID: 0}
@@ -4373,7 +4401,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfb7feceb0c6ea142a022347ed8b6517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startWithValue: 0
+  StartWithValue: 0
   Walls:
   - {fileID: 601054106}
   - {fileID: 213573565}
@@ -4436,7 +4464,7 @@ GameObject:
   - 65: {fileID: 1687665433}
   - 23: {fileID: 1687665432}
   - 114: {fileID: 1687665435}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: Obs
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -4680,7 +4708,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1773073530}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: StaticObstacles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4761,7 +4789,7 @@ GameObject:
   - 65: {fileID: 1812735738}
   - 23: {fileID: 1812735737}
   - 114: {fileID: 1812735740}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: Obs
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -4906,7 +4934,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: c6349d018e0e2c94296bd5c12170997d, type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: c6349d018e0e2c94296bd5c12170997d, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -4978,6 +5006,10 @@ Prefab:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: e8ca0ee92b3e9424c989b47e7dea2a01, type: 2}
+    - target: {fileID: 100000, guid: 38ee1e0cbe0e5844aaa27365c4c87ed4, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 38ee1e0cbe0e5844aaa27365c4c87ed4, type: 3}
   m_IsPrefabParent: 0
@@ -5059,6 +5091,10 @@ Prefab:
     - target: {fileID: 400000, guid: 21cebb2d848b57a4cb757ac5404b1686, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.060000002
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 21cebb2d848b57a4cb757ac5404b1686, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 21cebb2d848b57a4cb757ac5404b1686, type: 3}
@@ -5153,7 +5189,7 @@ GameObject:
   - 65: {fileID: 1894491335}
   - 23: {fileID: 1894491334}
   - 114: {fileID: 1894491333}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: Obs
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -5300,6 +5336,10 @@ Prefab:
       propertyPath: m_LocalScale.z
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 4fd5f89b33c5d2d478cd2f6038ca3f41, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4fd5f89b33c5d2d478cd2f6038ca3f41, type: 3}
   m_IsPrefabParent: 0
@@ -5319,7 +5359,7 @@ GameObject:
   - 65: {fileID: 1924364426}
   - 23: {fileID: 1924364425}
   - 114: {fileID: 1924364424}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: StaticWall
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -5434,14 +5474,7 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 11478386, guid: f1cab6c5ce27ac04ab9460c6fb78ffef, type: 2}
-    - {fileID: 11460266, guid: f1cab6c5ce27ac04ab9460c6fb78ffef, type: 2}
-    - {fileID: 11452132, guid: f1cab6c5ce27ac04ab9460c6fb78ffef, type: 2}
-    - {fileID: 11461774, guid: f1cab6c5ce27ac04ab9460c6fb78ffef, type: 2}
-    - {fileID: 11484472, guid: f1cab6c5ce27ac04ab9460c6fb78ffef, type: 2}
-    - {fileID: 19568306, guid: f1cab6c5ce27ac04ab9460c6fb78ffef, type: 2}
-    - {fileID: 11425870, guid: f1cab6c5ce27ac04ab9460c6fb78ffef, type: 2}
+    m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f1cab6c5ce27ac04ab9460c6fb78ffef, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1967534465
@@ -5456,7 +5489,7 @@ GameObject:
   - 65: {fileID: 1967534468}
   - 23: {fileID: 1967534467}
   - 114: {fileID: 1967534466}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SecretaryOffice_VISION_Collider
   m_TagString: Vision
   m_Icon: {fileID: 0}
@@ -5474,7 +5507,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfb7feceb0c6ea142a022347ed8b6517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startWithValue: 0
+  StartWithValue: 0
   Walls:
   - {fileID: 461962691}
   Insides:
@@ -5549,7 +5582,7 @@ GameObject:
   - 65: {fileID: 1993774032}
   - 23: {fileID: 1993774031}
   - 114: {fileID: 1993774030}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: SecretaryDesks
   m_TagString: WallCut
   m_Icon: {fileID: 0}
@@ -5671,7 +5704,7 @@ GameObject:
   - 65: {fileID: 2040851500}
   - 23: {fileID: 2040851499}
   - 114: {fileID: 2040851498}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: MainHallWay_VISION_Collider
   m_TagString: Vision
   m_Icon: {fileID: 0}
@@ -5702,7 +5735,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfb7feceb0c6ea142a022347ed8b6517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startWithValue: 0
+  StartWithValue: 0
   Walls:
   - {fileID: 804340834}
   - {fileID: 1404169876}
@@ -5802,7 +5835,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: e48591a00a6b6014989d45d8531a0495, type: 3}
       propertyPath: m_Layer
-      value: 16
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: e48591a00a6b6014989d45d8531a0495, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -5827,7 +5860,7 @@ GameObject:
   - 65: {fileID: 2085432465}
   - 23: {fileID: 2085432464}
   - 114: {fileID: 2085432463}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: FrontDesk2
   m_TagString: WallCut
   m_Icon: {fileID: 0}

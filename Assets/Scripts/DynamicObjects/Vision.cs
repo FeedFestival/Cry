@@ -4,16 +4,16 @@ using System.Collections.Generic;
 
 public class Vision : MonoBehaviour
 {
-    MeshRenderer parentVision;
-    public bool startWithValue = false;
+    private MeshRenderer _parentVision;
+    public bool StartWithValue = false;
 
     public List<GameObject> Walls;
     public List<GameObject> Insides;
 
     void Start()
     {
-        parentVision = this.transform.parent.transform.gameObject.GetComponent<MeshRenderer>();
-        parentVision.enabled = startWithValue;
+        _parentVision = transform.parent.transform.gameObject.GetComponent<MeshRenderer>();
+        _parentVision.enabled = StartWithValue;
 
         if (Insides.Count > 0)
             foreach (GameObject i in Insides)
@@ -24,13 +24,19 @@ public class Vision : MonoBehaviour
 
     void OnTriggerEnter(Collider unitObject)
     {
-        ShowWall(false);
-        parentVision.enabled = true;
+        if (unitObject.CompareTag("Player"))
+        {
+            ShowWall(false);
+            _parentVision.enabled = true;
+        }
     }
     void OnTriggerExit(Collider unitObject)
     {
-        ShowWall(true);
-        parentVision.enabled = false;
+        if (unitObject.CompareTag("Player"))
+        {
+            ShowWall(true);
+            _parentVision.enabled = false;
+        }
     }
 
     public void ShowWall(bool value)

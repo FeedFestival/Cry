@@ -47,6 +47,11 @@ namespace Assets.Scripts.Types
         Player, Enemy
     }
 
+    public enum Layer
+    {
+        Default = 0, TransparentFx = 1, IgnoreRaycast = 2, Water = 4, UserInterface = 5, Map = 8, WallOrObstacle = 9, Vision = 10, UnitInteraction = 11, FogOfWar = 12
+    }
+
     #region Player [State]
 
     public enum MainCharacterProperties
@@ -146,7 +151,7 @@ namespace Assets.Scripts.Types
 
     public enum DoorState
     {
-        Closed,Open,Locked
+        Closed, Open, Locked
     }
 
     public enum DoorStartPoint
@@ -156,7 +161,7 @@ namespace Assets.Scripts.Types
 
     public enum DoorAnimations
     {
-        OpenDoor,CloseDoor,OpenDoorBack,CloseDoorBack
+        OpenDoor, CloseDoor, OpenDoorBack, CloseDoorBack
     }
 
     #endregion

@@ -79,16 +79,21 @@ public class UnitProperties : MonoBehaviour
         FeetCollider = Logic.CreateFromPrefab("Prefabs/3DComponents/FeetCollider", ThisUnitTransform.position);
         FeetCollider.tag = Tag;
         FeetCollider.name = "FeetCollider";
-        FeetCollider.layer = 12;
+        FeetCollider.layer = (int)Layer.UnitInteraction;
         FeetCollider.transform.parent = ThisUnitTransform;
         FeetCollider.transform.position = new Vector3(FeetCollider.transform.position.x, FeetCollider.transform.position.y + 0.2f, FeetCollider.transform.position.z);
 
-        var visionCollider = Logic.CreateFromPrefab("Prefabs/3DComponents/FeetCollider", ThisUnitTransform.position);
-        visionCollider.name = "VisionCollider";
-        visionCollider.layer = 0;
-        visionCollider.transform.parent = ThisUnitTransform;
-        visionCollider.transform.position = new Vector3(visionCollider.transform.position.x, visionCollider.transform.position.y - 0.2f, visionCollider.transform.position.z);
-        visionCollider.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        if (_unit.UnitType == UnitType.Player)
+        {
+            var visionCollider = Logic.CreateFromPrefab("Prefabs/3DComponents/FeetCollider", ThisUnitTransform.position);
+            visionCollider.tag = Tag;
+            visionCollider.name = "VisionCollider";
+            visionCollider.layer = (int) Layer.Vision;
+            visionCollider.transform.parent = ThisUnitTransform;
+            visionCollider.transform.position = new Vector3(visionCollider.transform.position.x,
+                visionCollider.transform.position.y - 0.2f, visionCollider.transform.position.z);
+            visionCollider.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        }
 
         ThisUnitTarget.Initialize(_unit);
     }
