@@ -12,32 +12,66 @@ public class UnitController : MonoBehaviour
     public NavMeshPath NavMeshPath;
 
     // properties
+    private float _walkTurnSpeed;
+    private float _lerpTime;
+
+    private float _followRootLerpSpeed;
+    private float _followRootRotationSpeed;
+
     private bool _startLerp;
     private bool _lerpComplete;
+    private bool _lerpRotComplete = true;
+
+    private Vector3 _lastTarget;
 
     private Vector3 _rootPosLerp;
 
     private float _xRot;
     private float _yRot;
 
+    private float _onTableTurnSpeed;
+    private float _onTableMoveSpeed;
     private bool _onTableMove;
     private Vector3 _tableTargetVector;
 
-    private Vector3 _lastTarget;
-    private bool _lerpRotComplete = true;
+    private float _turnSpeed;
+    private bool _startTurningToTarget;
+    private Vector3 _turnToTargetPosition;
+    public Vector3 TurnToTargetPosition
+    {
+        set
+        {
+            _turnToTargetPosition = value;
+            _startTurningToTarget = true;
+        }
+        get { return _turnToTargetPosition; }
+    }
 
     public void Initialize(Unit unit)
     {
         _unit = unit;
         NavMeshPath = new NavMeshPath();
+
+        //can change depending on import
+        _xRot = 90f;    // 90
+        _yRot = 90f;    // 180
+
+        _lerpTime = 0.6f;
+
+        _followRootLerpSpeed = 11.0f;
+        _followRootRotationSpeed = 10.0f;
+
+        _walkTurnSpeed = 11.0f;
+
+        _onTableMoveSpeed = 3.0f;
+        _onTableTurnSpeed = 7.0f;
+        _turnSpeed = 4.0f;
     }
 
     public void StopMoving(bool targetReached = true)
     {
         if (_unit.UnitFeetState == UnitFeetState.OnGround)
         {
-            //Debug.Log("Reaching (Player action in mind = " + _unit.UnitActionInMind + ")");
-
             if (_unit.NavMeshAgent)
             {
                 if (_unit.NavMeshAgent.enabled == false)
@@ -103,6 +137,8 @@ public class UnitController : MonoBehaviour
 
     public void ResumeMoving()
     {
+        _startTurningToTarget = false;
+
         if (_unit.NavMeshAgent.enabled == false)
             _unit.NavMeshAgent.enabled = true;
         _unit.NavMeshAgent.SetDestination(_unit.UnitProperties.ThisUnitTarget.transform.position);
@@ -117,7 +153,6 @@ public class UnitController : MonoBehaviour
         _unit.ActivateTarget(true);
 
         ResumeMoving();
-        //_unit.AIPath.SearchPath();
     }
 
     public void SetPathToTarget(Vector3 targetVector)
@@ -145,16 +180,20 @@ public class UnitController : MonoBehaviour
     public Vector3[] GetNavMeshPathCorners(Vector3 start, Vector3 goal)
     {
         NavMesh.CalculatePath(start, goal, NavMesh.AllAreas, NavMeshPath);
-
         return NavMeshPath.corners;
     }
 
-    private IEnumerator LerpToRotation(float lerpTime)
+    private IEnumerator LerpToPosition()
+    {
+        yield return new WaitForSeconds(_lerpTime);
+        _lerpComplete = true;
+    }
+    private IEnumerator LerpToRotation()
     {
         _unit.NavMeshAgent.updateRotation = false;
         _lerpRotComplete = false;
 
-        yield return new WaitForSeconds(lerpTime);
+        yield return new WaitForSeconds(_lerpTime);
 
         _lerpRotComplete = true;
         _unit.NavMeshAgent.updateRotation = true;
@@ -164,7 +203,7 @@ public class UnitController : MonoBehaviour
     {
         if (_unit)
         {
-            if (_unit.UnitFeetState == UnitFeetState.OnTable)
+            if (_unit.UnitFeetState == UnitFeetState.OnTable && _onTableMove)
             {
                 MoveOnTable();
                 return;
@@ -181,30 +220,31 @@ public class UnitController : MonoBehaviour
                     _lastTarget = _unit.NavMeshAgent.steeringTarget;
 
                     if (_lerpRotComplete == true)
-                        StartCoroutine(LerpToRotation(0.6f));
+                        StartCoroutine(LerpToRotation());
                 }
                 if (_lerpRotComplete == false && _lastTarget != Vector3.zero)
                 {
                     _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
-                        Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _lastTarget),
-                        11f);
+                        Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _lastTarget), _walkTurnSpeed);
                 }
+            }
+
+            if (_unit.UnitPrimaryState == UnitPrimaryState.Idle && _startTurningToTarget)
+            {
+                _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
+                                Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _turnToTargetPosition), _turnSpeed);
             }
         }
     }
 
     private void MoveOnTable()
     {
-        if (_onTableMove)
-        {
-            _unit.UnitProperties.ThisUnitTransform.position = Vector3.Lerp(_unit.UnitProperties.ThisUnitTransform.position,
-                                                                        _tableTargetVector,
-                                                                        Time.deltaTime * 3);
+        _unit.UnitProperties.ThisUnitTransform.position = Vector3.Lerp(_unit.UnitProperties.ThisUnitTransform.position,
+                                                                    _tableTargetVector,
+                                                                    Time.deltaTime * _onTableMoveSpeed);
 
-            _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
-                Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _tableTargetVector),
-                7f);
-        }
+        _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
+            Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _tableTargetVector), _onTableTurnSpeed);
     }
 
     private void FollowRoot()
@@ -213,16 +253,13 @@ public class UnitController : MonoBehaviour
         {
             if (_startLerp == false)
             {
-                _xRot = 90f;
-                _yRot = 90f;
-
                 _startLerp = true;
-                StartCoroutine(LerpToPosition(0.6f));
+                StartCoroutine(LerpToPosition());
             }
             _rootPosLerp = new Vector3(_unit.UnitProperties.Root.position.x,
                                     _unit.UnitProperties.Root.position.y,
                                     _unit.UnitProperties.Root.position.z);
-            _unit.UnitProperties.ThisUnitTransform.position = Vector3.Lerp(_unit.UnitProperties.ThisUnitTransform.position, _rootPosLerp, Time.deltaTime * 11);
+            _unit.UnitProperties.ThisUnitTransform.position = Vector3.Lerp(_unit.UnitProperties.ThisUnitTransform.position, _rootPosLerp, Time.deltaTime * _followRootLerpSpeed);
         }
         if (_lerpComplete)
         {
@@ -233,10 +270,10 @@ public class UnitController : MonoBehaviour
         }
 
         var rot = new Quaternion();
-        rot.eulerAngles = new Vector3(_unit.UnitProperties.Root.eulerAngles.x + _xRot,  //90
-                                    _unit.UnitProperties.Root.eulerAngles.y - _yRot,   //180
+        rot.eulerAngles = new Vector3(_unit.UnitProperties.Root.eulerAngles.x + _xRot,
+                                    _unit.UnitProperties.Root.eulerAngles.y - _yRot,
                                     _unit.UnitProperties.Root.eulerAngles.z);
-        transform.rotation = Quaternion.Slerp(_unit.UnitProperties.ThisUnitTransform.rotation, rot, Time.deltaTime * 10);
+        transform.rotation = Quaternion.Slerp(_unit.UnitProperties.ThisUnitTransform.rotation, rot, Time.deltaTime * _followRootRotationSpeed);
     }
 
     public void ExitAction(bool toAnotherAction = false)
@@ -248,12 +285,6 @@ public class UnitController : MonoBehaviour
 
         if (toAnotherAction == false)
             StopMoving();
-    }
-
-    private IEnumerator LerpToPosition(float lerpTime)
-    {
-        yield return new WaitForSeconds(lerpTime);
-        _lerpComplete = true;
     }
 
     private void KeepOnGround()

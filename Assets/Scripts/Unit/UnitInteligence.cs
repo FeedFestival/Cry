@@ -1,57 +1,82 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets.Scripts.Types;
+using UnityEngine.UI;
 
 public class UnitInteligence : MonoBehaviour
 {
     private Unit _unit;
 
-    //private FieldOfView fieldOfView;
-    //private FieldOfHearing fieldOfHearing;
+    public Image StatusBar;
+    private float _statusBarTime;
+    private float _statusBarMax = 100.0f;
+    private float _statusBarCurr;
 
-    /*
-     * State bools
-     */
-    private bool _isHearingPlayer;
-    private bool _isPlayerInFieldOfView;
-    private bool _isSeeingPlayer;
+    private Vector3 _alertPosition;
+    private Vector3 _lastPlayerPosition;
 
-    [HideInInspector]
-    public bool IsHearingPlayer
+    private AlertType _alertType;
+    public AlertType AlertType
     {
+        get { return _alertType; }
         set
         {
-            _isHearingPlayer = value;
-            if (_isHearingPlayer)
+            _alertType = value;
+            switch (_alertType)
             {
-                Debug.Log("AI [" + _unit.gameObject.name + "] - is hearing player near him.");
+                case AlertType.HearingPlayer:
 
-                // turn to investigate
+                    BehaviourState = BehaviourState.Suspicious;
+
+                    _unit.UnitController.TurnToTargetPosition = _alertPosition;
+                    break;
+
+                case AlertType.PlayerInFieldOfView:
+
+                    // shot ray
+                    var direction = Logic.GetDirection(transform.position, _alertPosition);
+                    RaycastHit hit;
+                    if (Physics.Raycast(new Ray(transform.position, direction), out hit, 2.5f))
+                    {
+                        if (hit.transform.tag == "Player")
+                        {
+                            _lastPlayerPosition = _alertPosition;
+                            StartCoroutine(CheckIfPlayer());
+                        }
+                    }
+                    
+                    // if you hit Player
+                    // wait for 1 or 2 seconds
+                    // then at the end check if you can still hit the Player with the ray.
+                    // then its time to go ape shit on his ass son
+
+                    break;
+
+                case AlertType.SeeingPlayer:
+
+                    break;
             }
         }
-        get { return _isHearingPlayer; }
     }
-    [HideInInspector]
-    public bool IsPlayerInFieldOfView
+
+    private BehaviourState _behaviourState;
+    public BehaviourState BehaviourState
     {
+        get { return _behaviourState; }
         set
         {
-            _isPlayerInFieldOfView = value;
-            if (_isPlayerInFieldOfView)
-                Debug.Log("AI [" + _unit.gameObject.name + "] - THINKS is seeing the player in front of him. IS UNSURE");
+            _behaviourState = value;
+            switch (_behaviourState)
+            {
+                case BehaviourState.Suspicious:
+                    StatusBar.color = new Color32(251, 225, 76, 255); // yellow
+                    break;
+                case BehaviourState.Agressive:
+                    StatusBar.color = new Color32(255, 87, 76, 255); // red
+                    break;
+            }
+            StartCoroutine(StartStatusBar());
         }
-        get { return _isPlayerInFieldOfView; }
-    }
-    [HideInInspector]
-    public bool IsSeeingPlayer
-    {
-        set
-        {
-            _isSeeingPlayer = value;
-            if (_isSeeingPlayer)
-                Debug.Log("AI [" + _unit.gameObject.name + "] - IS seeing the player in front of him.");
-        }
-        get { return _isSeeingPlayer; }
     }
 
     public void Initialize(Unit unit)
@@ -75,5 +100,57 @@ public class UnitInteligence : MonoBehaviour
         go.transform.eulerAngles = new Vector3(270, 0, 0);
 
         go.GetComponent<FieldOfHearing>().Initialize(this);
+    }
+
+
+    private void BehaviourLogic()
+    {
+        //switch (hideFlags)
+        //{
+
+
+        //}
+    }
+
+
+
+
+
+    private IEnumerator CheckIfPlayer()
+    {
+        yield return new WaitForSeconds(1.2f);
+
+        var direction = Logic.GetDirection(transform.position, _alertPosition);
+        RaycastHit hit;
+        if (Physics.Raycast(new Ray(transform.position, direction), out hit, 2.5f))
+        {
+            if (hit.transform.tag == "Player")
+            {
+                Debug.Log("GOT HIM !!");
+            }
+        }
+    }
+
+    private IEnumerator StartStatusBar()
+    {
+        _statusBarTime = 10.0f;
+        _statusBarCurr = _statusBarMax; // 100
+        var statusBarRepeatRate = _statusBarTime / _statusBarMax;
+
+        InvokeRepeating("UpdateStatusBar", 0, statusBarRepeatRate); // ex: 3s -> 0.33
+
+        yield return new WaitForSeconds(_statusBarTime);
+
+    }
+    private void UpdateStatusBar()
+    {
+        _statusBarCurr -= 1.0f;
+        StatusBar.fillAmount = _statusBarCurr / _statusBarMax; //70 / 100 = 0.7 din bara
+    }
+
+    public void Alert(Vector3 position, AlertType alertType)
+    {
+        _alertPosition = position;
+        AlertType = alertType;
     }
 }

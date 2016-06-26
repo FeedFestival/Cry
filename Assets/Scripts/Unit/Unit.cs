@@ -161,7 +161,10 @@ public class Unit : MonoBehaviour
                 break;
 
             case UnitType.Enemy:
-                transform.gameObject.AddComponent<UnitInteligence>();
+
+                UnitInteligence = GetComponent<UnitInteligence>();
+                if (UnitInteligence == null)
+                    transform.gameObject.AddComponent<UnitInteligence>();
 
                 UnitInteligence = GetComponent<UnitInteligence>();
                 UnitInteligence.Initialize(this);

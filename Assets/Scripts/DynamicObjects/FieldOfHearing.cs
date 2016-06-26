@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Types;
 
 public class FieldOfHearing : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class FieldOfHearing : MonoBehaviour
     void OnTriggerEnter(Collider unitObject)
     {
         if (unitObject.CompareTag("Player"))
-            _unitInteligence.IsHearingPlayer = true;
+            _unitInteligence.Alert(unitObject.transform.position, AlertType.HearingPlayer);
     }
     void OnTriggerExit(Collider unitObject)
     {

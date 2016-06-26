@@ -39,42 +39,42 @@ public class _memory_JohnKillsFather : MonoBehaviour
         var act = acts[currentIndex];
         //Debug.Log(act.Time);
 
-        if (act.hasAnimation)
+        if (act.HasAnimation)
         {
             if (act.Time == 0)
-                act.Time = act.animTime;
-            act.Actor.ActorAnimator.Play(act.animString);
+                act.Time = act.AnimTime;
+            act.Actor.ActorAnimator.Play(act.AnimString);
         }
 
-        if (act.hasLine)
+        if (act.HasLine)
         {
-            if (act.hasAnimation == false || act.Time == 0)
-                act.Time = act.lineTime;
-            act.Actor.SayLine(act.Line, act.DialogBoxType, act.lineTime);
+            if (act.HasAnimation == false || act.Time == 0)
+                act.Time = act.LineTime;
+            act.Actor.SayLine(act.Line, act.DialogBoxType, act.LineTime);
         }
 
-        if (act.nextImmediate)
+        if (act.NextImmediate)
         {
-            currentIndex = act.nextImmediateIndex;
+            currentIndex = act.NextImmediateIndex;
             ContinueCutscene();
 
-            if (act.nextIndex == 0)
+            if (act.NextIndex == 0)
                 return;
         }
 
-        if (act.endPoint == false)
+        if (act.EndPoint == false)
             StartCoroutine(WaitForAct(act));
     }
 
     IEnumerator WaitForAct(ActObject act)
     {
         yield return new WaitForSeconds(act.Time);
-        if (act.hasPauseAfter)
+        if (act.HasPauseAfter)
             yield return new WaitForSeconds(act.PauseLength);
 
-        if (currentIndex < act.nextIndex)
+        if (currentIndex < act.NextIndex)
         {
-            currentIndex = act.nextIndex;
+            currentIndex = act.NextIndex;
             //Debug.Log(act.nextIndex);
             ContinueCutscene();
         }
@@ -86,134 +86,134 @@ public class _memory_JohnKillsFather : MonoBehaviour
 
         acts[1] = new ActObject
         {
-            nextImmediate = true,
-            nextImmediateIndex = 2,
-            nextIndex = 0,  //  No next index;
+            NextImmediate = true,
+            NextImmediateIndex = 2,
+            NextIndex = 0,  //  No next index;
 
             Actor = John,
 
-            hasAnimation = true,
-            animString = "Act1_John_Idle",
+            HasAnimation = true,
+            AnimString = "Act1_John_Idle",
         };
 
         acts[2] = new ActObject
         {
-            nextIndex = 3,
+            NextIndex = 3,
 
             Actor = Father,
 
-            hasLine = true,
+            HasLine = true,
             Line = "John. I've been looking everywhere for you. \n Why haven't you stuck with the plan ?",
-            lineTime = Father.ActorAnimator["Act1_Father_Walks_ToScene"].length,
+            LineTime = Father.ActorAnimator["Act1_Father_Walks_ToScene"].length,
             DialogBoxType = DialogBoxType.LeftSide_2Sentence,
 
-            hasAnimation = true,
-            animString = "Act1_Father_Walks_ToScene",
-            animTime = Father.ActorAnimator["Act1_Father_Walks_ToScene"].length,
+            HasAnimation = true,
+            AnimString = "Act1_Father_Walks_ToScene",
+            AnimTime = Father.ActorAnimator["Act1_Father_Walks_ToScene"].length,
 
-            hasPauseAfter = true,
+            HasPauseAfter = true,
             PauseLength = 3f
         };
 
         acts[3] = new ActObject
         {
-            nextIndex = 4,
+            NextIndex = 4,
 
             Actor = Father,
 
-            hasLine = true,
+            HasLine = true,
             Line = "John? ...",
-            lineTime = 2.5f,
+            LineTime = 2.5f,
             DialogBoxType = DialogBoxType.LeftSide_1SmallSentence,
 
-            hasPauseAfter = true,
+            HasPauseAfter = true,
             PauseLength = 2f
         };
 
         acts[4] = new ActObject
         {
-            nextIndex = 5,
+            NextIndex = 5,
 
             Actor = John,
 
-            hasLine = true,
+            HasLine = true,
             Line = "I had to do it ... I had too",
-            lineTime = John.ActorAnimator["Act1_John_Idle_SweatClear"].length,
+            LineTime = John.ActorAnimator["Act1_John_Idle_SweatClear"].length,
             DialogBoxType = DialogBoxType.LeftSide_1MediumSentence,
 
-            hasAnimation = true,
-            animString = "Act1_John_Idle_SweatClear",
-            animTime = John.ActorAnimator["Act1_John_Idle_SweatClear"].length,
+            HasAnimation = true,
+            AnimString = "Act1_John_Idle_SweatClear",
+            AnimTime = John.ActorAnimator["Act1_John_Idle_SweatClear"].length,
 
-            hasPauseAfter = true,
+            HasPauseAfter = true,
             PauseLength = 2f
         };
 
         acts[5] = new ActObject
         {
-            nextImmediate = true,
-            nextImmediateIndex = 6,
-            nextIndex = 7,  // this is immediate so we set nextIndex as the index at wich we want the conversation to continue.
+            NextImmediate = true,
+            NextImmediateIndex = 6,
+            NextIndex = 7,  // this is immediate so we set nextIndex as the index at wich we want the conversation to continue.
 
             Actor = John,
 
-            hasAnimation = true,
-            animString = "Act1_JohnLightsUpACigarette",
-            animTime = John.ActorAnimator["Act1_JohnLightsUpACigarette"].length,
+            HasAnimation = true,
+            AnimString = "Act1_JohnLightsUpACigarette",
+            AnimTime = John.ActorAnimator["Act1_JohnLightsUpACigarette"].length,
         };
 
         acts[6] = new ActObject
         {
-            endPoint = true,
+            EndPoint = true,
 
             Actor = Father,
 
-            hasLine = true,
+            HasLine = true,
             Line = "What did you do John ?",
-            lineTime = John.ActorAnimator["Act1_JohnLightsUpACigarette"].length / 4,
+            LineTime = John.ActorAnimator["Act1_JohnLightsUpACigarette"].length / 4,
             DialogBoxType = DialogBoxType.LeftSide_1MediumSentence,
         };
 
         acts[7] = new ActObject
         {
-            nextImmediate = true,
-            nextImmediateIndex = 8,
-            nextIndex = 10,
+            NextImmediate = true,
+            NextImmediateIndex = 8,
+            NextIndex = 10,
 
             Actor = John,
 
-            hasAnimation = true,
-            animString = "Act1_John_Cigarette_Turn_ToFather_Talk",
-            animTime = John.ActorAnimator["Act1_John_Cigarette_Turn_ToFather_Talk"].length,
+            HasAnimation = true,
+            AnimString = "Act1_John_Cigarette_Turn_ToFather_Talk",
+            AnimTime = John.ActorAnimator["Act1_John_Cigarette_Turn_ToFather_Talk"].length,
 
-            hasPauseAfter = true,
+            HasPauseAfter = true,
             PauseLength = 1f
         };
 
         acts[8] = new ActObject
         {
-            nextIndex = 9,
+            NextIndex = 9,
 
             Actor = John,
 
-            hasLine = true,
+            HasLine = true,
             Line = "Only we know of it now ...",
-            lineTime = 2f,
+            LineTime = 2f,
             DialogBoxType = DialogBoxType.LeftSide_1MediumSentence,
  
-            hasPauseAfter = true,
+            HasPauseAfter = true,
             PauseLength = 4.5f
         };
 
         acts[9] = new ActObject
         {
-            endPoint = true,
+            EndPoint = true,
 
             Actor = John,
 
-            hasLine = true,
+            HasLine = true,
             Line = "Only you, and me ...",
-            lineTime = John.ActorAnimator["Act1_John_Cigarette_Turn_ToFather_Talk"].length,
+            LineTime = John.ActorAnimator["Act1_John_Cigarette_Turn_ToFather_Talk"].length,
             DialogBoxType = DialogBoxType.LeftSide_1MediumSentence,
         };
     }

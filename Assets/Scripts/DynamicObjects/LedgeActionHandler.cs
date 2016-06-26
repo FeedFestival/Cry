@@ -67,8 +67,8 @@ public class LedgeActionHandler : MonoBehaviour
 
         var pos1 = Ledge.CircleAction_Position + (Ledge.thisTransform.forward / distanceThreshold);
 
-        var _bottom_Position = new Vector3(Ledge.CircleAction_Position.x, Ledge.Bottom_YPos - 0.5f, Ledge.CircleAction_Position.z);
-        var pos2 = _bottom_Position + (Ledge.thisTransform.forward / distanceThreshold);
+        var bottomPosition = new Vector3(Ledge.CircleAction_Position.x, Ledge.Bottom_YPos - 0.5f, Ledge.CircleAction_Position.z);
+        var pos2 = bottomPosition + (Ledge.thisTransform.forward / distanceThreshold);
 
         var direction = Logic.GetDirection(pos1, pos2);
 

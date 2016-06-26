@@ -39,7 +39,6 @@ namespace Assets.Scripts.Types
         None = 0, ESC_COG = 1, W_HANDS = 2,
         I_INVENTORY = 8, INVENTORYDROP = 9
     }
-
     #endregion
 
     public enum UnitType
@@ -90,6 +89,20 @@ namespace Assets.Scripts.Types
     {
         None = 0, Ladder = 1, ChairClimb = 2, ChairGrab = 3, LedgeClimb = 4, TableClimb = 5, GrabTable = 6, PickupObject = 7, OpenCloseDoor = 8
     }
+
+    #region AI
+
+    public enum AlertType
+    {
+        HearingPlayer, PlayerInFieldOfView, SeeingPlayer
+    }
+
+    public enum BehaviourState
+    {
+        Agressive, Suspicious, Idle
+    }
+
+    #endregion
 
     #region Chair
 
@@ -259,25 +272,25 @@ namespace Assets.Scripts.Types
 
     public class ActObject
     {
-        public bool nextImmediate;
-        public int nextImmediateIndex;
-        public int nextIndex;
-        public bool endPoint;
+        public bool NextImmediate;
+        public int NextImmediateIndex;
+        public int NextIndex;
+        public bool EndPoint;
 
         public Actor Actor;
 
-        public bool hasAnimation;
-        public string animString;
-        public float animTime;
+        public bool HasAnimation;
+        public string AnimString;
+        public float AnimTime;
 
-        public bool hasLine;
+        public bool HasLine;
         public string Line;
-        public float lineTime;
+        public float LineTime;
         public DialogBoxType DialogBoxType;
 
         public float Time;
 
-        public bool hasPauseAfter;
+        public bool HasPauseAfter;
         public float PauseLength;
     }
 
@@ -407,9 +420,9 @@ namespace Assets.Scripts.Types
                     var z = ((k1 * A.z) + (BD * E.z)) / (k1 + BD);
 
                     // And we get the point on the edge.
-                    var ThePointOnTheEdge = new Vector3(x, y, z);
+                    var thePointOnTheEdge = new Vector3(x, y, z);
 
-                    return ThePointOnTheEdge;
+                    return thePointOnTheEdge;
                 }
                 else
                 {
