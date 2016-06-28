@@ -22,6 +22,12 @@ public class UnitProperties : MonoBehaviour
         }
     }
 
+    [HideInInspector]
+    public Vector3 HeadPosition
+    {
+        get { return new Vector3(ThisUnitTransform.position.x, ThisUnitTransform.position.y + 1.8f, ThisUnitTransform.position.z); }
+    }
+
     public float DamageRecoverySpeed;
     public float DefenseSpeed;
 

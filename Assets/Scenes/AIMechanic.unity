@@ -3799,6 +3799,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97e43cf5beac5cc4b9e121b26fbe9bb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  StatusBarPanel: {fileID: 1805708043}
   StatusBar: {fileID: 1761553278}
 --- !u!1 &1384278771
 GameObject:

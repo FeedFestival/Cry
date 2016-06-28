@@ -12,7 +12,8 @@ public class TriggerExtension : MonoBehaviour
         set
         {
             _showMesh = value;
-            GetComponent<MeshRenderer>().enabled = _showMesh;
+            if (GetComponent<MeshRenderer>())
+                GetComponent<MeshRenderer>().enabled = _showMesh;
         }
         get { return _showMesh; }
     }

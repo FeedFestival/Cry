@@ -7,14 +7,18 @@ public class UnitInteligence : MonoBehaviour
 {
     private Unit _unit;
 
+    private int _layerMask;
+
+    public GameObject StatusBarPanel;
+
     public Image StatusBar;
     private float _statusBarTime;
-    private float _statusBarMax = 100.0f;
+    private readonly float _statusBarMax = 100.0f;
     private float _statusBarCurr;
 
     private Vector3 _alertPosition;
     private Vector3 _lastPlayerPosition;
-
+    
     private AlertType _alertType;
     public AlertType AlertType
     {
@@ -33,23 +37,11 @@ public class UnitInteligence : MonoBehaviour
 
                 case AlertType.PlayerInFieldOfView:
 
-                    // shot ray
-                    var direction = Logic.GetDirection(transform.position, _alertPosition);
-                    RaycastHit hit;
-                    if (Physics.Raycast(new Ray(transform.position, direction), out hit, 2.5f))
+                    if (CheckIfYouCanSeePlayer())
                     {
-                        if (hit.transform.tag == "Player")
-                        {
-                            _lastPlayerPosition = _alertPosition;
-                            StartCoroutine(CheckIfPlayer());
-                        }
+                        _lastPlayerPosition = _alertPosition;
+                        StartCoroutine(Wait(1.2f,_alertType));
                     }
-                    
-                    // if you hit Player
-                    // wait for 1 or 2 seconds
-                    // then at the end check if you can still hit the Player with the ray.
-                    // then its time to go ape shit on his ass son
-
                     break;
 
                 case AlertType.SeeingPlayer:
@@ -69,13 +61,34 @@ public class UnitInteligence : MonoBehaviour
             switch (_behaviourState)
             {
                 case BehaviourState.Suspicious:
+
+                    if (StatusBarPanel.activeSelf == false)
+                        StatusBarPanel.SetActive(true);
+
                     StatusBar.color = new Color32(251, 225, 76, 255); // yellow
+
+                    StartStatusBar();
+                    StartCoroutine("WaitStatus");
+
                     break;
                 case BehaviourState.Agressive:
                     StatusBar.color = new Color32(255, 87, 76, 255); // red
+
+                    CancelInvoke("UpdateStatusBar");
+                    StartStatusBar();
+
+                    StopCoroutine("WaitStatus");
+                    StartCoroutine("WaitStatus");   
+
+                    break;
+
+                case BehaviourState.Idle:
+
+                    if (StatusBarPanel.activeSelf)
+                        StatusBarPanel.SetActive(false);
+
                     break;
             }
-            StartCoroutine(StartStatusBar());
         }
     }
 
@@ -97,11 +110,19 @@ public class UnitInteligence : MonoBehaviour
         go.transform.parent = transform;
         go.name = "AI_FieldOfHearing";
         go.layer = 11;
-        go.transform.eulerAngles = new Vector3(270, 0, 0);
+        go.transform.eulerAngles = new Vector3(0, 0, 0);
 
         go.GetComponent<FieldOfHearing>().Initialize(this);
-    }
 
+        // UI
+
+        StatusBarPanel.SetActive(false);
+
+        // layermasks
+        var wallLayerMask = 1 << LayerMask.NameToLayer("WallOrObstacle");
+        var unitLayerMask = 1 << LayerMask.NameToLayer("UnitInteraction");
+        _layerMask = wallLayerMask | unitLayerMask; // Shoot ray only on wallLayer or unitLayer
+    }
 
     private void BehaviourLogic()
     {
@@ -114,34 +135,61 @@ public class UnitInteligence : MonoBehaviour
 
 
 
-
-
-    private IEnumerator CheckIfPlayer()
+    private bool CheckIfYouCanSeePlayer()
     {
-        yield return new WaitForSeconds(1.2f);
-
-        var direction = Logic.GetDirection(transform.position, _alertPosition);
+        var direction = Logic.GetDirection(_unit.UnitProperties.HeadPosition, _alertPosition);
         RaycastHit hit;
-        if (Physics.Raycast(new Ray(transform.position, direction), out hit, 2.5f))
+        if (Physics.Raycast(new Ray(_unit.UnitProperties.HeadPosition, direction), out hit, float.PositiveInfinity, _layerMask))
         {
-            if (hit.transform.tag == "Player")
-            {
-                Debug.Log("GOT HIM !!");
-            }
+            return hit.transform.tag == "Player";
+        }
+        return false;
+    }
+
+    IEnumerator Wait(float time, AlertType condition)
+    {
+        yield return new WaitForSeconds(time);
+
+        switch (condition)
+        {
+            case AlertType.PlayerInFieldOfView:
+                if (CheckIfYouCanSeePlayer())
+                {
+                    BehaviourState = BehaviourState.Agressive;
+                }
+                // else the WaitStatus for Behaviour.Suspicious is going to end the alert.
+                break;
         }
     }
 
-    private IEnumerator StartStatusBar()
+    private void StartStatusBar()
     {
         _statusBarTime = 10.0f;
         _statusBarCurr = _statusBarMax; // 100
         var statusBarRepeatRate = _statusBarTime / _statusBarMax;
 
         InvokeRepeating("UpdateStatusBar", 0, statusBarRepeatRate); // ex: 3s -> 0.33
+    }
 
+    private IEnumerator WaitStatus()
+    {
         yield return new WaitForSeconds(_statusBarTime);
 
+        switch (BehaviourState)
+        {
+            case BehaviourState.Suspicious:
+
+                BehaviourState = BehaviourState.Idle;
+                break;
+
+            case BehaviourState.Agressive:
+                BehaviourState = BehaviourState.Suspicious;
+                break;
+        }
+
+        CancelInvoke("UpdateStatusBar");
     }
+
     private void UpdateStatusBar()
     {
         _statusBarCurr -= 1.0f;
