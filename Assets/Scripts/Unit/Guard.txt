@@ -1,0 +1,23 @@
+Root {
+	Once {
+		BB set time 1 
+	}
+
+	Selector {
+		If [Guard][CheckBehaviourState][enum.BehaviourState.Suspicious] {
+			
+			Decision [Guard][CheckJob] {
+				! [Guard][Nothing]
+				! [Guard][DoJob]
+			}
+		}
+
+		If [Guard][CheckBehaviourState][enum.BehaviourState.Alerted] {
+			! [Guard][Nothing]
+		}
+
+		If [Guard][CheckBehaviourState][enum.BehaviourState.Agressive] {
+			! [Guard][Nothing]
+		}
+	}
+}

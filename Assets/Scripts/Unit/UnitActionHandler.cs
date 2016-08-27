@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Assets.Scripts.Types;
+using Assets.Scripts.Utils;
 
 public class UnitActionHandler : MonoBehaviour
 {

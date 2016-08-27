@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Assets.Scripts.Types;
+using Assets.Scripts.Utils;
+using System;
 
 public class SceneManager : MonoBehaviour
 {
@@ -11,6 +12,17 @@ public class SceneManager : MonoBehaviour
     public Unit Player;
 
     public List<Unit> Enemies;
+
+    private AIUtils _aiUtiles;
+    public AIUtils AIUtils
+    {
+        get
+        {
+            if (_aiUtiles == null)
+                _aiUtiles = GetComponent<AIUtils>();
+            return _aiUtiles;
+        }
+    }
 
     // The only awake function in the game !!
     void Awake()
@@ -57,5 +69,20 @@ public class SceneManager : MonoBehaviour
                     break;
             }
         }
+    }
+
+    public void RecreateDataBase()
+    {
+        var dataService = new DataService("Database.db");
+        dataService.RecreateDB();
+    }
+
+    public void PopulateBehaviours()
+    {
+        var dataService = new DataService("Database.db");
+
+        var list = Logic.DataService.GetNeurons();
+
+        dataService.InsertNeurons(list);
     }
 }

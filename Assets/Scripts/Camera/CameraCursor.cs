@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Assets.Scripts.Types;
+using Assets.Scripts.Utils;
 
 public class CameraCursor : MonoBehaviour
 {
@@ -62,7 +62,8 @@ public class CameraCursor : MonoBehaviour
     {
         if (lastCursor != CursorType.None)
         {
-            GUI.DrawTexture(new Rect(Event.current.mousePosition.x - cursorSizeX / 2.0f, Event.current.mousePosition.y - cursorSizeY / 2.0f, cursorSizeX, cursorSizeY), curentCursor);
+            if (curentCursor != null)
+                GUI.DrawTexture(new Rect(Event.current.mousePosition.x - cursorSizeX / 2.0f, Event.current.mousePosition.y - cursorSizeY / 2.0f, cursorSizeX, cursorSizeY), curentCursor);
         }
         if (drawInventoryItem && showItemInInventory == false)
         {
@@ -103,7 +104,7 @@ public class CameraCursor : MonoBehaviour
         }
     }
 
-    public Vector3 item3DPosition = new Vector3(0,0,0);
+    public Vector3 item3DPosition = new Vector3(0, 0, 0);
     public bool firstTimeMoving3DObject = true;
 
     void Update()
@@ -130,7 +131,7 @@ public class CameraCursor : MonoBehaviour
                 var curPos = GlobalData.Player.UnitInventory.InventoryObjectInHand.InteractiveObject.transform.position;
 
                 GlobalData.Player.UnitInventory.InventoryObjectInHand.InteractiveObject.transform.position = Vector3.Lerp(curPos, item3DPosition, Time.deltaTime * 8f);
-                
+
             }
         }
     }

@@ -1,25 +1,32 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Utils;
 using System.Collections;
-using Assets.Scripts.Types;
-using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class UnitInteligence : MonoBehaviour
 {
     private Unit _unit;
 
-    private int _layerMask;
+    private UnitUI _unitUi;
 
-    public GameObject StatusBarPanel;
+    public AiReactor AiReactor;
 
-    public Image StatusBar;
-    private float _statusBarTime;
-    private readonly float _statusBarMax = 100.0f;
-    private float _statusBarCurr;
+    public bool Alive;
 
-    private Vector3 _alertPosition;
-    private Vector3 _lastPlayerPosition;
-    
+    private List<Neuron> _neurons;
+    public Neuron CurrentNeuron;
+
+    private List<ToDo> ThingsToDo;
+
+    public List<Job> Jobs;
+
+    [SerializeField]
+    public List<BehaviourState> BehaviourStates;
+
+    [SerializeField]
     private AlertType _alertType;
+    [SerializeField]
     public AlertType AlertType
     {
         get { return _alertType; }
@@ -28,70 +35,57 @@ public class UnitInteligence : MonoBehaviour
             _alertType = value;
             switch (_alertType)
             {
-                case AlertType.HearingPlayer:
+                case AlertType.Hearing:
 
-                    BehaviourState = BehaviourState.Suspicious;
-
-                    _unit.UnitController.TurnToTargetPosition = _alertPosition;
+                    if (BehaviourStates.Contains(BehaviourState.Suspicious) == false)
+                        BehaviourStates.Add(BehaviourState.Suspicious);
                     break;
 
-                case AlertType.PlayerInFieldOfView:
+                case AlertType.InFieldOfView:
 
-                    if (CheckIfYouCanSeePlayer())
+                    if (BehaviourStates.Contains(BehaviourState.Alerted) == false)
                     {
-                        _lastPlayerPosition = _alertPosition;
-                        StartCoroutine(Wait(1.2f,_alertType));
+                        if (BehaviourStates.Contains(BehaviourState.Suspicious) == false)
+                            BehaviourStates.Add(BehaviourState.Suspicious);
+                        BehaviourStates.Add(BehaviourState.Alerted);
                     }
                     break;
 
-                case AlertType.SeeingPlayer:
+                case AlertType.Seeing:
 
+                    if (BehaviourStates.Contains(BehaviourState.Agressive) == false)
+                    {
+                        if (BehaviourStates.Contains(BehaviourState.Alerted) == false)
+                        {
+                            if (BehaviourStates.Contains(BehaviourState.Suspicious) == false)
+                                BehaviourStates.Add(BehaviourState.Suspicious);
+                            BehaviourStates.Add(BehaviourState.Alerted);
+                        }
+                        BehaviourStates.Add(BehaviourState.Agressive);
+                    }
                     break;
             }
+
+            EvaluateNeuron();
         }
     }
 
-    private BehaviourState _behaviourState;
-    public BehaviourState BehaviourState
+    private bool _facingAlert;
+    public bool FacingAlert
     {
-        get { return _behaviourState; }
+        get { return _facingAlert; }
         set
         {
-            _behaviourState = value;
-            switch (_behaviourState)
-            {
-                case BehaviourState.Suspicious:
-
-                    if (StatusBarPanel.activeSelf == false)
-                        StatusBarPanel.SetActive(true);
-
-                    StatusBar.color = new Color32(251, 225, 76, 255); // yellow
-
-                    StartStatusBar();
-                    StartCoroutine("WaitStatus");
-
-                    break;
-                case BehaviourState.Agressive:
-                    StatusBar.color = new Color32(255, 87, 76, 255); // red
-
-                    CancelInvoke("UpdateStatusBar");
-                    StartStatusBar();
-
-                    StopCoroutine("WaitStatus");
-                    StartCoroutine("WaitStatus");   
-
-                    break;
-
-                case BehaviourState.Idle:
-
-                    if (StatusBarPanel.activeSelf)
-                        StatusBarPanel.SetActive(false);
-
-                    break;
-            }
+            _facingAlert = value;
+            EvaluateNeuron();
         }
     }
 
+    public Vector3 AlertPosition;
+    private Vector3 _lastPlayerPosition;
+
+    // this has to be moved in UnitProperties (but im lazy :} )
+    private int _layerMask;
     public void Initialize(Unit unit)
     {
         _unit = unit;
@@ -115,29 +109,78 @@ public class UnitInteligence : MonoBehaviour
         go.GetComponent<FieldOfHearing>().Initialize(this);
 
         // UI
+        _unitUi = GetComponent<UnitUI>();
+        _unitUi.Initialize(_unit);
 
-        StatusBarPanel.SetActive(false);
+        AiReactor = GetComponent<AiReactor>();
+        AiReactor.Initialize();
 
         // layermasks
         var wallLayerMask = 1 << LayerMask.NameToLayer("WallOrObstacle");
         var unitLayerMask = 1 << LayerMask.NameToLayer("UnitInteraction");
         _layerMask = wallLayerMask | unitLayerMask; // Shoot ray only on wallLayer or unitLayer
+
+        //StartAI();
     }
 
-    private void BehaviourLogic()
+    private void StartAI()
     {
-        //switch (hideFlags)
-        //{
+        Alive = true;
+        Jobs.Add(Job.Guard); // main ocupation
 
+        _neurons = Logic.Neurons;
 
-        //}
+        ThingsToDo = Logic.GetToDos(Jobs.FirstOrDefault());
+
+        CurrentNeuron = _neurons.FirstOrDefault();
+
+        EvaluateNeuron();
     }
 
-
-
-    private bool CheckIfYouCanSeePlayer()
+    private void EvaluateNeuron()
     {
-        var direction = Logic.GetDirection(_unit.UnitProperties.HeadPosition, _alertPosition);
+        Debug.Log(CurrentNeuron.Self + " do Action: " + CurrentNeuron.Method);
+        CurrentNeuron.Action(_unit);
+    }
+
+    public void EvaluateNextNeuron(bool edge)
+    {
+        CurrentNeuron = Logic.GetChildWithEdge(CurrentNeuron.Id.Value, edge);
+
+        if (CurrentNeuron == null)
+            Debug.LogError("I'm losing my mind.");
+        else
+            EvaluateNeuron();
+    }
+
+    public void FoundSolution()
+    {
+        CurrentNeuron = _neurons.FirstOrDefault();
+    }
+
+    public void DoYourJob()
+    {
+        Debug.Log("Just doing my job.");
+    }
+
+    public void TurnToAlert()
+    {
+        _unit.UnitController.TurnToTargetPosition = AlertPosition;
+        StartCoroutine("WaitStatus");
+    }
+
+    public void TryToSeeEnemy()
+    {
+        if (CheckIfYouCanSeePlayer())
+        {
+            _lastPlayerPosition = AlertPosition;
+            StartCoroutine(Wait(1.2f));
+        }
+    }
+
+    public bool CheckIfYouCanSeePlayer()
+    {
+        var direction = Logic.GetDirection(_unit.UnitProperties.HeadPosition, AlertPosition);
         RaycastHit hit;
         if (Physics.Raycast(new Ray(_unit.UnitProperties.HeadPosition, direction), out hit, float.PositiveInfinity, _layerMask))
         {
@@ -146,59 +189,49 @@ public class UnitInteligence : MonoBehaviour
         return false;
     }
 
-    IEnumerator Wait(float time, AlertType condition)
+    public IEnumerator Wait(float time)
     {
         yield return new WaitForSeconds(time);
 
-        switch (condition)
+        if (CheckIfYouCanSeePlayer())
         {
-            case AlertType.PlayerInFieldOfView:
-                if (CheckIfYouCanSeePlayer())
+            AlertType = AlertType.Seeing;
+            if (BehaviourStates.Contains(BehaviourState.Agressive) == false)
+            {
+                if (BehaviourStates.Contains(BehaviourState.Alerted) == false)
                 {
-                    BehaviourState = BehaviourState.Agressive;
+                    if (BehaviourStates.Contains(BehaviourState.Suspicious) == false)
+                        BehaviourStates.Add(BehaviourState.Suspicious);
+                    BehaviourStates.Add(BehaviourState.Alerted);
                 }
-                // else the WaitStatus for Behaviour.Suspicious is going to end the alert.
-                break;
+                BehaviourStates.Add(BehaviourState.Agressive);
+            }
         }
+        // else the WaitStatus for Behaviour.Suspicious is going to end the alert.
     }
 
-    private void StartStatusBar()
+    public IEnumerator WaitStatus()
     {
-        _statusBarTime = 10.0f;
-        _statusBarCurr = _statusBarMax; // 100
-        var statusBarRepeatRate = _statusBarTime / _statusBarMax;
+        yield return new WaitForSeconds(_unitUi.StatusBarTime);
 
-        InvokeRepeating("UpdateStatusBar", 0, statusBarRepeatRate); // ex: 3s -> 0.33
-    }
+        //switch (BehaviourStates)
+        //{
+        //    case BehaviourState.Suspicious:
 
-    private IEnumerator WaitStatus()
-    {
-        yield return new WaitForSeconds(_statusBarTime);
+        //        BehaviourStates = BehaviourState.Idle;
+        //        break;
 
-        switch (BehaviourState)
-        {
-            case BehaviourState.Suspicious:
+        //    case BehaviourState.Agressive:
+        //        BehaviourStates = BehaviourState.Suspicious;
+        //        break;
+        //}
 
-                BehaviourState = BehaviourState.Idle;
-                break;
-
-            case BehaviourState.Agressive:
-                BehaviourState = BehaviourState.Suspicious;
-                break;
-        }
-
-        CancelInvoke("UpdateStatusBar");
-    }
-
-    private void UpdateStatusBar()
-    {
-        _statusBarCurr -= 1.0f;
-        StatusBar.fillAmount = _statusBarCurr / _statusBarMax; //70 / 100 = 0.7 din bara
+        _unitUi.CancelInvoke("UpdateStatusBar");
     }
 
     public void Alert(Vector3 position, AlertType alertType)
     {
-        _alertPosition = position;
+        AlertPosition = position;
         AlertType = alertType;
     }
 }

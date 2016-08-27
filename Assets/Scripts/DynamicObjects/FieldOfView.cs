@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Assets.Scripts.Types;
+using Assets.Scripts.Utils;
 
 public class FieldOfView : MonoBehaviour
 {
@@ -16,7 +16,7 @@ public class FieldOfView : MonoBehaviour
     void OnTriggerEnter(Collider unitObject)
     {
         if (unitObject.CompareTag("Player"))
-            _unitInteligence.Alert(unitObject.transform.position, AlertType.PlayerInFieldOfView);
+            _unitInteligence.Alert(unitObject.transform.position, AlertType.InFieldOfView);
     }
     void OnTriggerExit(Collider unitObject)
     {

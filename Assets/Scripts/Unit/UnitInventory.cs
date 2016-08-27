@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using Assets.Scripts.Types;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.EventSystems;
+using Assets.Scripts.Utils;
 
 public class UnitInventory : MonoBehaviour
 {

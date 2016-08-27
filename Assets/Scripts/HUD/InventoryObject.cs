@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using Assets.Scripts.Types;
+using Assets.Scripts.Utils;
 
 public class InventoryObject : MonoBehaviour
 {

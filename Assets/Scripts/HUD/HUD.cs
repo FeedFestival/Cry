@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Linq;
 using UnityEngine.UI;
-using Assets.Scripts.Types;
+using Assets.Scripts.Utils;
 using UnityEngine.EventSystems;
 
 public class HUD : MonoBehaviour

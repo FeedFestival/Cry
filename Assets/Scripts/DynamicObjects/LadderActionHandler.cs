@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Assets.Scripts.Types;
+using Assets.Scripts.Utils;
 using System.Collections.Generic;
 
 public class LadderActionHandler : MonoBehaviour

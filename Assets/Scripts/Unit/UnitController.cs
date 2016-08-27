@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Assets.Scripts.Types;
+using Assets.Scripts.Utils;
 
 public class UnitController : MonoBehaviour
 {
@@ -233,6 +233,11 @@ public class UnitController : MonoBehaviour
             {
                 _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
                                 Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _turnToTargetPosition), _turnSpeed);
+                if (Vector3.Angle(_turnToTargetPosition - transform.position, transform.forward) <= 0.2f)
+                {
+                    _unit.UnitInteligence.FacingAlert = true;
+                    _startTurningToTarget = false;
+                }
             }
         }
     }

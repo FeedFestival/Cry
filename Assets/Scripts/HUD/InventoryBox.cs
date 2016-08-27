@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using Assets.Scripts.Types;
+using Assets.Scripts.Utils;
 using UnityEngine.EventSystems;
 
 public class InventoryBox : MonoBehaviour

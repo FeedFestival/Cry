@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Assets.Scripts.Types;
+using Assets.Scripts.Utils;
 
 public class TableProperties : MonoBehaviour
 {

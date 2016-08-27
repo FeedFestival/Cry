@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Assets.Scripts.Types;
+using Assets.Scripts.Utils;
 using System.Collections.Generic;
 
 public class Table : MonoBehaviour
@@ -153,7 +153,7 @@ public class Table : MonoBehaviour
 
         Unit.UnitFeetState = UnitFeetState.OnTable;
 
-        // this is set so we replicate the behaviour of when we climb the table for the first time.
+        // this is set so we replicate the neuron of when we climb the table for the first time.
         Unit.UnitActionHandler.CurentActionType = ActionType.TableClimb;
 
         TableProperties.Table_Top_Collider.gameObject.SetActive(true);
