@@ -229,14 +229,30 @@ public class UnitController : MonoBehaviour
                 }
             }
 
-            if (_unit.UnitPrimaryState == UnitPrimaryState.Idle && _startTurningToTarget)
+            // AI
+            //----------------------
+            if (_unit.UnitInteligence != null)
             {
-                _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
-                                Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _turnToTargetPosition), _turnSpeed);
-                if (Vector3.Angle(_turnToTargetPosition - transform.position, transform.forward) <= 0.2f)
+                if (_unit.UnitPrimaryState == UnitPrimaryState.Idle && _startTurningToTarget)
                 {
-                    _unit.UnitInteligence.FacingAlert = true;
-                    _startTurningToTarget = false;
+                    _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
+                                    Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _turnToTargetPosition), _turnSpeed);
+                    if (Vector3.Angle(_turnToTargetPosition - transform.position, transform.forward) <= 10f)
+                        _unit.UnitInteligence.ActionTowardsAlert = ActionTowardsAlert.FacingAlertPosition;
+                    if (Vector3.Angle(_turnToTargetPosition - transform.position, transform.forward) <= 0.2f)
+                    {
+                        _startTurningToTarget = false;
+                    }
+                }
+
+                if (_unit.UnitInteligence.Enemy != null && _unit.UnitInteligence.ActionTowardsEnemy == ActionTowardsEnemy.LookAtEnemy)
+                {
+                    if (_startTurningToTarget)
+                        _startTurningToTarget = false;
+                    if (Vector3.Angle(_unit.UnitInteligence.Enemy.transform.position - transform.position, transform.forward) > 0.2f)
+                        _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
+                                    Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _unit.UnitInteligence.Enemy.transform.position), _turnSpeed);
+
                 }
             }
         }

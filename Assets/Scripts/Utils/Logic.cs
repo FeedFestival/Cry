@@ -45,13 +45,16 @@ namespace Assets.Scripts.Utils
     {
         Player, Enemy
     }
-
-    public enum Layer
-    {
-        Default = 0, TransparentFx = 1, IgnoreRaycast = 2, Water = 4, UserInterface = 5, Map = 8, WallOrObstacle = 9, Vision = 10, UnitInteraction = 11, FogOfWar = 12
-    }
-
+    
     #region Player [State]
+
+    public enum BodyPart
+    {
+        Head,
+        HandR,
+        HandL,
+        Torso
+    }
 
     public enum MainCharacterProperties
     {
@@ -298,13 +301,7 @@ namespace Assets.Scripts.Utils
     /***********************/
     //        ACTING STUFF  -   END
     /***********************/
-
-    #region AI
-
     
-
-    #endregion
-
     public static class Logic
     {
         public static int GetSmallestDistance(float[] distances)

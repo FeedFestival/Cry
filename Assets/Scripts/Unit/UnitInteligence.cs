@@ -2,90 +2,86 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BAD;
 using UnityEngine;
 
 public class UnitInteligence : MonoBehaviour
 {
     private Unit _unit;
 
-    private UnitUI _unitUi;
+    public UnitUI UnitUi;
 
     public AiReactor AiReactor;
-
-    public bool Alive;
-
-    private List<Neuron> _neurons;
-    public Neuron CurrentNeuron;
-
-    private List<ToDo> ThingsToDo;
-
-    public List<Job> Jobs;
-
-    [SerializeField]
-    public List<BehaviourState> BehaviourStates;
-
-    [SerializeField]
-    private AlertType _alertType;
-    [SerializeField]
-    public AlertType AlertType
+    
+    public Branch GuardNeuronRoot
     {
-        get { return _alertType; }
-        set
+        get
         {
-            _alertType = value;
-            switch (_alertType)
-            {
-                case AlertType.Hearing:
-
-                    if (BehaviourStates.Contains(BehaviourState.Suspicious) == false)
-                        BehaviourStates.Add(BehaviourState.Suspicious);
-                    break;
-
-                case AlertType.InFieldOfView:
-
-                    if (BehaviourStates.Contains(BehaviourState.Alerted) == false)
-                    {
-                        if (BehaviourStates.Contains(BehaviourState.Suspicious) == false)
-                            BehaviourStates.Add(BehaviourState.Suspicious);
-                        BehaviourStates.Add(BehaviourState.Alerted);
-                    }
-                    break;
-
-                case AlertType.Seeing:
-
-                    if (BehaviourStates.Contains(BehaviourState.Agressive) == false)
-                    {
-                        if (BehaviourStates.Contains(BehaviourState.Alerted) == false)
-                        {
-                            if (BehaviourStates.Contains(BehaviourState.Suspicious) == false)
-                                BehaviourStates.Add(BehaviourState.Suspicious);
-                            BehaviourStates.Add(BehaviourState.Alerted);
-                        }
-                        BehaviourStates.Add(BehaviourState.Agressive);
-                    }
-                    break;
-            }
-
-            EvaluateNeuron();
-        }
-    }
-
-    private bool _facingAlert;
-    public bool FacingAlert
-    {
-        get { return _facingAlert; }
-        set
-        {
-            _facingAlert = value;
-            EvaluateNeuron();
+            if (_guardNeuronBranch == null)
+                _guardNeuronBranch = Parser.Parse(gameObject, GlobalData.SceneManager.AIUtils.GuardNeurons.text);
+            return _guardNeuronBranch;
         }
     }
 
     public Vector3 AlertPosition;
-    private Vector3 _lastPlayerPosition;
+
+    //private List<ToDo> ThingsToDo;
+
+    public List<Job> Jobs;
+
+    [SerializeField]
+    public MainState MainState;
+
+    [SerializeField]
+    public BehaviourState PreviousBehaviourState;
+    
+    [SerializeField]
+    public BehaviourState BehaviourState
+    {
+        get { return _behaviourState; }
+        set
+        {
+            PreviousBehaviourState = _behaviourState;
+            _behaviourState = value;
+            UnitUi.ChangeState(_behaviourState);
+        }
+    }
+    
+    public Unit Enemy;
+
+    [SerializeField]
+    public List<AlertType> AlertsType;
+    
+    [SerializeField]
+    public ActionTowardsAlert ActionTowardsAlert
+    {
+        get { return _actionTowardsAlert; }
+        set
+        {
+            _actionTowardsAlert = value;
+            // try to see enemy before ai tree kicks in.
+            if (_actionTowardsAlert == ActionTowardsAlert.FacingAlertPosition)
+            {
+                GetComponent<Guard>().TryToSeeEnemy();
+            }
+        }
+    }
+
+    [SerializeField]
+    public EnemyState EnemyState;
+
+    [SerializeField]
+    public AggressionLevel AggressionLevel;
+
+    [SerializeField]
+    public ActionTowardsEnemy ActionTowardsEnemy;
+
+    [HideInInspector]
+    public float TryToSeeEnemyTime = 1f;
 
     // this has to be moved in UnitProperties (but im lazy :} )
-    private int _layerMask;
+    public int LayerMask;
+
     public void Initialize(Unit unit)
     {
         _unit = unit;
@@ -109,129 +105,69 @@ public class UnitInteligence : MonoBehaviour
         go.GetComponent<FieldOfHearing>().Initialize(this);
 
         // UI
-        _unitUi = GetComponent<UnitUI>();
-        _unitUi.Initialize(_unit);
+        UnitUi = GetComponent<UnitUI>();
+        UnitUi.Initialize(_unit);
 
         AiReactor = GetComponent<AiReactor>();
-        AiReactor.Initialize();
 
         // layermasks
-        var wallLayerMask = 1 << LayerMask.NameToLayer("WallOrObstacle");
-        var unitLayerMask = 1 << LayerMask.NameToLayer("UnitInteraction");
-        _layerMask = wallLayerMask | unitLayerMask; // Shoot ray only on wallLayer or unitLayer
+        
+        LayerMask = GlobalData.WallLayerMask | GlobalData.SensoryVisionLayerMask; // Shoot ray only on wallLayer or unitLayer
 
-        //StartAI();
+        StartAI();
     }
 
     private void StartAI()
     {
-        Alive = true;
         Jobs.Add(Job.Guard); // main ocupation
 
-        _neurons = Logic.Neurons;
-
-        ThingsToDo = Logic.GetToDos(Jobs.FirstOrDefault());
-
-        CurrentNeuron = _neurons.FirstOrDefault();
-
-        EvaluateNeuron();
+        AiReactor.Initialize(_unit);
     }
 
-    private void EvaluateNeuron()
+    public void Alert(Unit unit, AlertType alertType, Vector3 position = new Vector3())
     {
-        Debug.Log(CurrentNeuron.Self + " do Action: " + CurrentNeuron.Method);
-        CurrentNeuron.Action(_unit);
-    }
-
-    public void EvaluateNextNeuron(bool edge)
-    {
-        CurrentNeuron = Logic.GetChildWithEdge(CurrentNeuron.Id.Value, edge);
-
-        if (CurrentNeuron == null)
-            Debug.LogError("I'm losing my mind.");
+        if (unit != null)
+        {
+            Enemy = unit;
+            AlertPosition = unit.transform.position;
+        }
         else
-            EvaluateNeuron();
-    }
-
-    public void FoundSolution()
-    {
-        CurrentNeuron = _neurons.FirstOrDefault();
-    }
-
-    public void DoYourJob()
-    {
-        Debug.Log("Just doing my job.");
-    }
-
-    public void TurnToAlert()
-    {
-        _unit.UnitController.TurnToTargetPosition = AlertPosition;
-        StartCoroutine("WaitStatus");
-    }
-
-    public void TryToSeeEnemy()
-    {
-        if (CheckIfYouCanSeePlayer())
         {
-            _lastPlayerPosition = AlertPosition;
-            StartCoroutine(Wait(1.2f));
+            AlertPosition = position;
+        }
+        MainState = MainState.Alerted;
+        AddAlert(alertType);
+    }
+    
+    public void AddAlert(AlertType alertType)
+    {
+        if (AlertsType.Contains(alertType) == false)
+            AlertsType.Add(alertType);
+        switch (alertType)
+        {
+            case AlertType.Hearing:
+                BehaviourState = BehaviourState.Suspicious;
+                break;
+            case AlertType.InFieldOfView:
+                //BehaviourState = BehaviourState.Aggressive;
+                break;
+            case AlertType.Seeing:
+                BehaviourState = BehaviourState.Aggressive;
+                break;
         }
     }
 
-    public bool CheckIfYouCanSeePlayer()
+    public void RemoveAlert(AlertType alertType)
     {
-        var direction = Logic.GetDirection(_unit.UnitProperties.HeadPosition, AlertPosition);
-        RaycastHit hit;
-        if (Physics.Raycast(new Ray(_unit.UnitProperties.HeadPosition, direction), out hit, float.PositiveInfinity, _layerMask))
-        {
-            return hit.transform.tag == "Player";
-        }
-        return false;
+        if (alertType == AlertType.InFieldOfView)
+            Enemy = null;
+        if (AlertsType.Contains(alertType))
+            AlertsType.Remove(alertType);
     }
 
-    public IEnumerator Wait(float time)
-    {
-        yield return new WaitForSeconds(time);
-
-        if (CheckIfYouCanSeePlayer())
-        {
-            AlertType = AlertType.Seeing;
-            if (BehaviourStates.Contains(BehaviourState.Agressive) == false)
-            {
-                if (BehaviourStates.Contains(BehaviourState.Alerted) == false)
-                {
-                    if (BehaviourStates.Contains(BehaviourState.Suspicious) == false)
-                        BehaviourStates.Add(BehaviourState.Suspicious);
-                    BehaviourStates.Add(BehaviourState.Alerted);
-                }
-                BehaviourStates.Add(BehaviourState.Agressive);
-            }
-        }
-        // else the WaitStatus for Behaviour.Suspicious is going to end the alert.
-    }
-
-    public IEnumerator WaitStatus()
-    {
-        yield return new WaitForSeconds(_unitUi.StatusBarTime);
-
-        //switch (BehaviourStates)
-        //{
-        //    case BehaviourState.Suspicious:
-
-        //        BehaviourStates = BehaviourState.Idle;
-        //        break;
-
-        //    case BehaviourState.Agressive:
-        //        BehaviourStates = BehaviourState.Suspicious;
-        //        break;
-        //}
-
-        _unitUi.CancelInvoke("UpdateStatusBar");
-    }
-
-    public void Alert(Vector3 position, AlertType alertType)
-    {
-        AlertPosition = position;
-        AlertType = alertType;
-    }
+    private Branch _guardNeuronBranch;
+    [SerializeField]
+    private BehaviourState _behaviourState;
+    [SerializeField]
+    private ActionTowardsAlert _actionTowardsAlert;
 }

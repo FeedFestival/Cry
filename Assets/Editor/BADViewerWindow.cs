@@ -12,6 +12,9 @@ namespace BAD
         Rect cursor;
         List<Connector> connectors = new List<Connector> ();
 
+        float panX = 0;
+        float panY = 0;
+
         void DrawNode (Node node)
         {
             GUI.color = node.running ? Color.yellow : Color.white;
@@ -100,13 +103,27 @@ namespace BAD
         }
 
         void OnGUI ()
-        { 
+        {
+            Rect panRect = new Rect(panX, panY, 100000, 100000);
+
+            GUI.BeginGroup(panRect);
+
             GUILayout.BeginHorizontal ();
             GUILayout.FlexibleSpace ();
             EditorGUILayout.ObjectField (reactor, typeof(AiReactor), true);
             GUILayout.EndHorizontal ();
             OnDrawGUI ();
 
+            GUI.EndGroup();
+
+            Event e = Event.current;
+            if (e.type == EventType.MouseDrag && (e.button == 0 || e.button == 1 || e.button == 2) && panRect.Contains(e.mousePosition))
+            {
+                panX += Event.current.delta.x;
+                panY += Event.current.delta.y;
+            }
+
+            Repaint();
         }
 
         void Update ()

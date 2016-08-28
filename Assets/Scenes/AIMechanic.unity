@@ -3813,11 +3813,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97e43cf5beac5cc4b9e121b26fbe9bb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Alive: 0
-  Jobs: 
-  BehaviourStates: 
-  _alertType: 0
+  UnitUi: {fileID: 0}
+  AiReactor: {fileID: 0}
   AlertPosition: {x: 0, y: 0, z: 0}
+  Jobs: 
+  MainState: 0
+  PreviousBehaviourState: 0
+  behaviourState: 0
+  AlertsType: 
+  ActionTowardsAlert: 0
+  EnemyState: 0
+  AggressionLevel: 0
+  ActionTowardsEnemy: 0
+  TryToSeeEnemyTime: 1
+  LayerMask: 0
 --- !u!114 &1352991638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3843,8 +3852,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8427b25d48056c94d80e711d09de77e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TickDuration: 1
-  BadCode: {fileID: 4900000, guid: 7871383c689c77447ac6d5239ff69b91, type: 3}
+  TickDuration: 0.01
 --- !u!1 &1384278771
 GameObject:
   m_ObjectHideFlags: 0

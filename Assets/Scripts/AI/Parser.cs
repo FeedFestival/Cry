@@ -124,12 +124,12 @@ namespace BAD
             }
         }
 
-        static bool debug = true;
+        public static bool Debug = true;
 
         static void DebugLog(object msg)
         {
-            if (debug)
-                Debug.Log(msg.ToString());
+            if (Debug)
+                UnityEngine.Debug.Log(msg.ToString());
         }
 
     }

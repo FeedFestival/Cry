@@ -22,9 +22,9 @@ public class UnitUI : MonoBehaviour
         StatusBarPanel.SetActive(false);
     }
     
-    public void ChangeState(BehaviourState neuronState)
+    public void ChangeState(BehaviourState behaviourState)
     {
-        switch (neuronState)
+        switch (behaviourState)
         {
             case BehaviourState.Suspicious:
 
@@ -32,16 +32,17 @@ public class UnitUI : MonoBehaviour
                     StatusBarPanel.SetActive(true);
 
                 StatusBar.color = new Color32(251, 225, 76, 255); // yellow
-
-                StartStatusBar();
+                StartStatusBar("Yellow");
                 
                 break;
-            case BehaviourState.Agressive:
+            case BehaviourState.Aggressive:
                 StatusBar.color = new Color32(255, 87, 76, 255); // red
 
-                CancelInvoke("UpdateStatusBar");
-                StartStatusBar();
+                CancelInvoke("UpdateYellowBar");
+                StatusBar.fillAmount = 100;
                 
+                //StartStatusBar("Red");
+
                 break;
 
             case BehaviourState.Idle:
@@ -53,18 +54,39 @@ public class UnitUI : MonoBehaviour
         }
     }
 
-    public void UpdateStatusBar()
+    public void UpdateYellowBar()
     {
+        //Debug.Log(_statusBarCurr);
+
         _statusBarCurr -= 1.0f;
-        StatusBar.fillAmount = _statusBarCurr / _statusBarMax; //70 / 100 = 0.7 din bara
+        StatusBar.fillAmount = _statusBarCurr / _statusBarMax;
+
+        if (_statusBarCurr < 1)
+        {
+            CancelInvoke("UpdateYellowBar");
+
+            Unit.UnitInteligence.MainState = MainState.Calm;
+            Unit.UnitInteligence.ActionTowardsAlert = ActionTowardsAlert.NoAlert;
+        }
     }
 
-    public void StartStatusBar()
+    public void UpdateRedBar()
+    {
+        //Debug.Log(_statusBarCurr);
+
+        _statusBarCurr -= 1.0f;
+        StatusBar.fillAmount = _statusBarCurr / _statusBarMax;
+
+        if (_statusBarCurr < 1)
+            CancelInvoke("UpdateRedBar");
+    }
+
+    public void StartStatusBar(string color)
     {
         StatusBarTime = 10.0f;
         _statusBarCurr = _statusBarMax; // 100
         var statusBarRepeatRate = StatusBarTime / _statusBarMax;
 
-        InvokeRepeating("UpdateStatusBar", 0, statusBarRepeatRate); // ex: 3s -> 0.33
+        InvokeRepeating("Update" + color + "Bar", 0, statusBarRepeatRate); // ex: 3s -> 0.33
     }
 }

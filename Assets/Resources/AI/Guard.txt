@@ -1,0 +1,49 @@
+Root {
+	Once {
+		BB set time 0.2
+	}
+
+	Selector {
+		
+		If [Guard][CheckMainState][enum.MainState.Alerted] {
+
+			Selector {
+				If [Guard][CheckBehaviourState][enum.BehaviourState.Suspicious] {
+
+					Decision [Guard][CheckActionTowardsAlert][enum.ActionTowardsAlert.FacingAlertPosition] {
+					
+						! [Guard][TurnToAlert]
+
+						! [Guard][TryToSeeEnemy]
+					}
+				}
+
+				If [Guard][CheckBehaviourState][enum.BehaviourState.Aggressive] {
+
+					Decision [Guard][CheckIfYouCanSeePlayer] {
+
+						! [Guard][InvestigateLastKnownLocation]
+
+						Decision [Guard][CheckActionTowardsEnemy][enum.ActionTowardsEnemy.ReduceDistance] {
+							
+						}
+					}
+
+				}
+			}
+		}
+
+		If [Guard][CheckMainState][enum.MainState.Calm] {
+			Decision [Guard][CheckBehaviourState][enum.BehaviourState.DoingJob] {
+				
+				Decision [Guard][CheckJob] {
+						! [Guard][Nothing]
+						! [Guard][DoJob]
+					}
+
+				! [Guard][Nothing]
+			}
+		}
+
+	}
+}

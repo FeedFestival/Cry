@@ -5,6 +5,8 @@ using BAD;
 
 public class AiReactor : MonoBehaviour
 {
+    private Unit _unit;
+
     public float TickDuration = 0.1f;
     [System.NonSerialized]
     public bool Fastforward;
@@ -19,33 +21,81 @@ public class AiReactor : MonoBehaviour
 
     public List<Node> RunningGraphs = new List<Node>();
 
-    public TextAsset BadCode;
-
     public Blackboard Blackboard = new Blackboard();
 
     public IEnumerator ReactorReaction;
 
-    public void Initialize()
+    public void Initialize(Unit unit)
     {
-        var root = Parser.Parse(gameObject, BadCode.text);
-        Parse(root);
-        RunningGraphs.Add(root);
-        ReactorReaction = RunReactor(root.GetNodeTask());
+        _unit = unit;
+
+        Parser.Debug = false;
+        StartReactor(_unit.UnitInteligence.GuardNeuronRoot);
+    }
+
+    private Branch _currentBranch;
+
+    public void StartReactor(Branch branch)
+    {
+        if (ReactorReaction != null)
+            StopCoroutine(ReactorReaction);
+        RunningGraphs.Clear();
+
+        _currentBranch = branch;
+        Parse(_currentBranch);
+
+        RunningGraphs.Add(_currentBranch);
+        ReactorReaction = RunReactor(_currentBranch.GetNodeTask());
+
         StartCoroutine(ReactorReaction);
     }
 
-    void Parse(Node node)
+    public void StopReactor()
     {
-        node.reactor = this;
+        StopCoroutine(ReactorReaction);
+        RunningGraphs.Clear();
+
+        Parse(_currentBranch, true);
+    }
+    
+    void Parse(Node node, bool reset = false)
+    {
+        if (reset)
+        {
+            node.state = null;
+            node.reactor = null;
+            node.running = false;
+        }
+        else
+        {
+            node.reactor = this;
+        }
         var branch = node as Branch;
         if (branch != null)
         {
             foreach (var child in branch.children)
             {
-                Parse(child);
+                Parse(child, reset);
             }
         }
     }
+
+    //void deactivateNodes(Node node)
+    //{
+    //    node.arguments = null;
+    //    node.enabled = false;
+    //    node.running = false;
+    //    node.state = null;
+
+    //    var branch = node as Branch;
+    //    if (branch != null)
+    //    {
+    //        foreach (var child in branch.children)
+    //        {
+    //            deactivateNodes(child);
+    //        }
+    //    }
+    //}
 
     IEnumerator RunReactor(IEnumerator<NodeResult> task)
     {

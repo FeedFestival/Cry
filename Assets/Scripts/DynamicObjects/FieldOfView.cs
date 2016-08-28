@@ -15,12 +15,16 @@ public class FieldOfView : MonoBehaviour
 
     void OnTriggerEnter(Collider unitObject)
     {
-        if (unitObject.CompareTag("Player"))
-            _unitInteligence.Alert(unitObject.transform.position, AlertType.InFieldOfView);
+        if (unitObject.CompareTag("Player") && unitObject.name == "FeetCollider")
+            _unitInteligence.Alert(unitObject.transform.parent.GetComponent<Unit>(), AlertType.InFieldOfView);
     }
     void OnTriggerExit(Collider unitObject)
     {
-        //if (unitObject.CompareTag("Player"))
-        //    Debug.Log("exit" + unitObject);
+        if (unitObject.CompareTag("Player") && unitObject.name == "FeetCollider")
+        {
+            if (_unitInteligence.ActionTowardsAlert == ActionTowardsAlert.FacingAlertPosition)
+                _unitInteligence.ActionTowardsAlert = ActionTowardsAlert.FacingAlertPosition;
+            _unitInteligence.RemoveAlert(AlertType.InFieldOfView);
+        }
     }
 }

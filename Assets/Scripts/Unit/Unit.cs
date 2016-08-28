@@ -83,7 +83,7 @@ public class Unit : MonoBehaviour
 
     [HideInInspector]
     public MainCharacterProperties[] MainCharacterProperties;
-    
+
     [HideInInspector]
     public UnitController UnitController;
     [HideInInspector]
@@ -164,9 +164,10 @@ public class Unit : MonoBehaviour
 
                 UnitInteligence = GetComponent<UnitInteligence>();
                 if (UnitInteligence == null)
+                {
                     transform.gameObject.AddComponent<UnitInteligence>();
-
-                UnitInteligence = GetComponent<UnitInteligence>();
+                    UnitInteligence = GetComponent<UnitInteligence>();
+                }
                 UnitInteligence.Initialize(this);
                 break;
         }
