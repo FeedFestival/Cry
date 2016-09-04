@@ -15,6 +15,8 @@ public class Unit : MonoBehaviour
     //  --------------------------------------------------------------------------------
     //public SceneManager SceneManager;
 
+    public bool DebugThis;
+
     [Header("Player States")]
     //  --------------------------------------------------------------------------------
 

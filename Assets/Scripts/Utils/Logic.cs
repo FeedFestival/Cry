@@ -56,6 +56,13 @@ namespace Assets.Scripts.Utils
         Torso
     }
 
+    public enum MovementSpeedStates
+    {
+        Calm,
+        Normal,
+        Hurry
+    }
+
     public enum MainCharacterProperties
     {
         HasBackPack, HasJacket

@@ -3749,6 +3749,7 @@ GameObject:
   - 114: {fileID: 1352991637}
   - 114: {fileID: 1352991638}
   - 114: {fileID: 1352991639}
+  - 114: {fileID: 1352991640}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -3782,6 +3783,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdea1639770cee740a2e8b0d6641b460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DebugThis: 0
   UnitType: 0
   PlayerActionInMind: 0
   UnitActionInMind: 0
@@ -3813,20 +3815,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97e43cf5beac5cc4b9e121b26fbe9bb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DebugThis: 1
   UnitUi: {fileID: 0}
   AiReactor: {fileID: 0}
-  AlertPosition: {x: 0, y: 0, z: 0}
-  Jobs: 
+  Player: {fileID: 0}
+  PlayerInFOV: 0
+  SoundPosition: {x: 0, y: 0, z: 0}
+  MoveTowardsPlayer: 0
+  _lastPlayerPos: {x: 0, y: 0, z: 0}
+  _initialPlayerPos: {x: 0, y: 0, z: 0}
   MainState: 0
-  PreviousBehaviourState: 0
-  behaviourState: 0
-  AlertsType: 
+  MainAction: 0
+  Alerts: 
   ActionTowardsAlert: 0
-  EnemyState: 0
-  AggressionLevel: 0
-  ActionTowardsEnemy: 0
-  TryToSeeEnemyTime: 1
-  LayerMask: 0
 --- !u!114 &1352991638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3840,7 +3841,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StatusBar: {fileID: 1761553278}
   StatusBarTime: 0
+  UnitStats: {fileID: 1261971781}
   StatusBarPanel: {fileID: 1805708043}
+  PreviousAlertLevel: 0
 --- !u!114 &1352991639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3852,7 +3855,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8427b25d48056c94d80e711d09de77e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TickDuration: 0.01
+  TickDuration: 0.05
+--- !u!114 &1352991640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1352991634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1e825536a5e23b4482e1212cf7a3dc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1384278771
 GameObject:
   m_ObjectHideFlags: 0
@@ -4834,7 +4848,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.341, b: 0.29703718, a: 1}
+  m_Color: {r: 1, g: 0.51805276, b: 0.20588237, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

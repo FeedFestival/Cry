@@ -24,7 +24,8 @@ public class UnitBasicAnimation : MonoBehaviour
                 _unit.UnitAnimator.CrossFade(_unit.UnitProperties.ArmatureName + unitPrimaryState);
             return;
         }
-        Debug.LogError("Can't play animation["+ unitPrimaryState + "] for unit[" + _unit.gameObject.name + "], error: There is no Model(UnitAnimator) for this Unit. [" + _unit.UnitAnimator + "]");
+        if (_unit.DebugThis)
+            Debug.LogError("Can't play animation[" + unitPrimaryState + "] for unit[" + _unit.gameObject.name + "], error: There is no Model(UnitAnimator) for this Unit. [" + _unit.UnitAnimator + "]");
     }
 
     void SetupAnimations()
@@ -35,6 +36,7 @@ public class UnitBasicAnimation : MonoBehaviour
             _unit.UnitAnimator[UnitPrimaryState.Walk.ToString()].wrapMode = WrapMode.Loop;
             return;
         }
-        Debug.LogError("Can't setup animations for unit[" + _unit.gameObject.name + "]. error: There is no Model(UnitAnimator) for this Unit. [" + _unit.UnitAnimator + "]");
+        if (_unit.DebugThis)
+            Debug.LogError("Can't setup animations for unit[" + _unit.gameObject.name + "]. error: There is no Model(UnitAnimator) for this Unit. [" + _unit.UnitAnimator + "]");
     }
 }

@@ -16,261 +16,201 @@ public class Guard : MonoBehaviour
         }
     }
 
-    private Vector3 _lastPlayerPosition;
+    ////--
 
-    private bool CheckJobs(List<Job> states, List<Job> jobs, bool all = false)
+    private enum waitFor
     {
-        bool exist = false;
-        foreach (var state in states)
-        {
-            foreach (var job in jobs)
-            {
-                if (state == job)
-                {
-                    exist = true;
-                    if (all)
-                        break;
-                }
-            }
-        }
-
-        return exist;
-    }
-
-    private bool CheckBehaviour(BehaviourState behaviour)
-    {
-        if (Unit.UnitInteligence.BehaviourState == behaviour)
-        {
-            return true;
-        }
-        return false;
-    }
-    private bool CheckBehaviourState(List<BehaviourState> behaviourStates)
-    {
-        foreach (var b in behaviourStates)
-        {
-            if (Unit.UnitInteligence.BehaviourState == b)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    private bool CheckBehaviourStates(List<BehaviourState> behaviourStates, List<BehaviourState> behaviours, bool all = false)
-    {
-        bool exist = false;
-        foreach (var behaviourState in behaviourStates)
-        {
-            foreach (var key in behaviours)
-            {
-                if (key == behaviourState)
-                {
-                    exist = true;
-                    if (all)
-                        break;
-                }
-            }
-        }
-        return exist;
-    }
-    private bool CheckAlertTypes(AlertType alertType)
-    {
-        foreach (var key in Unit.UnitInteligence.AlertsType)
-        {
-            if (key == alertType)
-            {
-                return true;
-            }
-        }
-        return false;
+        Nothing,
+        CheckAlert,
+        DoJob,
+        ReturnSuccess,
+        AlertLevel,
+        ReduceDistance,
+        InvestigateLastKnownLocation,
+        ChasePlayer,
+        InvestigateSoundLocation
     }
 
     public bool CheckMainState(MainState mainState)
     {
-        if (Unit.UnitInteligence.MainState == mainState)
-            return true;
-        return false;
+        return Unit.UnitInteligence.MainState == mainState;
     }
 
-    public bool CheckBehaviourState(BehaviourState behaviour)
+    public IEnumerator<NodeResult> CheckAlert()
     {
-        return CheckBehaviour(behaviour);
-    }
-
-    public bool CheckActionTowardsAlert(ActionTowardsAlert actionTowardsAlert)
-    {
-        if (Unit.UnitInteligence.ActionTowardsAlert == actionTowardsAlert)
-            return true;
-        return false;
-    }
-
-    public bool CheckEnemyState(EnemyState enemyState)
-    {
-        if (Unit.UnitInteligence.EnemyState == enemyState)
-            return true;
-        return false;
-    }
-
-    public bool CheckActionTowardsEnemy(ActionTowardsEnemy actionTowardsEnemy)
-    {
-        if (Unit.UnitInteligence.ActionTowardsEnemy == actionTowardsEnemy)
-            return true;
-        return false;
-    }
-
-    public void CheckAlertType()
-    {
-        //Unit.UnitInteligence.EvaluateNextNeuron(CheckAlertTypes(Unit.UnitInteligence.AlertType, Unit.UnitInteligence.CurrentNeuron.KeywordList));
-    }
-
-    public void InvestigateLastKnownLocation()
-    {
-        //Debug.Log("Move to last knows location of the alert.");
-    }
-
-    public void DoYourJob()
-    {
-        Debug.Log("Just doing my job.");
-    }
-
-    public void TurnToAlert()
-    {
-        Unit.UnitController.TurnToTargetPosition = Unit.UnitInteligence.AlertPosition;
-        //StartCoroutine("WaitStatus");
-    }
-
-    // See Sensory System
-    //------------------------------------------------------
-
-    private bool _tryToSeeEnemy_Running;
-    public void TryToSeeEnemy()
-    {
-        if (_tryToSeeEnemy_Running == false)
+        bool exit;
+        if (Unit.UnitInteligence.PlayerInFOV && Unit.UnitInteligence.Alerts.Contains(Alert.Seeing))
         {
-            _tryToSeeEnemy_Running = true;
-            if (CheckIfYouCanSeePlayer())
-            {
-                _lastPlayerPosition = Unit.UnitInteligence.AlertPosition;
-                Unit.UnitInteligence.ActionTowardsEnemy = ActionTowardsEnemy.LookAtEnemy;
+            exit = true;
+        }
+        else
+        {
+            exit = false;
+            Unit.UnitInteligence.MainAction = MainAction.CheckingAlert;
+            Unit.UnitInteligence.AlertLevel = AlertLevel.Suspicious;
+            Unit.UnitController.IsTurningToSound = true;
+        }
 
-                if (_waitToSeeEnemy_Running == false)
-                    StartCoroutine(WaitToSeeEnemy(Unit.UnitInteligence.TryToSeeEnemyTime));
+        SetWaitFor(waitFor.CheckAlert, exit);
+        yield return WhenIsDone();
+    }
+
+    public bool CheckMainAction(MainAction mainAction)
+    {
+        return Unit.UnitInteligence.MainAction == mainAction;
+    }
+
+    public bool CheckAlertType(Alert alertType)
+    {
+        return Unit.UnitInteligence.Alerts.Contains(alertType);
+    }
+
+    public IEnumerator<NodeResult> WaitSetAlertLevel(AlertLevel alertLevel)
+    {
+        Unit.UnitInteligence.AlertLevel = alertLevel;
+
+        SetWaitFor(waitFor.AlertLevel);
+        yield return WhenIsDone();
+    }
+
+    public bool SetAlertLevel(AlertLevel alertLevel)
+    {
+        Unit.UnitInteligence.AlertLevel = alertLevel;
+        return true;
+    }
+
+    public IEnumerator<NodeResult> ReduceDistance()
+    {
+        if (Unit.UnitInteligence.MainAction == MainAction.MoveTowardsPlayer)
+        {
+            if (_exitValue)
+                Unit.UnitInteligence.MainAction = MainAction.DoingNothing;
+            yield return WhenIsDone();
+        }
+        Unit.UnitInteligence.MainAction = MainAction.MoveTowardsPlayer;
+        Unit.UnitInteligence.InitialPlayerPos = GlobalData.Player.transform.position;
+
+        SetWaitFor(waitFor.ReduceDistance);
+        yield return WhenIsDone();
+    }
+
+    public IEnumerator<NodeResult> DoInvestigateLastKnownLocation()
+    {
+        if (Unit.UnitInteligence.MainAction == MainAction.InvestigateLastKnownLocation)
+        {
+            if (_exitValue)
+                Unit.UnitInteligence.MainAction = MainAction.DoingNothing;
+            yield return WhenIsDone();
+        }
+        Unit.UnitInteligence.MainAction = MainAction.InvestigateLastKnownLocation;
+        Unit.UnitController.LookingAtDirection = Unit.UnitInteligence.LastPlayerDirection;
+        Unit.UnitController.IsLookingAtDirection = true;
+
+        SetWaitFor(waitFor.InvestigateLastKnownLocation);
+        yield return WhenIsDone();
+    }
+
+    public IEnumerable<NodeResult> DoInvestigateSoundLocation()
+    {
+        if (_waitFor != waitFor.InvestigateSoundLocation)
+        {
+            Unit.UnitInteligence.MainAction = MainAction.InvestigateSoundLocation;
+
+            Unit.UnitProperties.ThisUnitTarget.thisTransform.position = Unit.UnitInteligence.SoundPosition;
+            Unit.UnitController.GoToTarget();
+        }
+
+        SetWaitFor(waitFor.InvestigateSoundLocation);
+        yield return WhenIsDone();
+    }
+
+    public IEnumerator<NodeResult> ChasePlayer()
+    {
+        if (Unit.UnitInteligence.MainAction == MainAction.MoveTowardsPlayer)
+        {
+            if (_exitValue)
+                Unit.UnitInteligence.MainAction = MainAction.DoingNothing;
+            yield return WhenIsDone();
+        }
+        Unit.UnitInteligence.MainAction = MainAction.MoveTowardsPlayer;
+
+        SetWaitFor(waitFor.ChasePlayer);
+        yield return WhenIsDone();
+    }
+
+    public bool DoJob()
+    {
+        Unit.UnitInteligence.MainAction = MainAction.DoingJob;
+        return _exitValue;
+    }
+
+    public IEnumerator<NodeResult> ReturnSuccess()
+    {
+        SetWaitFor(waitFor.ReturnSuccess, true);
+        yield return WhenIsDone();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //-----------------------------------------------------------------------
+
+
+    private waitFor _waitFor;
+    private void SetWaitFor(waitFor value, bool returnV = false, float time = 0)
+    {
+        if (_waitFor != value)
+        {
+            _waitFor = value;
+            _compareWaitFor = value;
+            _exitValue = returnV;
+
+            if (time != 0f)
+            {
+                _runningTask = Wait(time);
+                StartCoroutine(_runningTask);
             }
         }
     }
-
-    private bool _waitToSeeEnemy_Running;
-    public IEnumerator WaitToSeeEnemy(float time)
+    private waitFor _compareWaitFor;
+    private bool _exitValue;
+    private IEnumerator _runningTask;
+    public IEnumerator Wait(float time)
     {
-        _waitToSeeEnemy_Running = true;
         yield return new WaitForSeconds(time);
-        _waitToSeeEnemy_Running = false;
-        _tryToSeeEnemy_Running = false;
-        if (CheckIfYouCanSeePlayer())
+        _exitValue = true;
+    }
+
+    private NodeResult WhenIsDone()
+    {
+        var theValue = _waitFor == _compareWaitFor ? (_exitValue ? NodeResult.Success : NodeResult.Failure) : NodeResult.Failure;
+        if (theValue == NodeResult.Success)
         {
-            Unit.UnitInteligence.AddAlert(AlertType.Seeing);
+            _waitFor = waitFor.Nothing;
+            _exitValue = false;
         }
-        // else the WaitStatus for Behaviour.Suspicious is going to end the alert.
+        return theValue;
     }
 
-    public bool CheckIfYouCanSeePlayer()
+    public void CompleteCurrentTask(bool hasCoroutine = false)
     {
-        bool hitOneBodyPart = false;
-        if (Unit.UnitInteligence.Enemy != null && Unit.UnitInteligence.Enemy.UnitProperties.BodyParts != null)
-            for (var i = 0; i < Unit.UnitInteligence.Enemy.UnitProperties.BodyParts.Count; i++)
-            {
-                var direction = Logic.GetDirection(Unit.UnitProperties.HeadPosition,
-                    Unit.UnitInteligence.Enemy.UnitProperties.BodyParts[i].transform.position);
-                RaycastHit hit;
-                if (Physics.Raycast(new Ray(Unit.UnitProperties.HeadPosition, direction), out hit,
-                    float.PositiveInfinity,
-                    Unit.UnitInteligence.LayerMask))
-                {
-                    //Debug.Log("- looking for " + (BodyPart)i + " and hit " + hit.transform.gameObject.name);
-                    if (hit.transform.tag == "Player")
-                    {
-                        Unit.UnitInteligence.AlertPosition = hit.transform.position;
-                        hitOneBodyPart = true;
-                        break;
-                    }
-                }
-            }
-        //else
-        //{
-        //    var direction = Logic.GetDirection(Unit.UnitProperties.HeadPosition, Unit.UnitInteligence.AlertPosition + new Vector3(0, 1f, 0));
-        //    RaycastHit hit;
-        //    if (Physics.Raycast(new Ray(Unit.UnitProperties.HeadPosition, direction), out hit, float.PositiveInfinity, Unit.UnitInteligence.LayerMask))
-        //    {
-        //        Debug.DrawRay(Unit.UnitProperties.HeadPosition, direction, Color.blue, 5f);
-        //        return hit.transform.tag == "Player";
-        //    }
-        //}
+        Debug.Log("Continue");
 
-        if (hitOneBodyPart == false)
-        {
-            if (Unit.UnitInteligence.ActionTowardsEnemy == ActionTowardsEnemy.LookAtEnemy)
-                Unit.UnitInteligence.ActionTowardsEnemy = ActionTowardsEnemy.None;
-            Unit.UnitInteligence.RemoveAlert(AlertType.Seeing);
-        }
-
-        return hitOneBodyPart;
-    }
-
-    void Update()
-    {
-        if (Unit.UnitInteligence.Enemy != null)
-            for (var i = 0; i < Unit.UnitInteligence.Enemy.UnitProperties.BodyParts.Count; i++)
-            {
-
-                var direction = Logic.GetDirection(Unit.UnitProperties.HeadPosition, Unit.UnitInteligence.Enemy.UnitProperties.BodyParts[i].transform.position);
-                Debug.DrawRay(Unit.UnitProperties.HeadPosition, direction, Color.red);
-            }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public void ReduceDistanceToEnemy()
-    {
-        Unit.UnitInteligence.ActionTowardsEnemy = ActionTowardsEnemy.ReduceDistance;
-
-        // while player is in field of view and you can see him.
-
-        // based on the agression level. reduce distance.
-    }
-
-
-
-
-
-
-    //--
-    public bool CheckJob()
-    {
-        if (Unit.UnitInteligence.Jobs != null && Unit.UnitInteligence.Jobs.Count > 0)
-        {
-            return true;
-        }
-        return false;
-    }
-
-    public void DoJob()
-    {
-        Unit.UnitInteligence.BehaviourState = BehaviourState.DoingJob;
-        Debug.Log("Do Job");
-    }
-
-    public IEnumerator<BAD.NodeResult> Nothing()
-    {
-        yield return BAD.NodeResult.Success;
+        _exitValue = true;
+        if (hasCoroutine)
+            StopCoroutine(_runningTask);
     }
 }

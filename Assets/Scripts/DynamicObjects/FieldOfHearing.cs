@@ -20,7 +20,11 @@ public class FieldOfHearing : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         _listenCarefully_running = false;
-        _unitInteligence.Alert(null, AlertType.Hearing, _player.transform.position);
+
+        if (_unitInteligence.MainState == MainState.Aggressive)
+            _unitInteligence.SoundPosition = _player.transform.position;
+        else
+            _unitInteligence.SetAlert(null, Alert.Hearing, _player.transform.position);
     }
 
     void OnTriggerEnter(Collider unitObject)
@@ -35,6 +39,16 @@ public class FieldOfHearing : MonoBehaviour
             }
         }
     }
+
+    void OnTriggerStay(Collider unitObject)
+    {
+        if (_unitInteligence.MainState == MainState.Aggressive)
+        {
+            if (unitObject.CompareTag("Player") && unitObject.name == "FeetCollider")
+                _unitInteligence.SoundPosition = unitObject.transform.position;
+        }
+    }
+
     void OnTriggerExit(Collider unitObject)
     {
         if (_listenCarefully_running)
@@ -44,6 +58,9 @@ public class FieldOfHearing : MonoBehaviour
         }
 
         if (unitObject.CompareTag("Player") && unitObject.name == "FeetCollider")
-            _unitInteligence.RemoveAlert(AlertType.Hearing);
+        {
+            _unitInteligence.SoundPosition = unitObject.transform.position;
+            _unitInteligence.RemoveAlert(Alert.Hearing);
+        }
     }
 }

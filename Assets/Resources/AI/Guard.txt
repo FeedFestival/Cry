@@ -7,43 +7,48 @@ Root {
 		
 		If [Guard][CheckMainState][enum.MainState.Alerted] {
 
-			Selector {
-				If [Guard][CheckBehaviourState][enum.BehaviourState.Suspicious] {
+			Sequence {
 
-					Decision [Guard][CheckActionTowardsAlert][enum.ActionTowardsAlert.FacingAlertPosition] {
+				UntilSuccess { ! [Guard][CheckAlert] }
+
+				Decision [Guard][CheckAlertType][enum.Alert.Seeing] {
+
+					UntilSuccess { ! [Guard][WaitSetAlertLevel][enum.AlertLevel.None] }
+
+					Sequence {
 					
-						! [Guard][TurnToAlert]
+						? [Guard][SetAlertLevel][enum.AlertLevel.Talkative]
 
-						! [Guard][TryToSeeEnemy]
+						UntilSuccess { ! [Guard][ReduceDistance] }
 					}
 				}
+			}
+		}
 
-				If [Guard][CheckBehaviourState][enum.BehaviourState.Aggressive] {
+		If [Guard][CheckMainState][enum.MainState.Aggressive] {
 
-					Decision [Guard][CheckIfYouCanSeePlayer] {
+			Sequence {
 
-						! [Guard][InvestigateLastKnownLocation]
+				? [Guard][SetAlertLevel][enum.AlertLevel.Aggressive]
 
-						Decision [Guard][CheckActionTowardsEnemy][enum.ActionTowardsEnemy.ReduceDistance] {
-							
-						}
+				Decision [Guard][CheckAlertType][enum.Alert.Seeing] {
+
+					Sequence {
+
+						UntilSuccess { ! [Guard][DoInvestigateLastKnownLocation] }
+
+						UntilSuccess { ! [Guard][DoInvestigateSoundLocation] }
 					}
 
+					UntilSuccess { ! [Guard][ChasePlayer] }
 				}
 			}
 		}
 
 		If [Guard][CheckMainState][enum.MainState.Calm] {
-			Decision [Guard][CheckBehaviourState][enum.BehaviourState.DoingJob] {
-				
-				Decision [Guard][CheckJob] {
-						! [Guard][Nothing]
-						! [Guard][DoJob]
-					}
-
-				! [Guard][Nothing]
-			}
+			
+			WaitFor [Guard][DoJob] { ! [Guard][ReturnSuccess] }
 		}
-
+		
 	}
 }

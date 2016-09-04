@@ -34,18 +34,13 @@ public class UnitController : MonoBehaviour
     private bool _onTableMove;
     private Vector3 _tableTargetVector;
 
+    // AI
     private float _turnSpeed;
-    private bool _startTurningToTarget;
-    private Vector3 _turnToTargetPosition;
-    public Vector3 TurnToTargetPosition
-    {
-        set
-        {
-            _turnToTargetPosition = value;
-            _startTurningToTarget = true;
-        }
-        get { return _turnToTargetPosition; }
-    }
+    public bool IsTurningToSound;
+    public bool IsLookingAtPlayer;
+    
+    public bool IsLookingAtDirection;
+    public Vector3 LookingAtDirection;
 
     public void Initialize(Unit unit)
     {
@@ -137,7 +132,7 @@ public class UnitController : MonoBehaviour
 
     public void ResumeMoving()
     {
-        _startTurningToTarget = false;
+        //IsTurningToSound = false;
 
         if (_unit.NavMeshAgent.enabled == false)
             _unit.NavMeshAgent.enabled = true;
@@ -201,60 +196,104 @@ public class UnitController : MonoBehaviour
 
     void Update()
     {
-        if (_unit)
+        if (_unit == null)
+            return;
+
+        if (_unit.UnitFeetState == UnitFeetState.OnTable && _onTableMove)
         {
-            if (_unit.UnitFeetState == UnitFeetState.OnTable && _onTableMove)
+            MoveOnTable();
+            return;
+        }
+        if (_unit != null && _unit.UnitProperties.ControllerFollowRoot)
+        {
+            FollowRoot();
+        }
+
+        if (_unit.UnitPrimaryState == UnitPrimaryState.Walk)
+        {
+            SteerWalkingDirection();
+        }
+
+
+
+
+
+
+
+        // AI
+        //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        if (_unit.UnitPrimaryState == UnitPrimaryState.Idle && _unit.UnitInteligence != null)
+        {
+            if (IsTurningToSound)
             {
-                MoveOnTable();
-                return;
+                TurnToSound();
             }
-            if (_unit != null && _unit.UnitProperties.ControllerFollowRoot)
+            if (IsLookingAtPlayer)
             {
-                FollowRoot();
+                LookAtPlayer();
             }
+            if (IsLookingAtDirection)
+                TurnToDirection();
+        }
+    }
+    
+    private bool CheckRestPoint()
+    {
+        if (Vector3.Angle(_unit.UnitInteligence.Player.transform.position - transform.position, transform.forward) >
+                2f)
+        {
+            return true;
+        }
+        return false;
+    }
+    private void LookAtPlayer()
+    {
+        if (CheckRestPoint())
+            _unit.UnitProperties.ThisUnitTransform.rotation =
+                Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
+                    Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position,
+                        _unit.UnitInteligence.Player.transform.position), _turnSpeed);
+    }
 
-            if (_unit.UnitPrimaryState == UnitPrimaryState.Walk)
-            {
-                if (_lastTarget != _unit.NavMeshAgent.steeringTarget)
-                {
-                    _lastTarget = _unit.NavMeshAgent.steeringTarget;
+    private void TurnToSound()
+    {
+        _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
+                        Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _unit.UnitInteligence.SoundPosition), _turnSpeed);
+        if (Vector3.Angle(_unit.UnitInteligence.SoundPosition - transform.position, transform.forward) <= 1f)
+        {
+            // set success on CheckAlert()
+            _unit.UnitInteligence.Guard.CompleteCurrentTask();
+            IsTurningToSound = false;
+        }
+    }
 
-                    if (_lerpRotComplete == true)
-                        StartCoroutine(LerpToRotation());
-                }
-                if (_lerpRotComplete == false && _lastTarget != Vector3.zero)
-                {
-                    _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
-                        Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _lastTarget), _walkTurnSpeed);
-                }
-            }
+    private void TurnToDirection()
+    {
+        _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
+                        LookingAtDirection, _turnSpeed);
+        var point = transform.position + (LookingAtDirection * 1f);
+        if (Vector3.Angle(point - transform.position, transform.forward) <= 1f)
+        {
+            _unit.UnitInteligence.Guard.CompleteCurrentTask();
+            IsLookingAtDirection = false;
+        }
+    }
 
-            // AI
-            //----------------------
-            if (_unit.UnitInteligence != null)
-            {
-                if (_unit.UnitPrimaryState == UnitPrimaryState.Idle && _startTurningToTarget)
-                {
-                    _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
-                                    Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _turnToTargetPosition), _turnSpeed);
-                    if (Vector3.Angle(_turnToTargetPosition - transform.position, transform.forward) <= 10f)
-                        _unit.UnitInteligence.ActionTowardsAlert = ActionTowardsAlert.FacingAlertPosition;
-                    if (Vector3.Angle(_turnToTargetPosition - transform.position, transform.forward) <= 0.2f)
-                    {
-                        _startTurningToTarget = false;
-                    }
-                }
+    private void SteerWalkingDirection()
+    {
+        if (_lastTarget != _unit.NavMeshAgent.steeringTarget)
+        {
+            _lastTarget = _unit.NavMeshAgent.steeringTarget;
 
-                if (_unit.UnitInteligence.Enemy != null && _unit.UnitInteligence.ActionTowardsEnemy == ActionTowardsEnemy.LookAtEnemy)
-                {
-                    if (_startTurningToTarget)
-                        _startTurningToTarget = false;
-                    if (Vector3.Angle(_unit.UnitInteligence.Enemy.transform.position - transform.position, transform.forward) > 0.2f)
-                        _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
-                                    Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _unit.UnitInteligence.Enemy.transform.position), _turnSpeed);
-
-                }
-            }
+            if (_lerpRotComplete == true)
+                StartCoroutine(LerpToRotation());
+        }
+        if (_lerpRotComplete == false && _lastTarget != Vector3.zero)
+        {
+            _unit.UnitProperties.ThisUnitTransform.rotation = Logic.SmoothLook(_unit.UnitProperties.ThisUnitTransform.rotation,
+                Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _lastTarget), _walkTurnSpeed);
         }
     }
 

@@ -5,46 +5,41 @@ using System.Linq;
 using System.Linq.Expressions;
 using Assets.Scripts.Utils;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using BAD;
 
 namespace Assets.Scripts.Utils
 {
-    public enum Job
-    {
-        Pupil,
-        Guard
-    }
-
-    public enum DoAction
-    {
-        LookThroughThingsToDo,
-        CheckAnomally,
-        SitAndDoShit,
-        ReduceDistance,
-        CatchFoe,
-        TryToSeeEnemy,
-        TurnToAlert,
-    }
-
-    public enum AlertType
-    {
-        Hearing,
-        InFieldOfView,
-        Seeing
-    }
-
     public enum MainState
     {
         Calm,
-        Alerted
+        Alerted,
+        Aggressive
+    }
+    public enum MainAction
+    {
+        DoingNothing,
+        DoingJob,
+        CheckingAlert,
+        ChasingEnemy,
+        MoveTowardsPlayer,
+        InvestigateLastKnownLocation,
+        InvestigateSoundLocation
     }
 
-    public enum BehaviourState
+    // alert
+    public enum Alert
     {
-        Idle,
+        Hearing,
+        Seeing
+    }
+
+    public enum AlertLevel
+    {
+        None,
         Suspicious,
-        Aggressive,
-        DoingJob
+        Talkative,
+        Aggressive
     }
 
     public enum ActionTowardsAlert
@@ -53,25 +48,19 @@ namespace Assets.Scripts.Utils
         FacingAlertPosition
     }
 
-    public enum EnemyState
+    // job
+    public enum Job
     {
-        NoEnemy,
-        SeeingEnemy
+        Pupil,
+        Guard
     }
 
-    public enum AggressionLevel
+    //--
+    public enum NodeResult
     {
-        NotAggressive,
-        Attentionate,
-        Threatening,
-        Violent
-    }
-
-    public enum ActionTowardsEnemy
-    {
-        None,
-        LookAtEnemy,
-        ReduceDistance
+        Failure,
+        Success,
+        Continue
     }
 
     public class AIUtils : MonoBehaviour
@@ -118,5 +107,29 @@ namespace Assets.Scripts.Utils
             return action;
         }
 
+
+        public static string SplitCamelCase(string str)
+        {
+            return Regex.Replace(
+                Regex.Replace(
+                    str,
+                    @"(\P{Ll})(\P{Ll}\p{Ll})",
+                    "$1 $2"
+                ),
+                @"(\p{Ll})(\P{Ll})",
+                "$1 $2"
+            );
+        }
+    }
+
+    public enum DoAction
+    {
+        LookThroughThingsToDo,
+        CheckAnomally,
+        SitAndDoShit,
+        ReduceDistance,
+        CatchFoe,
+        TryToSeeEnemy,
+        TurnToAlert,
     }
 }
