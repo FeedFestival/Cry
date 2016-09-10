@@ -14,6 +14,7 @@ namespace Assets.Scripts.Utils
     {
         Calm,
         Alerted,
+        Investigative,
         Aggressive
     }
     public enum MainAction
@@ -24,7 +25,8 @@ namespace Assets.Scripts.Utils
         ChasingEnemy,
         MoveTowardsPlayer,
         InvestigateLastKnownLocation,
-        InvestigateSoundLocation
+        InvestigateSoundLocation,
+        CheckHidingSpots
     }
 
     // alert
@@ -60,7 +62,8 @@ namespace Assets.Scripts.Utils
     {
         Failure,
         Success,
-        Continue
+        Continue,
+        Restart
     }
 
     public class AIUtils : MonoBehaviour

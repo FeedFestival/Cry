@@ -22,7 +22,7 @@ public class UnitProperties : MonoBehaviour
             switch ((MovementSpeedStates)value)
             {
                 case MovementSpeedStates.Calm:
-                    _movementSpeed = 0.4f;
+                    _movementSpeed = 0.9f;
                     break;
                 case MovementSpeedStates.Normal:
                     _movementSpeed = 1.8f;

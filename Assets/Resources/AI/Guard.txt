@@ -25,6 +25,17 @@ Root {
 			}
 		}
 
+		If [Guard][CheckMainState][enum.MainState.Investigative] {
+			
+			Sequence {
+
+
+				UntilSuccess { ! [Guard][CheckSuroundings] }
+				
+				UntilSuccess { ! [Guard][InvestigateSoundLocation] }
+			}
+		}
+
 		If [Guard][CheckMainState][enum.MainState.Aggressive] {
 
 			Sequence {
@@ -33,12 +44,7 @@ Root {
 
 				Decision [Guard][CheckAlertType][enum.Alert.Seeing] {
 
-					Sequence {
-
-						UntilSuccess { ! [Guard][DoInvestigateLastKnownLocation] }
-
-						UntilSuccess { ! [Guard][DoInvestigateSoundLocation] }
-					}
+					UntilSuccess { ! [Guard][DoInvestigateLastKnownLocation] }
 
 					UntilSuccess { ! [Guard][ChasePlayer] }
 				}

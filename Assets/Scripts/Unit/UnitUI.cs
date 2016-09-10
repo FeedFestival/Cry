@@ -33,7 +33,7 @@ public class UnitUI : MonoBehaviour
                 if (StatusBarPanel.activeSelf == false)
                     StatusBarPanel.SetActive(true);
 
-                if (PreviousAlertLevel == AlertLevel.None)
+                if (PreviousAlertLevel == AlertLevel.None || PreviousAlertLevel == AlertLevel.Talkative)
                 {
                     StatusBar.color = new Color32(251, 225, 76, 255); // yellow
                     CancelInvoke("UpdateRedBar");
@@ -48,10 +48,21 @@ public class UnitUI : MonoBehaviour
                 }
                 break;
             case AlertLevel.Talkative:
-                StatusBar.color = new Color32(255, 132, 53, 255); // orange
-                CancelInvoke("UpdateYellowBar");
-                CancelInvoke("UpdateRedBar");
-                StatusBar.fillAmount = 100;
+
+                if (PreviousAlertLevel == AlertLevel.Suspicious)
+                {
+                    StatusBar.color = new Color32(255, 132, 53, 255); // orange
+                    CancelInvoke("UpdateYellowBar");
+                    CancelInvoke("UpdateRedBar");
+                    StatusBar.fillAmount = 100;
+                }
+                else if (PreviousAlertLevel == AlertLevel.Aggressive)
+                {
+                    StatusBar.color = new Color32(255, 87, 76, 255); // red
+                    CancelInvoke("UpdateYellowBar");
+                    StatusBar.fillAmount = 100;
+                    StartStatusBar("Red");
+                }
 
                 break;
             case AlertLevel.Aggressive:
@@ -76,10 +87,9 @@ public class UnitUI : MonoBehaviour
         }
     }
 
+    // this represents the AI going from [Investigative/Alerted] to Calm
     public void UpdateYellowBar()
     {
-        //Debug.Log(_statusBarCurr);
-
         _statusBarCurr -= 1.0f;
         StatusBar.fillAmount = _statusBarCurr / _statusBarMax;
 
@@ -92,15 +102,19 @@ public class UnitUI : MonoBehaviour
         }
     }
 
+    // this represents the AI going from [Agressive] to Investigative/Alerted
     public void UpdateRedBar()
     {
-        //Debug.Log(_statusBarCurr);
-
         _statusBarCurr -= 1.0f;
         StatusBar.fillAmount = _statusBarCurr / _statusBarMax;
 
+        //-- END
         if (_statusBarCurr < 1)
+        {
+            Unit.UnitInteligence.AlertLevel = AlertLevel.Suspicious;
+
             CancelInvoke("UpdateRedBar");
+        }
     }
 
     public void StartStatusBar(string color)

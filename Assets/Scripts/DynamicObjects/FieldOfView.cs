@@ -15,6 +15,12 @@ public class FieldOfView : MonoBehaviour
 
     void OnTriggerEnter(Collider unitObject)
     {
+        if (_unitInteligence.MainAction == MainAction.CheckHidingSpots && unitObject.CompareTag("HidingSpot"))
+        {
+            if (_unitInteligence.HidingSpotsPositions.Contains(unitObject.transform.position) == false)
+                _unitInteligence.HidingSpotsPositions.Add(unitObject.transform.position);
+        }
+
         if (unitObject.CompareTag("Player") && unitObject.name == "FeetCollider")
         {
             if (_unitInteligence.Player == null)

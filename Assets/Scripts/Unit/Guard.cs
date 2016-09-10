@@ -28,7 +28,8 @@ public class Guard : MonoBehaviour
         ReduceDistance,
         InvestigateLastKnownLocation,
         ChasePlayer,
-        InvestigateSoundLocation
+        InvestigateSoundLocation,
+        CheckSuroundings
     }
 
     public bool CheckMainState(MainState mainState)
@@ -94,6 +95,20 @@ public class Guard : MonoBehaviour
         yield return WhenIsDone();
     }
 
+    public IEnumerator<NodeResult> ChasePlayer()
+    {
+        if (Unit.UnitInteligence.MainAction == MainAction.MoveTowardsPlayer)
+        {
+            if (_exitValue)
+                Unit.UnitInteligence.MainAction = MainAction.DoingNothing;
+            yield return WhenIsDone();
+        }
+        Unit.UnitInteligence.MainAction = MainAction.MoveTowardsPlayer;
+
+        SetWaitFor(waitFor.ChasePlayer);
+        yield return WhenIsDone();
+    }
+
     public IEnumerator<NodeResult> DoInvestigateLastKnownLocation()
     {
         if (Unit.UnitInteligence.MainAction == MainAction.InvestigateLastKnownLocation)
@@ -110,8 +125,28 @@ public class Guard : MonoBehaviour
         yield return WhenIsDone();
     }
 
-    public IEnumerable<NodeResult> DoInvestigateSoundLocation()
+    /*
+     
+    Check Surrounding after looking at the direction the Player was looking.
+        - take this time to analize hiding spots and add them to the blackboard.
+         *///------------------------
+    public IEnumerator<NodeResult> CheckSuroundings()
     {
+        if (_waitFor != waitFor.CheckSuroundings)
+        {
+            Unit.UnitInteligence.AlertLevel = AlertLevel.Talkative;
+
+            Unit.UnitInteligence.MainAction = MainAction.CheckHidingSpots;
+        }
+
+        SetWaitFor(waitFor.CheckSuroundings, false, 3.5f);
+        yield return WhenIsDone();
+    }
+
+    public IEnumerator<NodeResult> InvestigateSoundLocation()
+    {
+        Unit.UnitInteligence.Restart();
+
         if (_waitFor != waitFor.InvestigateSoundLocation)
         {
             Unit.UnitInteligence.MainAction = MainAction.InvestigateSoundLocation;
@@ -123,21 +158,7 @@ public class Guard : MonoBehaviour
         SetWaitFor(waitFor.InvestigateSoundLocation);
         yield return WhenIsDone();
     }
-
-    public IEnumerator<NodeResult> ChasePlayer()
-    {
-        if (Unit.UnitInteligence.MainAction == MainAction.MoveTowardsPlayer)
-        {
-            if (_exitValue)
-                Unit.UnitInteligence.MainAction = MainAction.DoingNothing;
-            yield return WhenIsDone();
-        }
-        Unit.UnitInteligence.MainAction = MainAction.MoveTowardsPlayer;
-
-        SetWaitFor(waitFor.ChasePlayer);
-        yield return WhenIsDone();
-    }
-
+    
     public bool DoJob()
     {
         Unit.UnitInteligence.MainAction = MainAction.DoingJob;
@@ -191,6 +212,7 @@ public class Guard : MonoBehaviour
     public IEnumerator Wait(float time)
     {
         yield return new WaitForSeconds(time);
+        Debug.Log("waited " + time);
         _exitValue = true;
     }
 

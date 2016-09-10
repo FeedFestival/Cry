@@ -171,6 +171,8 @@ public class Unit : MonoBehaviour
                     UnitInteligence = GetComponent<UnitInteligence>();
                 }
                 UnitInteligence.Initialize(this);
+
+                GlobalData.Enemy = this;
                 break;
         }
 

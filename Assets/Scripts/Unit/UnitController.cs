@@ -276,8 +276,9 @@ public class UnitController : MonoBehaviour
         var point = transform.position + (LookingAtDirection * 1f);
         if (Vector3.Angle(point - transform.position, transform.forward) <= 1f)
         {
-            _unit.UnitInteligence.Guard.CompleteCurrentTask();
             IsLookingAtDirection = false;
+            _unit.UnitInteligence.MainState = MainState.Investigative;
+            _unit.UnitInteligence.Guard.CompleteCurrentTask();
         }
     }
 

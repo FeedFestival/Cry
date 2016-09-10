@@ -39,6 +39,11 @@ public class UnitInteligence : MonoBehaviour
 
     public Unit Player;
 
+    public List<Vector3> HidingSpotsPositions;
+
+    //--
+    //  Bools
+
     public bool PlayerInFOV;
 
     public Vector3 SoundPosition;
@@ -87,6 +92,16 @@ public class UnitInteligence : MonoBehaviour
         InvokeRepeating("RunSomeChecks", 1f, 0.4f);
     }
 
+    public void Restart()
+    {
+        AiReactor.StopReactor();
+
+        gameObject.AddComponent<AiReactor>();
+        AiReactor = GetComponent<AiReactor>();
+
+        AiReactor.Initialize(_unit);
+    }
+
     [SerializeField]
     public MainState MainState;
 
@@ -95,7 +110,9 @@ public class UnitInteligence : MonoBehaviour
 
     // Alert
     public List<Alert> Alerts;
+    [SerializeField]
     private AlertLevel _alertLevel;
+    [SerializeField]
     public AlertLevel AlertLevel
     {
         get { return _alertLevel; }
@@ -136,8 +153,6 @@ public class UnitInteligence : MonoBehaviour
 
         // here we are calling the entire AI tree to be re-evaluated
         Guard.CompleteCurrentTask();
-
-        //AddAlert(alertType);
     }
 
     public void AddAlert(Alert alertType)
@@ -225,8 +240,9 @@ public class UnitInteligence : MonoBehaviour
         }
         else
         {
-            if (AlertLevel == AlertLevel.Talkative)
-                SetAggressive();
+            if (MainState == MainState.Alerted)
+                if (AlertLevel == AlertLevel.Talkative)
+                    SetAggressive();
         }
 
         if (AlertLevel == AlertLevel.Aggressive)

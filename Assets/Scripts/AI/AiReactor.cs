@@ -53,10 +53,11 @@ public class AiReactor : MonoBehaviour
 
     public void StopReactor()
     {
-        StopCoroutine(ReactorReaction);
-        RunningGraphs.Clear();
+        //StopCoroutine(ReactorReaction);
+        //RunningGraphs.Clear();
 
-        Parse(_currentBranch, true);
+        //Parse(_currentBranch, true);
+        //Destroy(this);
     }
     
     void Parse(Node node, bool reset = false)

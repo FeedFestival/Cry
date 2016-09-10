@@ -15,6 +15,7 @@ namespace Assets.Scripts.Utils
         public static SceneManager SceneManager { get; set; }
         public static CameraControl CameraControl { get; set; }
         public static Unit Player { get; set; }
+        public static Unit Enemy { get; set; }
 
         public static int WallLayerMask = 1 << UnityEngine.LayerMask.NameToLayer(Layer.WallOrObstacle.ToString());
         public static int UnitInteractionLayerMask = 1 << UnityEngine.LayerMask.NameToLayer(Layer.UnitInteraction.ToString());

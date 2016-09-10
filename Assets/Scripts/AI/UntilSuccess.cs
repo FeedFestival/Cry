@@ -10,22 +10,34 @@ namespace BAD
     /// </summary>
     public class UntilSuccess : Decorator
     {
-        public override IEnumerator<NodeResult> NodeTask ()
+        public override IEnumerator<NodeResult> NodeTask()
         {
-            if (ChildIsMissing ()) {
+            if (ChildIsMissing())
+            {
                 yield return NodeResult.Failure;
                 yield break;
             }
-            while (true) {
-                var task = children [0].GetNodeTask ();
-                while (task.MoveNext ()) {
+            while (true)
+            {
+                var task = children[0].GetNodeTask();
+                while (task.MoveNext())
+                {
                     var t = task.Current;
-                    if (t == NodeResult.Continue) {
+                    if (t == NodeResult.Restart)
+                    {
+
+                    }
+                    else if (t == NodeResult.Continue)
+                    {
                         yield return NodeResult.Continue;
-                    } else if (t == NodeResult.Failure) {
+                    }
+                    else if (t == NodeResult.Failure)
+                    {
                         yield return NodeResult.Continue;
                         break;
-                    } else if (t == NodeResult.Success) {
+                    }
+                    else if (t == NodeResult.Success)
+                    {
                         yield return NodeResult.Success;
                         yield break;
                     }
