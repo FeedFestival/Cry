@@ -1,2 +1,2 @@
 # Cry
-Game
+![Image of Yaktocat](https://i.imgur.com/xhjlyAm.png)
