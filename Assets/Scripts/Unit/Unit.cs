@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets.Scripts.Utils;
+using UnityEngine.AI;
 
 public class Unit : MonoBehaviour
 {
@@ -89,7 +90,7 @@ public class Unit : MonoBehaviour
     [HideInInspector]
     public UnitController UnitController;
     [HideInInspector]
-    public NavMeshAgent NavMeshAgent;
+    public UnityEngine.AI.NavMeshAgent NavMeshAgent;
     [HideInInspector]
     public UnitActionAnimation UnitActionAnimation;
     [HideInInspector]
@@ -193,7 +194,7 @@ public class Unit : MonoBehaviour
         NavMeshAgent.stoppingDistance = 0;
         NavMeshAgent.autoBraking = false;
 
-        NavMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+        NavMeshAgent.obstacleAvoidanceType = UnityEngine.AI.ObstacleAvoidanceType.HighQualityObstacleAvoidance;
         NavMeshAgent.avoidancePriority = 50;
 
         NavMeshAgent.autoTraverseOffMeshLink = true;

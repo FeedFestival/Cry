@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets.Scripts.Utils;
+using UnityEngine.AI;
 
 public class UnitController : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class UnitController : MonoBehaviour
      */
     private Unit _unit;
 
-    public NavMeshPath NavMeshPath;
+    public UnityEngine.AI.NavMeshPath NavMeshPath;
 
     // properties
     private float _walkTurnSpeed;
@@ -174,7 +175,7 @@ public class UnitController : MonoBehaviour
 
     public Vector3[] GetNavMeshPathCorners(Vector3 start, Vector3 goal)
     {
-        NavMesh.CalculatePath(start, goal, NavMesh.AllAreas, NavMeshPath);
+        UnityEngine.AI.NavMesh.CalculatePath(start, goal, UnityEngine.AI.NavMesh.AllAreas, NavMeshPath);
         return NavMeshPath.corners;
     }
 
