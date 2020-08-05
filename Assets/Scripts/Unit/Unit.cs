@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.AI;
 using System.Collections;
 using Assets.Scripts.Utils;
-using UnityEngine.AI;
 
 public class Unit : MonoBehaviour
 {
