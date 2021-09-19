@@ -10,8 +10,6 @@ using System.Linq;
 public class Neuron
 {
     private int? id;
-
-    [PrimaryKey, AutoIncrement]
     public int? Id
     {
         get { return id; }
@@ -21,92 +19,29 @@ public class Neuron
             Logic.neuronsCount++;
         }
     }
+    public NeuronType NeuronType;
+    public Neuron Parent;
+    public List<Neuron> Children;
 
-    public int? ParentId { get; set; }
+    public NeuronState NeuronState;
 
-    public string Self { get; set; }
+    public string DebugText;
+    public Func<NeuronResult> Method;
+    
+    public NeuronResult NeuronResult;
 
-    public int DoActionId
+    public override string ToString()
     {
-        get; private set;
+        var s = string.Empty;
+
+        if (NeuronType.IsIn(NeuronType.If, NeuronType.IfElse))
+            s += "If ";
+        else if (NeuronType.IsIn(NeuronType.Root, NeuronType.Selector, NeuronType.Sequence))
+            return NeuronType.ToString();
+        else
+            s += "- ";
+        return s + DebugText;
     }
-    [Ignore]
-    public DoAction DoAction
-    {
-        get
-        {
-            return (DoAction)DoActionId;
-        }
-        set
-        {
-            var doAction = value;
-            DoActionId = (int)doAction;
-        }
-    }
-
-    public float Position { get; set; }
-    public int Level { get; set; }
-
-    public bool Edge { get; set; }
-
-    private string _method;
-    public string Method
-    {
-        get
-        {
-            return _method;
-        }
-        set
-        {
-            _method = value;
-            if (string.IsNullOrEmpty(Method) == false && GlobalData.SceneManager != null)
-                Action = GlobalData.SceneManager.AIUtils.SetupNeuronAction(Method);
-        }
-    }
-
-    private string _keywords;
-    // encapsulate by ( ... ) ;
-    public string Keywords
-    {
-        get
-        {
-            return _keywords;
-        }
-        set
-        {
-            _keywords = value;
-        }
-    }
-
-    public Action<Unit> Action;
-
-    private List<string> _keywordList;
-    public List<string> KeywordList
-    {
-        get
-        {
-            if (_keywordList == null || _keywordList.Count == 0)
-            {
-                if (string.IsNullOrEmpty(Keywords) == false)
-                {
-                    _keywordList = new List<string>();
-
-                    //keywordsCount = Keywords.Count(x => x == ';');
-                    //for (var i = 0; i < keywordsCount; i++)
-                    //{
-                        _keywordList.Add(Keywords.Split('(', ')')[1]);
-                    //}
-                }
-            }
-
-            return _keywordList;
-        }
-    }
-
-    // Editor variables
-    public Rect rect;
-    public int attachIndex;
-    public bool edit;
 }
 
 public class ToDo

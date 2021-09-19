@@ -104,7 +104,7 @@ public class DataService
     {
         var list = _connection.Table<Neuron>();
         
-        list = list.OrderBy(neuron => neuron.Level);
+        //list = list.OrderBy(neuron => neuron.Level);
 
         return list.ToList();
     }

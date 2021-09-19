@@ -2,6 +2,7 @@
 using System.Collections;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -10,6 +11,11 @@ namespace Assets.Scripts.Utils
 {
     public static class Utils
     {
+        public static bool IsIn<T>(this T @this, params T[] possibles)
+        {
+            return possibles.Contains(@this);
+        }
+
         public static readonly float LerpRatio = 0.02f;
         public static readonly float LerpSpeed = 3f;
 

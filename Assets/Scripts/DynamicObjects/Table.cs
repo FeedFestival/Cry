@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
-using UnityEngine.AI;
 using System.Collections;
 using Assets.Scripts.Utils;
 using System.Collections.Generic;
+using UnityEngine.AI;
 
 public class Table : MonoBehaviour
 {
@@ -16,7 +16,7 @@ public class Table : MonoBehaviour
     [HideInInspector]
     public TableController TableController;
     [HideInInspector]
-    public UnityEngine.AI.NavMeshObstacle NavMeshObstacle;
+    public NavMeshObstacle NavMeshObstacle;
 
     // relations
     public Unit Unit;

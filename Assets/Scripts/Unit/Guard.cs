@@ -16,6 +16,16 @@ public class Guard : MonoBehaviour
         }
     }
 
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+
+    public Neuron GuardNeuron;  // also Root
+
+    public void Initialize()
+    {
+        GuardNeuron = MindMap.GetGuardNeuron(this);
+    }
+
     ////--
 
     private enum waitFor
@@ -32,28 +42,26 @@ public class Guard : MonoBehaviour
         CheckSuroundings
     }
 
-    public bool CheckMainState(MainState mainState)
+    public NeuronResult CheckStance(Stance stance)
     {
-        return Unit.UnitInteligence.MainState == mainState;
+        return Unit.Stance == stance ? NeuronResult.Success : NeuronResult.Fail;
     }
 
-    public IEnumerator<NodeResult> CheckAlert()
+    public NeuronResult CheckMainState(MainState mainState)
     {
-        bool exit;
-        if (Unit.UnitInteligence.PlayerInFOV && Unit.UnitInteligence.Alerts.Contains(Alert.Seeing))
-        {
-            exit = true;
-        }
-        else
-        {
-            exit = false;
-            Unit.UnitInteligence.MainAction = MainAction.CheckingAlert;
-            Unit.UnitInteligence.AlertLevel = AlertLevel.Suspicious;
-            Unit.UnitController.IsTurningToSound = true;
-        }
+        return Unit.UnitInteligence.MainState == mainState ? NeuronResult.Success : NeuronResult.Fail;
+    }
 
-        SetWaitFor(waitFor.CheckAlert, exit);
-        yield return WhenIsDone();
+    public NeuronResult CheckAlert()
+    {
+        if (Unit.UnitInteligence.PlayerInFOV && Unit.UnitInteligence.Alerts.Contains(Alert.Seeing))
+            return NeuronResult.Success;
+
+        Unit.UnitInteligence.MainAction = MainAction.CheckingAlert;
+        Unit.UnitInteligence.AlertLevel = AlertLevel.Suspicious;
+        Unit.UnitController.IsTurningToSound = true;
+
+        return NeuronResult.WaitFor;
     }
 
     public bool CheckMainAction(MainAction mainAction)
@@ -61,68 +69,75 @@ public class Guard : MonoBehaviour
         return Unit.UnitInteligence.MainAction == mainAction;
     }
 
-    public bool CheckAlertType(Alert alertType)
+    public NeuronResult CheckAlertType(Alert alertType)
     {
-        return Unit.UnitInteligence.Alerts.Contains(alertType);
+        if (Unit.UnitInteligence.Alerts.Contains(alertType))
+            return NeuronResult.Success;
+        return NeuronResult.Fail;
     }
 
-    public IEnumerator<NodeResult> WaitSetAlertLevel(AlertLevel alertLevel)
+    public NeuronResult WaitSetAlertLevel(AlertLevel alertLevel)
     {
         Unit.UnitInteligence.AlertLevel = alertLevel;
 
         SetWaitFor(waitFor.AlertLevel);
-        yield return WhenIsDone();
+        
+        return NeuronResult.WaitFor;
     }
 
-    public bool SetAlertLevel(AlertLevel alertLevel)
+    public NeuronResult SetAlertLevel(AlertLevel alertLevel)
     {
         Unit.UnitInteligence.AlertLevel = alertLevel;
-        return true;
+
+        return NeuronResult.Success;
     }
 
-    public IEnumerator<NodeResult> ReduceDistance()
+    public NeuronResult ReduceDistance()
     {
         if (Unit.UnitInteligence.MainAction == MainAction.MoveTowardsPlayer)
         {
             if (_exitValue)
                 Unit.UnitInteligence.MainAction = MainAction.DoingNothing;
-            yield return WhenIsDone();
+            return NeuronResult.WaitFor;
         }
         Unit.UnitInteligence.MainAction = MainAction.MoveTowardsPlayer;
         Unit.UnitInteligence.InitialPlayerPos = GlobalData.Player.transform.position;
 
         SetWaitFor(waitFor.ReduceDistance);
-        yield return WhenIsDone();
+
+        return NeuronResult.WaitFor;
     }
 
-    public IEnumerator<NodeResult> ChasePlayer()
+    public NeuronResult ChasePlayer()
     {
         if (Unit.UnitInteligence.MainAction == MainAction.MoveTowardsPlayer)
         {
             if (_exitValue)
                 Unit.UnitInteligence.MainAction = MainAction.DoingNothing;
-            yield return WhenIsDone();
+            return NeuronResult.WaitFor;
         }
         Unit.UnitInteligence.MainAction = MainAction.MoveTowardsPlayer;
 
         SetWaitFor(waitFor.ChasePlayer);
-        yield return WhenIsDone();
+
+        return NeuronResult.WaitFor;
     }
 
-    public IEnumerator<NodeResult> DoInvestigateLastKnownLocation()
+    public NeuronResult DoInvestigateLastKnownLocation()
     {
         if (Unit.UnitInteligence.MainAction == MainAction.InvestigateLastKnownLocation)
         {
             if (_exitValue)
                 Unit.UnitInteligence.MainAction = MainAction.DoingNothing;
-            yield return WhenIsDone();
+            return NeuronResult.WaitFor;
         }
         Unit.UnitInteligence.MainAction = MainAction.InvestigateLastKnownLocation;
         Unit.UnitController.LookingAtDirection = Unit.UnitInteligence.LastPlayerDirection;
         Unit.UnitController.IsLookingAtDirection = true;
 
         SetWaitFor(waitFor.InvestigateLastKnownLocation);
-        yield return WhenIsDone();
+
+        return NeuronResult.WaitFor;
     }
 
     /*
@@ -130,7 +145,7 @@ public class Guard : MonoBehaviour
     Check Surrounding after looking at the direction the Player was looking.
         - take this time to analize hiding spots and add them to the blackboard.
          *///------------------------
-    public IEnumerator<NodeResult> CheckSuroundings()
+    public NeuronResult CheckSuroundings()
     {
         if (_waitFor != waitFor.CheckSuroundings)
         {
@@ -139,11 +154,12 @@ public class Guard : MonoBehaviour
             Unit.UnitInteligence.MainAction = MainAction.CheckHidingSpots;
         }
 
-        SetWaitFor(waitFor.CheckSuroundings, false, 3.5f);
-        yield return WhenIsDone();
+        //SetWaitFor(waitFor.CheckSuroundings, false, 3.5f);
+        
+        return NeuronResult.WaitFor;
     }
 
-    public IEnumerator<NodeResult> InvestigateSoundLocation()
+    public NeuronResult InvestigateSoundLocation()
     {
         Unit.UnitInteligence.Restart();
 
@@ -156,13 +172,15 @@ public class Guard : MonoBehaviour
         }
 
         SetWaitFor(waitFor.InvestigateSoundLocation);
-        yield return WhenIsDone();
+        
+        return NeuronResult.WaitFor;
     }
-    
-    public bool DoJob()
+
+    public NeuronResult DoJob()
     {
         Unit.UnitInteligence.MainAction = MainAction.DoingJob;
-        return _exitValue;
+
+        return NeuronResult.WaitFor;
     }
 
     public IEnumerator<NodeResult> ReturnSuccess()
@@ -234,5 +252,15 @@ public class Guard : MonoBehaviour
         _exitValue = true;
         if (hasCoroutine)
             StopCoroutine(_runningTask);
+    }
+
+    public void DisplayErrors(List<string> errors)
+    {
+        Debug.Log(" Errors on " + Unit.gameObject.name);
+        Debug.Log(" ^ ^ ^ ");
+        foreach (var error in errors)
+        {
+            Debug.Log(error);
+        }
     }
 }

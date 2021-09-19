@@ -10,6 +10,32 @@ using BAD;
 
 namespace Assets.Scripts.Utils
 {
+    [Flags]
+    public enum NeuronType
+    {
+        Root,
+        Selector,
+        Sequence,
+        If,
+        IfElse,
+        Action
+    }
+
+    public enum NeuronState
+    {
+        NotRan,
+        Running,
+        Complete
+    }
+
+    public enum NeuronResult
+    {
+        WaitFor,
+        Fail,
+        Continue,
+        Success
+    }
+
     public enum MainState
     {
         Calm,

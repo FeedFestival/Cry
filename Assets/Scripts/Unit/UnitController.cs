@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.AI;
 using System.Collections;
 using Assets.Scripts.Utils;
+using UnityEngine.AI;
 
 public class UnitController : MonoBehaviour
 {
@@ -10,7 +10,7 @@ public class UnitController : MonoBehaviour
      */
     private Unit _unit;
 
-    public UnityEngine.AI.NavMeshPath NavMeshPath;
+    public NavMeshPath NavMeshPath;
 
     // properties
     private float _walkTurnSpeed;
@@ -264,8 +264,7 @@ public class UnitController : MonoBehaviour
                         Logic.GetDirection(_unit.UnitProperties.ThisUnitTransform.position, _unit.UnitInteligence.SoundPosition), _turnSpeed);
         if (Vector3.Angle(_unit.UnitInteligence.SoundPosition - transform.position, transform.forward) <= 1f)
         {
-            // set success on CheckAlert()
-            _unit.UnitInteligence.Guard.CompleteCurrentTask();
+            _unit.UnitInteligence.Intel.CompleteNeuronBranch();
             IsTurningToSound = false;
         }
     }
@@ -279,7 +278,7 @@ public class UnitController : MonoBehaviour
         {
             IsLookingAtDirection = false;
             _unit.UnitInteligence.MainState = MainState.Investigative;
-            _unit.UnitInteligence.Guard.CompleteCurrentTask();
+            _unit.UnitInteligence.Intel.CompleteNeuronBranch();
         }
     }
 

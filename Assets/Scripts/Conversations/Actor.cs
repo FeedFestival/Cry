@@ -20,7 +20,7 @@ public class Actor : MonoBehaviour
     public int DialogTextIndex;
     [HideInInspector]
     public Image DialogBubble;
-    [HideInInspector]
+    // [HideInInspector]
     public Canvas DialogBox;
 
     public string targetPrefabString;

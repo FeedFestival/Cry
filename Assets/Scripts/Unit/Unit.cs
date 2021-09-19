@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.AI;
 using System.Collections;
 using Assets.Scripts.Utils;
+using UnityEngine.AI;
 
 public class Unit : MonoBehaviour
 {
@@ -50,6 +50,8 @@ public class Unit : MonoBehaviour
         }
     }
 
+    public Stance Stance;
+
     private UnitActionState _unitActionState;
     public UnitActionState UnitActionState
     {
@@ -90,7 +92,7 @@ public class Unit : MonoBehaviour
     [HideInInspector]
     public UnitController UnitController;
     [HideInInspector]
-    public UnityEngine.AI.NavMeshAgent NavMeshAgent;
+    public NavMeshAgent NavMeshAgent;
     [HideInInspector]
     public UnitActionAnimation UnitActionAnimation;
     [HideInInspector]

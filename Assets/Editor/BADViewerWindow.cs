@@ -11,109 +11,137 @@ namespace BAD
         public AiReactor reactor;
         Vector2 scrollPosition;
         Rect cursor;
-        List<Connector> connectors = new List<Connector> ();
+        List<Connector> connectors = new List<Connector>();
 
         float panX = 0;
         float panY = 0;
 
-        void DrawNode (Node node)
+        public Neuron GuardNeuron;
+
+        void DrawNeuron(Neuron neuron, string decorator = "")
         {
-            GUI.color = node.running ? Color.yellow : Color.white;
-            if (node.state != null) {
+            GUIStyle style = new GUIStyle("button");
+            style.normal.textColor = Color.black;
+
+            if (neuron.NeuronType == NeuronType.Sequence)
+            {
+                GUI.color = neuron.NeuronState == NeuronState.Running ? Color.yellow : Color.grey;
+                style.normal.textColor = Color.red;
+            }
+            else if (neuron.NeuronType == NeuronType.Selector)
+                GUI.color = neuron.NeuronState == NeuronState.Running ? Color.yellow : Color.magenta;
+            else if (neuron.NeuronType.IsIn(NeuronType.If, NeuronType.IfElse))
+                GUI.color = neuron.NeuronState == NeuronState.Running ? Color.yellow : Color.cyan;
+            else
+                GUI.color = neuron.NeuronState == NeuronState.Running ? Color.yellow : Color.white;
+
+            if (neuron.NeuronResult != NeuronResult.WaitFor)
+            {
                 var icon = cursor;
                 icon.x -= 14;
                 icon.width = 14;
                 var color = GUI.color;
-                GUI.color = node.state == NodeResult.Success ? Color.green : node.state == NodeResult.Continue ? Color.yellow : Color.red;
-                GUI.Label (icon, "", EditorStyles.radioButton);
+                GUI.color = neuron.NeuronResult == NeuronResult.Success
+                    ? Color.green
+                    : neuron.NeuronResult == NeuronResult.Continue ? Color.yellow : Color.red;
+                GUI.Label(icon, "", EditorStyles.radioButton);
                 GUI.color = color;
-                
             }
-            var text = string.Format ("{0}", node);
-            cursor.width = GUI.skin.button.CalcSize (new GUIContent (text)).x;
+            var text = string.Format(decorator + "{0}", neuron);
+            cursor.width = GUI.skin.button.CalcSize(new GUIContent(text)).x;
 
-            GUI.Label (cursor, text, "button");
+            GUI.Label(cursor, text, style);
         }
 
-        void DrawDecoratorNode (Node node)
+        void DrawNeuronGraph(Neuron neuron, Vector2 parentPosition, string decorator = "")
         {
-            DrawNode (node);
-        }
-
-        void DrawBranchNode (Node node)
-        {
-            DrawNode (node);
-        }
-
-        void DrawGraph (Node node, Vector2 parentPosition)
-        {
-            var midY = Mathf.Lerp (cursor.yMax, cursor.yMin, 0.5f);
+            var midY = Mathf.Lerp(cursor.yMax, cursor.yMin, 0.5f);
             var x = parentPosition.x;
-            var A = new Vector2 (cursor.xMin, midY);
-            var B = new Vector2 (x, midY);
+            var A = new Vector2(cursor.xMin, midY);
+            var B = new Vector2(x, midY);
             var C = parentPosition;
-            if (node.running) {
-                connectors.Add (new Connector (A, B, C));
-            } else {
+
+            if (neuron.NeuronState == NeuronState.Running)
+            {
+                connectors.Add(new Connector(A, B, C));
+            }
+            else
+            {
                 Handles.color = Color.white;
-                Handles.DrawPolyLine (A, B, C);
+                Handles.DrawPolyLine(A, B, C);
             }
 
-
-            if (node is Decorator) {
-                var decorator = node as Decorator;
-                DrawDecoratorNode (node);
-                parentPosition = new Vector2 (cursor.xMax, Mathf.Lerp (cursor.yMin, cursor.yMax, 0.5f));
-                var indent = cursor.width + 16; 
+            if (neuron.NeuronType.IsIn(NeuronType.If, NeuronType.IfElse))
+            {
+                DrawNeuron(neuron, decorator);
+                parentPosition = new Vector2(cursor.xMax, Mathf.Lerp(cursor.yMin, cursor.yMax, 0.5f));
+                var indent = cursor.width + 16;
                 cursor.x += indent;
-                foreach (var child in decorator.children) {
-                    DrawGraph (child, parentPosition);
+
+                var count = 1;
+                foreach (var child in neuron.Children)
+                {
+                    // if this is a the false definition
+                    if (count == 2)
+                        DrawNeuronGraph(child, parentPosition, "Else ");
+                    else
+                        DrawNeuronGraph(child, parentPosition);
+                    count++;
                 }
                 cursor.x -= indent;
-            } else if (node is Branch) {
-                var branch = node as Branch;
-                DrawBranchNode (node);
-                parentPosition = new Vector2 (Mathf.Lerp (cursor.xMin, cursor.xMax, 0.25f), cursor.yMax);
+            }
+            else if (neuron.NeuronType.IsIn(NeuronType.Selector, NeuronType.Sequence, NeuronType.Root))
+            {
+                DrawNeuron(neuron, decorator);
+                parentPosition = new Vector2(Mathf.Lerp(cursor.xMin, cursor.xMax, 0.25f), cursor.yMax);
                 var indent = (cursor.width / 4) + 16;
                 cursor.x += indent;
                 cursor.y += cursor.height + 4;
-                foreach (var child in branch.children) {
-                    DrawGraph (child, parentPosition);
+                foreach (var child in neuron.Children)
+                {
+                    DrawNeuronGraph(child, parentPosition);
                 }
                 cursor.x -= indent;
-            } else {
-                DrawNode (node);
+            }
+            else
+            {
+                DrawNeuron(neuron, decorator);
                 cursor.y += cursor.height + 4;
             }
-
         }
 
-        void OnDrawGUI ()
+        void OnDrawGUI()
         {
-            cursor = new Rect (20, 20, 160, 18);
-            connectors.Clear ();
-            if (reactor != null) {
-                foreach (var node in reactor.RunningGraphs) {
-                    DrawGraph (node, new Vector2 (20, 20));
-                }
+            cursor = new Rect(20, 20, 160, 18);
+            connectors.Clear();
+
+            if (GuardNeuron != null)
+            {
+                DrawNeuronGraph(GuardNeuron, new Vector2(20, 20));
             }
-            foreach (var c in connectors) {
+
+            foreach (var c in connectors)
+            {
                 Handles.color = Color.green;
-                Handles.DrawPolyLine (c.A, c.B, c.C);
+                Handles.DrawPolyLine(c.A, c.B, c.C);
             }
         }
 
-        void OnGUI ()
+        void OnGUI()
         {
             Rect panRect = new Rect(panX, panY, 100000, 100000);
 
             GUI.BeginGroup(panRect);
 
-            GUILayout.BeginHorizontal ();
-            GUILayout.FlexibleSpace ();
-            EditorGUILayout.ObjectField (reactor, typeof(AiReactor), true);
-            GUILayout.EndHorizontal ();
-            OnDrawGUI ();
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (!Application.isPlaying)
+                if (GUILayout.Button("Show Guard"))
+                    GuardNeuron = MindMap.GuardNeuron;
+            GUILayout.EndHorizontal();
+
+            // - Main DRAW
+            OnDrawGUI();
 
             GUI.EndGroup();
 
@@ -127,10 +155,11 @@ namespace BAD
             Repaint();
         }
 
-        void Update ()
+        void Update()
         {
-            if (reactor != null) {
-                Repaint ();
+            if (reactor != null)
+            {
+                Repaint();
             }
         }
 
@@ -138,14 +167,12 @@ namespace BAD
         {
             public Vector2 A, B, C;
 
-            public Connector (Vector2 A, Vector2 B, Vector2 C)
+            public Connector(Vector2 A, Vector2 B, Vector2 C)
             {
                 this.A = A;
                 this.B = B;
                 this.C = C;
             }
         }
-
     }
-
 }

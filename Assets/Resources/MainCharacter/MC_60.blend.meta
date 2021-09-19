@@ -1,370 +1,134 @@
 fileFormatVersion: 2
 guid: 9ebdce42fc7875d44a4e7be0fb0770fb
+timeCreated: 1460916743
+licenseType: Free
 ModelImporter:
-  serializedVersion: 19300
-  internalIDToNameTable:
-  - first:
-      1: 100000
-    second: Arm_Lower_L
-  - first:
-      1: 100002
-    second: Arm_Lower_R
-  - first:
-      1: 100004
-    second: Arm_Upper_L
-  - first:
-      1: 100006
-    second: Arm_Upper_R
-  - first:
-      1: 100008
-    second: Belly
-  - first:
-      1: 100010
-    second: Chest
-  - first:
-      1: 100012
-    second: F_Palm_L
-  - first:
-      1: 100014
-    second: F_Palm_R
-  - first:
-      1: 100016
-    second: F_Pmid1_L
-  - first:
-      1: 100018
-    second: F_Pmid1_R
-  - first:
-      1: 100020
-    second: F_Pmid2_L
-  - first:
-      1: 100022
-    second: F_Pmid2_R
-  - first:
-      1: 100024
-    second: F_Pointer1_L
-  - first:
-      1: 100026
-    second: F_Pointer1_R
-  - first:
-      1: 100028
-    second: F_Pointer2_L
-  - first:
-      1: 100030
-    second: F_Pointer2_R
-  - first:
-      1: 100032
-    second: F_Thumb_L
-  - first:
-      1: 100034
-    second: F_Thumb_R
-  - first:
-      1: 100036
-    second: Foot_L
-  - first:
-      1: 100038
-    second: Foot_R
-  - first:
-      1: 100040
-    second: Hand_L
-  - first:
-      1: 100042
-    second: Hand_R
-  - first:
-      1: 100044
-    second: Head
-  - first:
-      1: 100046
-    second: Leg_Lower_L
-  - first:
-      1: 100048
-    second: Leg_Lower_R
-  - first:
-      1: 100050
-    second: Leg_Upper_L
-  - first:
-      1: 100052
-    second: Leg_Upper_R
-  - first:
-      1: 100054
-    second: //RootNode
-  - first:
-      1: 100056
-    second: MC_Armature
-  - first:
-      1: 100058
-    second: MC_Body
-  - first:
-      1: 100060
-    second: MC_Shirt
-  - first:
-      1: 100062
-    second: Mid
-  - first:
-      1: 100064
-    second: Neck
-  - first:
-      1: 100066
-    second: Root
-  - first:
-      1: 100068
-    second: Shoulder_L
-  - first:
-      1: 100070
-    second: Shoulder_R
-  - first:
-      1: 100072
-    second: Toes_L
-  - first:
-      1: 100074
-    second: Toes_R
-  - first:
-      1: 100076
-    second: Waist
-  - first:
-      4: 400000
-    second: Arm_Lower_L
-  - first:
-      4: 400002
-    second: Arm_Lower_R
-  - first:
-      4: 400004
-    second: Arm_Upper_L
-  - first:
-      4: 400006
-    second: Arm_Upper_R
-  - first:
-      4: 400008
-    second: Belly
-  - first:
-      4: 400010
-    second: Chest
-  - first:
-      4: 400012
-    second: F_Palm_L
-  - first:
-      4: 400014
-    second: F_Palm_R
-  - first:
-      4: 400016
-    second: F_Pmid1_L
-  - first:
-      4: 400018
-    second: F_Pmid1_R
-  - first:
-      4: 400020
-    second: F_Pmid2_L
-  - first:
-      4: 400022
-    second: F_Pmid2_R
-  - first:
-      4: 400024
-    second: F_Pointer1_L
-  - first:
-      4: 400026
-    second: F_Pointer1_R
-  - first:
-      4: 400028
-    second: F_Pointer2_L
-  - first:
-      4: 400030
-    second: F_Pointer2_R
-  - first:
-      4: 400032
-    second: F_Thumb_L
-  - first:
-      4: 400034
-    second: F_Thumb_R
-  - first:
-      4: 400036
-    second: Foot_L
-  - first:
-      4: 400038
-    second: Foot_R
-  - first:
-      4: 400040
-    second: Hand_L
-  - first:
-      4: 400042
-    second: Hand_R
-  - first:
-      4: 400044
-    second: Head
-  - first:
-      4: 400046
-    second: Leg_Lower_L
-  - first:
-      4: 400048
-    second: Leg_Lower_R
-  - first:
-      4: 400050
-    second: Leg_Upper_L
-  - first:
-      4: 400052
-    second: Leg_Upper_R
-  - first:
-      4: 400054
-    second: //RootNode
-  - first:
-      4: 400056
-    second: MC_Armature
-  - first:
-      4: 400058
-    second: MC_Body
-  - first:
-      4: 400060
-    second: MC_Shirt
-  - first:
-      4: 400062
-    second: Mid
-  - first:
-      4: 400064
-    second: Neck
-  - first:
-      4: 400066
-    second: Root
-  - first:
-      4: 400068
-    second: Shoulder_L
-  - first:
-      4: 400070
-    second: Shoulder_R
-  - first:
-      4: 400072
-    second: Toes_L
-  - first:
-      4: 400074
-    second: Toes_R
-  - first:
-      4: 400076
-    second: Waist
-  - first:
-      43: 4300000
-    second: MC_Shirt
-  - first:
-      43: 4300002
-    second: MC_Body
-  - first:
-      74: 7400000
-    second: Default Take
-  - first:
-      74: 7400002
-    second: Climb_Exit_To_Level2_Top
-  - first:
-      74: 7400004
-    second: Climb_From_Level1_To_Level2
-  - first:
-      74: 7400006
-    second: Climb_Table
-  - first:
-      74: 7400008
-    second: ClimbDown_Exit_To_Bottom
-  - first:
-      74: 7400010
-    second: ClimbDown_From_Level2_To_Level1
-  - first:
-      74: 7400012
-    second: ClimbDown_Table
-  - first:
-      74: 7400014
-    second: CloseDoor
-  - first:
-      74: 7400016
-    second: CloseDoorBack
-  - first:
-      74: 7400018
-    second: DropTable_FromBack
-  - first:
-      74: 7400020
-    second: GetOn_From_Bottom
-  - first:
-      74: 7400022
-    second: GetOn_From_Level2_Top
-  - first:
-      74: 7400024
-    second: Idle
-  - first:
-      74: 7400026
-    second: Idle_Ladder
-  - first:
-      74: 7400028
-    second: Idle_Table
-  - first:
-      74: 7400030
-    second: Jump_Exit_To_Bottom
-  - first:
-      74: 7400032
-    second: LiftTable_FromBack
-  - first:
-      74: 7400034
-    second: Move_Table
-  - first:
-      74: 7400036
-    second: OpenDoor
-  - first:
-      74: 7400038
-    second: OpenDoorBack
-  - first:
-      74: 7400040
-    second: Rotate_Table_Left
-  - first:
-      74: 7400042
-    second: Rotate_Table_Right
-  - first:
-      74: 7400044
-    second: Walk
-  - first:
-      74: 7400046
-    second: WallClimb_2Metters
-  - first:
-      74: 7400048
-    second: WallClimbDown_2Metters
-  - first:
-      95: 9500000
-    second: //RootNode
-  - first:
-      111: 11100000
-    second: //RootNode
-  - first:
-      137: 13700000
-    second: MC_Body
-  - first:
-      137: 13700002
-    second: MC_Shirt
-  - first:
-      74: -623603649343465320
-    second: Scene
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: gar_eye_gar_eye.png
-    second: {fileID: 2100000, guid: 76587b2f193ec194a9d639081758ac57, type: 2}
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: Arm_Lower_L
+    100002: Arm_Lower_R
+    100004: Arm_Upper_L
+    100006: Arm_Upper_R
+    100008: Belly
+    100010: Chest
+    100012: F_Palm_L
+    100014: F_Palm_R
+    100016: F_Pmid1_L
+    100018: F_Pmid1_R
+    100020: F_Pmid2_L
+    100022: F_Pmid2_R
+    100024: F_Pointer1_L
+    100026: F_Pointer1_R
+    100028: F_Pointer2_L
+    100030: F_Pointer2_R
+    100032: F_Thumb_L
+    100034: F_Thumb_R
+    100036: Foot_L
+    100038: Foot_R
+    100040: Hand_L
+    100042: Hand_R
+    100044: Head
+    100046: Leg_Lower_L
+    100048: Leg_Lower_R
+    100050: Leg_Upper_L
+    100052: Leg_Upper_R
+    100054: //RootNode
+    100056: MC_Armature
+    100058: MC_Body
+    100060: MC_Shirt
+    100062: Mid
+    100064: Neck
+    100066: Root
+    100068: Shoulder_L
+    100070: Shoulder_R
+    100072: Toes_L
+    100074: Toes_R
+    100076: Waist
+    400000: Arm_Lower_L
+    400002: Arm_Lower_R
+    400004: Arm_Upper_L
+    400006: Arm_Upper_R
+    400008: Belly
+    400010: Chest
+    400012: F_Palm_L
+    400014: F_Palm_R
+    400016: F_Pmid1_L
+    400018: F_Pmid1_R
+    400020: F_Pmid2_L
+    400022: F_Pmid2_R
+    400024: F_Pointer1_L
+    400026: F_Pointer1_R
+    400028: F_Pointer2_L
+    400030: F_Pointer2_R
+    400032: F_Thumb_L
+    400034: F_Thumb_R
+    400036: Foot_L
+    400038: Foot_R
+    400040: Hand_L
+    400042: Hand_R
+    400044: Head
+    400046: Leg_Lower_L
+    400048: Leg_Lower_R
+    400050: Leg_Upper_L
+    400052: Leg_Upper_R
+    400054: //RootNode
+    400056: MC_Armature
+    400058: MC_Body
+    400060: MC_Shirt
+    400062: Mid
+    400064: Neck
+    400066: Root
+    400068: Shoulder_L
+    400070: Shoulder_R
+    400072: Toes_L
+    400074: Toes_R
+    400076: Waist
+    4300000: MC_Shirt
+    4300002: MC_Body
+    7400000: Default Take
+    7400002: Climb_Exit_To_Level2_Top
+    7400004: Climb_From_Level1_To_Level2
+    7400006: Climb_Table
+    7400008: ClimbDown_Exit_To_Bottom
+    7400010: ClimbDown_From_Level2_To_Level1
+    7400012: ClimbDown_Table
+    7400014: CloseDoor
+    7400016: CloseDoorBack
+    7400018: DropTable_FromBack
+    7400020: GetOn_From_Bottom
+    7400022: GetOn_From_Level2_Top
+    7400024: Idle
+    7400026: Idle_Ladder
+    7400028: Idle_Table
+    7400030: Jump_Exit_To_Bottom
+    7400032: LiftTable_FromBack
+    7400034: Move_Table
+    7400036: OpenDoor
+    7400038: OpenDoorBack
+    7400040: Rotate_Table_Left
+    7400042: Rotate_Table_Right
+    7400044: Walk
+    7400046: WallClimb_2Metters
+    7400048: WallClimbDown_2Metters
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: MC_Body
+    13700002: MC_Shirt
   materials:
-    materialImportMode: 1
+    importMaterials: 1
     materialName: 0
     materialSearch: 1
-    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
-    animationImportErrors: 
-    animationImportWarnings: 
-    animationRetargetingWarnings: 
-    animationDoRetargetingWarnings: 0
-    importAnimatedCustomProperties: 0
-    importConstraints: 0
     animationCompression: 1
-    animationRotationError: 0.5
-    animationPositionError: 0.5
-    animationScaleError: 0.5
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    extraUserProperties: []
     clipAnimations: []
     isReadable: 1
   meshes:
@@ -372,23 +136,13 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
-    useSRGBMaterialColor: 1
-    sortHierarchyByName: 1
-    importVisibility: 0
     importBlendShapes: 1
-    importCameras: 0
-    importLights: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
+    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
-    preserveHierarchy: 0
-    skinWeightsMode: 0
-    maxBonesPerVertex: 4
-    minBoneWeight: 0.001
-    meshOptimizationFlags: -1
-    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
@@ -396,35 +150,24 @@ ModelImporter:
     useFileScale: 1
   tangentSpace:
     normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 4
-    normalCalculationMode: 0
-    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
-    blendShapeNormalImportMode: 1
-    normalSmoothingSource: 0
-  referencedClips: []
+    tangentImportMode: 1
   importAnimation: 1
+  copyAvatar: 0
   humanDescription:
-    serializedVersion: 3
     human: []
     skeleton: []
-    armTwist: 0.5
-    foreArmTwist: 0.5
-    upperLegTwist: 0.5
-    legTwist: 0.5
-    armStretch: 0.05
-    legStretch: 0.05
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
     feetSpacing: 0
-    globalScale: 1
     rootMotionBoneName: 
-    hasTranslationDoF: 0
-    hasExtraRoot: 0
-    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 1
-  humanoidOversampling: 1
-  avatarSetup: 0
   additionalBone: 0
   userData: 
   assetBundleName: 

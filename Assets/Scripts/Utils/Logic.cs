@@ -73,6 +73,12 @@ namespace Assets.Scripts.Utils
         Moving = 0, UseAbility = 1, MovingTable = 2, LookInInventory, OpenCloseDoor
     }
 
+    public enum Stance
+    {
+        Pasive,
+        Fighting
+    }
+
     public enum UnitPrimaryState
     {
         Idle = 0, Walk = 1, Busy = 2
@@ -542,60 +548,60 @@ namespace Assets.Scripts.Utils
             _neuronsLevels = DataService.GetLevelsCount();
         }
 
-        public static Neuron GetNode(int actionId)
-        {
-            var children = from neuron in Neurons
-                           where neuron.Id == actionId
-                           select neuron;
+        //public static Neuron GetNode(int actionId)
+        //{
+        //    var children = from neuron in Neurons
+        //                   where neuron.Id == actionId
+        //                   select neuron;
 
-            return (children.Count() > 0) ? children.FirstOrDefault() : null;
-        }
+        //    return (children.Count() > 0) ? children.FirstOrDefault() : null;
+        //}
 
-        public static List<Neuron> GetChildren(int neuronId)
-        {
-            var children = from neuron in Neurons
-                           where neuron.ParentId == neuronId
-                           select neuron;
+        //public static List<Neuron> GetChildren(int neuronId)
+        //{
+        //    var children = from neuron in Neurons
+        //                   where neuron.ParentId == neuronId
+        //                   select neuron;
 
-            return (children.Count() > 0) ? children.ToList() : null;
-        }
+        //    return (children.Count() > 0) ? children.ToList() : null;
+        //}
 
-        public static Neuron GetChildWithEdge(int neuronId, bool edge)
-        {
-            var children = from neuron in Neurons
-                           where neuron.ParentId == neuronId && neuron.Edge == edge
-                           select neuron;
+        //public static Neuron GetChildWithEdge(int neuronId, bool edge)
+        //{
+        //    var children = from neuron in Neurons
+        //                   where neuron.ParentId == neuronId && neuron.Edge == edge
+        //                   select neuron;
 
-            return (children.Count() > 0) ? children.FirstOrDefault() : null;
-        }
+        //    return (children.Count() > 0) ? children.FirstOrDefault() : null;
+        //}
 
-        public static List<Neuron> GetAllChildren(Neuron neuron, bool includingParent = false)
-        {
-            var children = new List<Neuron>();
-            children.Add(neuron);
+        //public static List<Neuron> GetAllChildren(Neuron neuron, bool includingParent = false)
+        //{
+        //    var children = new List<Neuron>();
+        //    children.Add(neuron);
 
-            var levels = NeuronsLevels - neuron.Level;
+        //    var levels = NeuronsLevels - neuron.Level;
 
-            for (var i = 0; i < children.Count; i++)
-            {
-                var child = children[i];
-                var list = from n in Neurons
-                           where n.ParentId == child.Id
-                           select n;
+        //    for (var i = 0; i < children.Count; i++)
+        //    {
+        //        var child = children[i];
+        //        var list = from n in Neurons
+        //                   where n.ParentId == child.Id
+        //                   select n;
 
-                var childrenOfChildren = list.ToList();
+        //        var childrenOfChildren = list.ToList();
 
-                for (var l = 0; l < childrenOfChildren.Count(); l++)
-                {
-                    children.Add(childrenOfChildren[l]);
-                }
-            }
+        //        for (var l = 0; l < childrenOfChildren.Count(); l++)
+        //        {
+        //            children.Add(childrenOfChildren[l]);
+        //        }
+        //    }
 
-            if (includingParent == false)
-                children.RemoveAt(0);
+        //    if (includingParent == false)
+        //        children.RemoveAt(0);
 
-            return children;
-        }
+        //    return children;
+        //}
 
         public static List<ToDo> GetToDos(Job iAm)
         {

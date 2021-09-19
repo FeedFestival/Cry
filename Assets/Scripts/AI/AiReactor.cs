@@ -28,7 +28,7 @@ public class AiReactor : MonoBehaviour
 
     public void Initialize(Unit unit)
     {
-        _unit = unit;
+        _unit = unit; 
 
         Parser.Debug = false;
         StartReactor(_unit.UnitInteligence.GuardNeuronRoot);

@@ -25,17 +25,8 @@ public class UnitInteligence : MonoBehaviour
                    (_guardNeuronBranch = Parser.Parse(gameObject, GlobalData.SceneManager.AIUtils.GuardNeurons.text));
         }
     }
-    private Guard _guard;
-    [HideInInspector]
-    public Guard Guard
-    {
-        get
-        {
-            if (_guard == null)
-                _guard = GetComponent<Guard>();
-            return _guard;
-        }
-    }
+
+    public Intel Intel;
 
     public Unit Player;
 
@@ -78,11 +69,23 @@ public class UnitInteligence : MonoBehaviour
         UnitUi = GetComponent<UnitUI>();
         UnitUi.Initialize(_unit);
 
-        AiReactor = GetComponent<AiReactor>();
 
-        StartAI();
+        // Start AI
+        //----------------------------------------------------
+
+
+        //AiReactor = GetComponent<AiReactor>();
+        //StartAI();
+
+
+        // Start AI v.2
+        //----------------------------------------------------
+        
+        //gameObject.AddComponent<Intel>();
+        Intel = GetComponent<Intel>();
+        Intel.Initialize(this);
     }
-
+    
     private void StartAI()
     {
         //Jobs.Add(Job.Guard); // main ocupation
@@ -101,7 +104,7 @@ public class UnitInteligence : MonoBehaviour
 
         AiReactor.Initialize(_unit);
     }
-
+    
     [SerializeField]
     public MainState MainState;
 
@@ -152,7 +155,7 @@ public class UnitInteligence : MonoBehaviour
         MainAction = MainAction.CheckingAlert;
 
         // here we are calling the entire AI tree to be re-evaluated
-        Guard.CompleteCurrentTask();
+        Intel.Guard.CompleteCurrentTask();
     }
 
     public void AddAlert(Alert alertType)
@@ -221,7 +224,7 @@ public class UnitInteligence : MonoBehaviour
         if (Alerts.Contains(Alert.Seeing))
         {
             if (AlertLevel == AlertLevel.None)
-                Guard.CompleteCurrentTask();
+                Intel.Guard.CompleteCurrentTask();
             if (MainState == MainState.Calm)
                 MainState = MainState.Alerted;
 
@@ -250,7 +253,7 @@ public class UnitInteligence : MonoBehaviour
             if (MainAction == MainAction.MoveTowardsPlayer)
                 if (Vector3.Distance(transform.position, _lastPlayerPos) < 0.5f)
                 {
-                    Guard.CompleteCurrentTask();
+                    Intel.Guard.CompleteCurrentTask();
                 }
         }
     }
@@ -276,6 +279,6 @@ public class UnitInteligence : MonoBehaviour
     public void SetAggressive()
     {
         MainState = MainState.Aggressive;
-        Guard.CompleteCurrentTask();
+        Intel.Guard.CompleteCurrentTask();
     }
 }

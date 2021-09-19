@@ -97,7 +97,7 @@ public class UnitUI : MonoBehaviour
         {
             CancelInvoke("UpdateYellowBar");
 
-            Unit.UnitInteligence.Guard.CompleteCurrentTask();
+            Unit.UnitInteligence.Intel.CompleteNeuronBranch();
             Unit.UnitInteligence.MainState = MainState.Calm;
         }
     }
